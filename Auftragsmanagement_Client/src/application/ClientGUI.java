@@ -27,7 +27,7 @@ public class ClientGUI {
         try
         {
             final int PORT = 444;
-            final String HOST = "localhost";
+            final String HOST = "192.168.178.35";
             Socket SOCK = new Socket(HOST, PORT);
             System.out.println("You connected to: "+ HOST);
             

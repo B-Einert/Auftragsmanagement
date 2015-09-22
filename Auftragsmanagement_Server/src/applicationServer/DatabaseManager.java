@@ -4,7 +4,7 @@ import java.io.*;
 
 public class DatabaseManager {
 	
-	private int folderCount=0;
+	//private int folderCount=0;
     private File projectModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/Muster");
 
 
