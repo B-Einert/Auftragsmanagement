@@ -121,7 +121,7 @@ public class ClientGUI {
     
     public static void ACTION_B_SEND()
     {
-        client.SEND("Hi");
+        client.SEND("++xyz");
     }
     
     public static void ACTION_B_DISCONNECT()

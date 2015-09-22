@@ -11,6 +11,7 @@ import javax.swing.JOptionPane;
 public class Server
 {
     public static ArrayList<Socket> ConnectionArray = new ArrayList<Socket>();
+    public static DatabaseManager dbManager = new DatabaseManager();
     
     public static void main(String[] args) throws IOException
     {

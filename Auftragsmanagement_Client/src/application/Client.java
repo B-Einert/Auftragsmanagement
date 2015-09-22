@@ -81,7 +81,8 @@ public class Client implements Runnable{
     
     public void SEND(String x)
     {
-        OUT.println(ClientGUI.UserName + ": " + x);
+        OUT.println(ClientGUI.UserName + ": ");
+        OUT.println(x);
         OUT.flush();
     }
     

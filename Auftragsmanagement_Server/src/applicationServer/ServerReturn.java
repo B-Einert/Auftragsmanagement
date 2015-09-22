@@ -11,10 +11,11 @@ public class ServerReturn implements Runnable
     private Scanner INPUT;
     private PrintWriter OUT;
     String MESSAGE = "";
+    int folderCount = 0;
     
     public ServerReturn(Socket X)
     {
-        this.SOCK=X;
+        this.SOCK = X;
     }
     
     public void CheckConnection() throws IOException
@@ -59,6 +60,10 @@ public class ServerReturn implements Runnable
                     MESSAGE = INPUT.nextLine();
                     
                     System.out.println("Client said: " + MESSAGE);
+                    
+                    if(MESSAGE.startsWith("++")){
+                    	Server.dbManager.createNewProject(MESSAGE.substring(2));
+                    }
                     
                     for(int i = 1; i <= Server.ConnectionArray.size(); i++)
                     {
