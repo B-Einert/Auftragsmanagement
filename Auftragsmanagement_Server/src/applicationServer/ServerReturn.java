@@ -22,20 +22,7 @@ public class ServerReturn implements Runnable
     {
         if(!SOCK.isConnected())
         {
-            for(int i = 1; i <= Server.ConnectionArray.size(); i++)
-            {
-                if(Server.ConnectionArray.get(i)==SOCK)
-                {
-                    Server.ConnectionArray.remove(i);
-                }
-            }
-            for(int i = 1; i <= Server.ConnectionArray.size(); i++)
-            {
-                Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i-1);
-                PrintWriter TEMP_OUT = new PrintWriter(TEMP_SOCK.getOutputStream());
-                TEMP_OUT.println(TEMP_SOCK.getLocalAddress().getHostName()+" disconnected!");
-            }
-            
+        	disconnect();
         }
     }
     
@@ -59,11 +46,14 @@ public class ServerReturn implements Runnable
                     
                     MESSAGE = INPUT.nextLine();
                     
-                    System.out.println("Client said: " + MESSAGE);
+                    System.out.println(SOCK.getLocalAddress() + " said: " + MESSAGE);
                     
                     if(MESSAGE.startsWith("++")){
                     	Server.dbManager.createNewProject(MESSAGE.substring(2));
                     }
+                    //if(MESSAGE.startsWith("disconnect")){
+                    //	disconnect();
+                    //}
                     
                     for(int i = 1; i <= Server.ConnectionArray.size(); i++)
                     {
@@ -71,7 +61,7 @@ public class ServerReturn implements Runnable
                         PrintWriter TEMP_OUT = new PrintWriter(TEMP_SOCK.getOutputStream());
                         TEMP_OUT.println(MESSAGE);
                         TEMP_OUT.flush();
-                        System.out.println("Sent to: " + TEMP_SOCK.getLocalAddress().getHostName());
+                        System.out.println("Sent to: " + TEMP_SOCK.getLocalAddress());
                     }
                 }
             }
@@ -83,6 +73,17 @@ public class ServerReturn implements Runnable
         catch(Exception e)
         {
             System.out.println(e);
+        }
+    }
+    
+    public void disconnect(){
+    	for(int i = 1; i <= Server.ConnectionArray.size(); i++)
+        {
+            if(Server.ConnectionArray.get(i)==SOCK)
+            {
+                Server.ConnectionArray.remove(i);
+                Server.Threads.remove(i);
+            }
         }
     }
     

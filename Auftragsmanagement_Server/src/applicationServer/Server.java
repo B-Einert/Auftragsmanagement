@@ -5,12 +5,14 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
 public class Server
 {
-    public static ArrayList<Socket> ConnectionArray = new ArrayList<Socket>();
+    public static LinkedList<Socket> ConnectionArray = new LinkedList<Socket>();
+    public static LinkedList<Thread> Threads= new LinkedList<Thread>();
     public static DatabaseManager dbManager = new DatabaseManager();
     
     public static void main(String[] args) throws IOException
@@ -27,13 +29,14 @@ public class Server
                 Socket SOCK = SERVER.accept();
                 ConnectionArray.add(SOCK);
                 
-                System.out.println("Client connected from: " + SOCK.getLocalAddress().getHostName());
+                System.out.println("Client connected from: " + SOCK.getLocalAddress());
                 
                 //AddUserName(SOCK);
                 
                 ServerReturn connection = new ServerReturn(SOCK);
                 Thread X = new Thread(connection);
                 X.start();
+                Threads.add(X);
                 
             }
         }
@@ -43,6 +46,7 @@ public class Server
         }
         
     }
+    
 }
 
 

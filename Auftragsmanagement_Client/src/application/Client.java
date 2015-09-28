@@ -7,14 +7,33 @@ import javax.swing.JOptionPane;
 
 public class Client implements Runnable{
     
-    Socket SOCK;
-    Scanner INPUT;
-    Scanner SEND = new Scanner(System.in);
-    PrintWriter OUT;
+    private Socket SOCK;
+    private Scanner INPUT;
+    private PrintWriter OUT;
 
-    public Client(Socket X) 
+    public Client() 
     {
-        this.SOCK = X;
+    	try
+        {
+            final int PORT = 444;
+            final String HOST = "192.168.178.35";
+            this.SOCK = new Socket(HOST, PORT);
+            System.out.println("You connected to: "+ HOST);
+            
+            OUT = new PrintWriter(SOCK.getOutputStream());
+            OUT.println("connected");
+            OUT.flush();
+            
+            Thread X = new Thread(this);
+            X.start();
+            
+        }
+        catch(Exception e)
+        {
+            System.out.print(e);
+            JOptionPane.showMessageDialog(null, "Server reagiert nicht.");
+            System.exit(0);
+        }
     }
     
     public void run()
@@ -41,7 +60,8 @@ public class Client implements Runnable{
     
     public void DISCONNECT() throws IOException
     {
-        OUT.println(ClientGUI.UserName + " has disconnected.");
+    	
+        OUT.println("disconnect");
         OUT.flush();
         SOCK.close();
         JOptionPane.showMessageDialog(null, "You disconnected");
@@ -63,25 +83,13 @@ public class Client implements Runnable{
         if(INPUT.hasNext())
         {
             String MESSAGE = INPUT.nextLine();
+            System.out.println(MESSAGE);
             
-            if(MESSAGE.contains("#?!"))
-            {
-                String TEMP1 = MESSAGE.substring(3);
-                TEMP1 = TEMP1.replace("[", "");
-                TEMP1 = TEMP1.replace("]", "");
-                
-                String[] CurrentUsers = TEMP1.split(", ");
-            }
-            else
-            {
-                System.out.println(MESSAGE);
-            }
         }
     }
     
     public void SEND(String x)
     {
-        OUT.println(ClientGUI.UserName + ": ");
         OUT.println(x);
         OUT.flush();
     }
