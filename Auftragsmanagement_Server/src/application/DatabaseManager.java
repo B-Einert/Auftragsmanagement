@@ -1,13 +1,30 @@
-package applicationServer;
+package application;
 
 import java.io.*;
+import java.util.ArrayList;
 
 public class DatabaseManager {
 	
-	//private int folderCount=0;
     private File projectModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/Muster");
+    //private ObservableList<Entry> entries;
+    private ArrayList<String[]> initList;
 
-
+    public DatabaseManager()
+    {
+    	//TODO: load actual entries
+    	//entries = FXCollections.observableArrayList();
+    	initList = new ArrayList<String[]>();
+    	//entries.add(new Entry(LocalDate.now(), "KundeA", "ItemA", "KontaktA"));
+        //entries.add(new Entry(LocalDate.now(), "KundeB", "ItemB", "KontaktB"));
+        //entries.add(new Entry(LocalDate.now(), "KundeC", "ItemC", "KontaktC"));
+        String[] entry1 = {"KundeA", "ItemA", "KontaktA"};
+        String[] entry2 = {"KundeB", "ItemB", "KontaktB"};
+        String[] entry3 = {"KundeC", "ItemC", "KontaktC"};
+        initList.add(entry1);
+        initList.add(entry2);
+        initList.add(entry3);
+    }
+    
     public boolean createNewProject(String name) throws IOException
     {
     	File file = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/Test" + name);
@@ -61,5 +78,15 @@ public class DatabaseManager {
                 out.write(buf, 0, length);
             }
         }
+    }
+    
+//    public ObservableList<Entry> getEntries()
+//    {
+//    	return this.entries;
+//    }
+    
+    public ArrayList<String[]> getInitList()
+    {
+    	return initList;
     }
 }

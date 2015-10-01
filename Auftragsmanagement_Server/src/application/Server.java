@@ -1,4 +1,4 @@
-package applicationServer;
+package application;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -7,18 +7,18 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Scanner;
-import javax.swing.JOptionPane;
 
 public class Server
 {
     public static LinkedList<Socket> ConnectionArray = new LinkedList<Socket>();
-    public static LinkedList<Thread> Threads= new LinkedList<Thread>();
-    public static DatabaseManager dbManager = new DatabaseManager();
+    public static LinkedList<Thread> Threads = new LinkedList<Thread>();
+    public static DatabaseManager dbManager;
     
     public static void main(String[] args) throws IOException
     {
-        
-        try
+		Server.dbManager = new DatabaseManager();
+		
+		try
         {
             final int PORT = 444;
             ServerSocket SERVER = new ServerSocket(PORT);
@@ -44,8 +44,7 @@ public class Server
         {
             System.out.println(e);
         }
-        
-    }
+	}
     
 }
 

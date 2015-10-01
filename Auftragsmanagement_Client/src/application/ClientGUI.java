@@ -20,9 +20,11 @@ public class ClientGUI extends Application {
 	private static Client client;
     private Stage window;
     private TableView<Entry> table;
+    public static ObservableList<Entry> entries = FXCollections.observableArrayList();
 
     public static void main(String[] args) {
     	client = new Client();
+    	
         launch(args);
     }
 
@@ -124,11 +126,11 @@ public class ClientGUI extends Application {
 
     //Get all of the products
     public ObservableList<Entry> getEntry(){
-        ObservableList<Entry> entries = FXCollections.observableArrayList();
-        entries.add(new Entry(LocalDate.now(), "KundeA", "ItemA", "KontaktA"));
-        entries.add(new Entry(LocalDate.now(), "KundeB", "ItemB", "KontaktB"));
-        entries.add(new Entry(LocalDate.now(), "KundeC", "ItemC", "KontaktC"));
         return entries;
+    }
+    
+    public void setEntry(ObservableList<Entry> entries){
+    	this.entries = entries;
     }
 
 
