@@ -1,5 +1,8 @@
 package application;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.time.LocalDate;
 
 import javafx.application.Application;
@@ -17,13 +20,28 @@ import javafx.stage.Stage;
 
 public class ClientGUI extends Application {
 
-	private static Client client;
+	public static ClientReceiver client;
+	public static ClientSender sender;
     private Stage window;
     private TableView<Entry> table;
     public static ObservableList<Entry> entries = FXCollections.observableArrayList();
+    public static Socket SOCK;
 
     public static void main(String[] args) {
-    	client = new Client();
+    	final int PORT = 444;
+        final String HOST = "192.168.178.35";
+        try {
+			SOCK = new Socket(HOST, PORT);
+		} catch (UnknownHostException e) {
+			System.out.println(e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
+        System.out.println("You connected to: "+ HOST);
+    	client = new ClientReceiver();
+    	sender = new ClientSender();
     	
         launch(args);
     }
@@ -41,7 +59,8 @@ public class ClientGUI extends Application {
         	}
         	catch(Exception a)
         	{
-        		a.printStackTrace();
+        		System.out.println(a);
+    			a.printStackTrace();
         	}
         });
 
@@ -81,15 +100,15 @@ public class ClientGUI extends Application {
         detailColumn.setCellValueFactory(new PropertyValueFactory<>("detail"));
 
         //Button
-        Button nFButton = new Button("new File");
-        nFButton.setOnAction(e -> nFButtonClicked());
+        Button newEntryButton = new Button("neuer Vorgang");
+        newEntryButton.setOnAction(e -> newEntryButtonClicked());
         Button disconnectButton = new Button("Disconnect");
         disconnectButton.setOnAction(e -> disconnectButtonClicked());
 
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(10,10,10,10));
         hBox.setSpacing(10);
-        hBox.getChildren().addAll(nFButton, disconnectButton);
+        hBox.getChildren().addAll(newEntryButton, disconnectButton);
         
         table = new TableView<>();
         table.setItems(getEntry());
@@ -105,9 +124,9 @@ public class ClientGUI extends Application {
     }
 
     //Add button clicked
-    public void nFButtonClicked(){
+    public void newEntryButtonClicked(){
     	{
-    		client.SEND("++xyz");
+    		sender.sendString("xyz");
     	}
     }
 
@@ -119,7 +138,8 @@ public class ClientGUI extends Application {
      	}
     	catch(Exception e)
     	{
-    		e.printStackTrace();
+    		System.out.println(e);
+			e.printStackTrace();
     	}
     }
         

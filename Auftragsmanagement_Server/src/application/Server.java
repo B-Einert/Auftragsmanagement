@@ -1,12 +1,9 @@
 package application;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Scanner;
 
 public class Server
 {
@@ -29,10 +26,7 @@ public class Server
                 Socket SOCK = SERVER.accept();
                 ConnectionArray.add(SOCK);
                 
-                System.out.println("Client connected from: " + SOCK.getLocalAddress());
-                
-                //AddUserName(SOCK);
-                
+                System.out.println("Client connected from: " + SOCK.getLocalAddress());                
                 ServerReturn connection = new ServerReturn(SOCK);
                 Thread X = new Thread(connection);
                 X.start();

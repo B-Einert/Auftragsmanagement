@@ -1,28 +1,42 @@
 package application;
 
 import java.io.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DatabaseManager {
 	
     private File projectModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/Muster");
-    //private ObservableList<Entry> entries;
     private ArrayList<String[]> initList;
+    private ArrayList<Customer> customers;
 
     public DatabaseManager()
     {
+    	loadData();
+    	buildInitList();
+    }
+    
+    public void loadData()
+    {
     	//TODO: load actual entries
-    	//entries = FXCollections.observableArrayList();
-    	initList = new ArrayList<String[]>();
-    	//entries.add(new Entry(LocalDate.now(), "KundeA", "ItemA", "KontaktA"));
-        //entries.add(new Entry(LocalDate.now(), "KundeB", "ItemB", "KontaktB"));
-        //entries.add(new Entry(LocalDate.now(), "KundeC", "ItemC", "KontaktC"));
-        String[] entry1 = {"KundeA", "ItemA", "KontaktA"};
-        String[] entry2 = {"KundeB", "ItemB", "KontaktB"};
-        String[] entry3 = {"KundeC", "ItemC", "KontaktC"};
-        initList.add(entry1);
-        initList.add(entry2);
-        initList.add(entry3);
+    	customers = new ArrayList<Customer>();
+    	Entry entry1 = new Entry(LocalDate.now(), "KundeA", "ItemA", "KontaktA");
+    	Entry entry2 = new Entry(LocalDate.now(), "KundeB", "ItemB", "KontaktB");
+    	Entry entry3 = new Entry(LocalDate.now(), "KundeC", "ItemC", "KontaktC");
+    	customers.add(new Customer("KundeA", entry1));
+    	customers.add(new Customer("KundeB", entry2));
+    	customers.add(new Customer("KundeC", entry3));
+    }
+    
+    public void buildInitList(){
+    	this.initList = new ArrayList<String[]>();
+    	for(Customer c:customers)
+    	{
+    		for(Entry e:c.getEntries()){
+    			String[] initEntry = {e.getCustomer(), e.getItem(), e.getContact()};
+    		    initList.add(initEntry);
+    		}
+    	}
     }
     
     public boolean createNewProject(String name) throws IOException

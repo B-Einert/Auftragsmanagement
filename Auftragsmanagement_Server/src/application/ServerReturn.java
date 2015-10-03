@@ -2,18 +2,14 @@ package application;
 
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 public class ServerReturn implements Runnable
 {
     
     Socket SOCK;
-    //private Scanner INPUT;
-    //private PrintWriter OUT;
     private ObjectInputStream INPUT;
     private ObjectOutputStream OUT;
-    String MESSAGE = "";
-    int folderCount = 0;
+    String message;
     
     public ServerReturn(Socket X)
     {
@@ -34,24 +30,35 @@ public class ServerReturn implements Runnable
         {
             try
             {
-                //INPUT = new ObjectInputStream(SOCK.getInputStream());
                 OUT = new ObjectOutputStream(SOCK.getOutputStream());
-                
+                OUT.flush();
+                INPUT = new ObjectInputStream(SOCK.getInputStream());
+                System.out.println(INPUT.readUTF());
                 initialize();
+                
                 
                 while(true)
                 {
                     CheckConnection();
-//                    
-//                    if(!INPUT.hasNext())
+                    message = INPUT.readUTF();
+                    System.out.println(message);
+                    for(int i = 1; i <= Server.ConnectionArray.size(); i++)
+                    {
+                    Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i-1);
+                    AppendingObjectOutputStream TEMP_OUT = new AppendingObjectOutputStream(TEMP_SOCK.getOutputStream());
+                    TEMP_OUT.writeUTF(message);
+                    TEMP_OUT.flush();
+                    System.out.println("Sent to: " + TEMP_SOCK.getLocalAddress());
+                    }
+                    
+//                    if(INPUT.available() > 0)
+//                    MESSAGE = (String) INPUT.readObject();
+//                    if(MESSAGE == "")
 //                    {
 //                        return;
 //                    }
-//                    
-//                    MESSAGE = INPUT.nextLine();
-//                    
 //                    System.out.println(SOCK.getLocalAddress() + " said: " + MESSAGE);
-//                    
+                    
 //                    if(MESSAGE.startsWith("++")){
 //                    	Server.dbManager.createNewProject(MESSAGE.substring(2));
 //                    }
