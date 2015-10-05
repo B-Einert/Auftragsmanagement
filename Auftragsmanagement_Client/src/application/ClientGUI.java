@@ -127,6 +127,7 @@ public class ClientGUI extends Application {
     public void newEntryButtonClicked(){
     	{
     		sender.sendString("xyz");
+    		//new CreateBox();
     	}
     }
 
