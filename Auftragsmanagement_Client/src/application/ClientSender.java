@@ -8,20 +8,25 @@ import java.net.Socket;
 public class ClientSender {
 	private Socket SOCK;
     private PrintWriter OUT;
+    private ObjectOutputStream objOut;
     
     
     public ClientSender(){
-    	
+    	SOCK = ClientGUI.SOCK;
     }
     
     public void init(){
     	try
     	{
-    	SOCK = ClientGUI.SOCK;
-    	OUT = new PrintWriter(SOCK.getOutputStream());
-    	System.out.println("Output init");
-		OUT.println("hi");
-		OUT.flush();
+    		objOut = new ObjectOutputStream(SOCK.getOutputStream());
+    		System.out.println("objOut init");
+    		objOut.writeUTF("hihi");
+    		objOut.flush();
+    		
+	    	OUT = new PrintWriter(SOCK.getOutputStream());
+	    	System.out.println("Output init");
+			OUT.println("hi");
+			OUT.flush();
     	}
     	catch(Exception e)
         {

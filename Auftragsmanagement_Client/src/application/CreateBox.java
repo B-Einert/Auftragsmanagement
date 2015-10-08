@@ -46,7 +46,21 @@ public class CreateBox {
     	
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("neuer Vorgang");
-        window.setMinWidth(250);       
+        window.setMinWidth(250);     
+        
+        window.setOnCloseRequest(e -> {
+        	//Fenster vom schlieﬂen hindern
+        	try
+        	{
+        		String[] entries={""};
+        		newEntry = entries;
+        	}
+        	catch(Exception a)
+        	{
+        		System.out.println(a);
+    			a.printStackTrace();
+        	}
+        });
         
         grid.setPadding(new Insets(10, 10, 10, 10));
         grid.setVgap(8);

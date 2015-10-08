@@ -52,7 +52,7 @@ public class ClientGUI extends Application {
         window.setTitle("Auftragsmanagement");
         window.setOnCloseRequest(e -> {
         	//Fenster vom schlieﬂen hindern
-        	// e.consume(); 
+        	e.consume(); 
         	try
         	{
         		client.DISCONNECT();
@@ -127,7 +127,8 @@ public class ClientGUI extends Application {
     public void newEntryButtonClicked(){
     	{	
     		String[] newEntry=CreateBox.display();
-    		sender.sendString("xyz");
+    		if (newEntry[0]=="");
+    		else sender.sendString(newEntry[0]);
     		//new CreateBox();
     	}
     }
