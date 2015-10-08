@@ -2,18 +2,25 @@ package application;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientSender {
 	private Socket SOCK;
-    private ObjectOutputStream OUT;
+    private PrintWriter OUT;
+    
     
     public ClientSender(){
+    	
+    }
+    
+    public void init(){
     	try
     	{
     	SOCK = ClientGUI.SOCK;
-    	OUT = new ObjectOutputStream(SOCK.getOutputStream());
-		OUT.writeUTF("hi");
+    	OUT = new PrintWriter(SOCK.getOutputStream());
+    	System.out.println("Output init");
+		OUT.println("hi");
 		OUT.flush();
     	}
     	catch(Exception e)
@@ -25,24 +32,18 @@ public class ClientSender {
     
     public void sendString(String x)
     {
-        try {
-			OUT.writeUTF(x);
-			OUT.flush();
-		} 
-        catch (IOException e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
+        OUT.println(x);
+		OUT.flush();
         
     }
     public void sendEntry(String[] entry){
-    	try{
-    		OUT.writeObject(entry);
-    		OUT.flush();
-    	} 
-    	catch (IOException e) {
-			System.out.println(e);
-			e.printStackTrace();
-		}
+//    	try{
+//    		OUT.writeObject(entry);
+//    		OUT.flush();
+//    	} 
+//    	catch (IOException e) {
+//			System.out.println(e);
+//			e.printStackTrace();
+//		}
     }
 }

@@ -58,6 +58,5 @@ public class A_Chat_Server
             OUT.flush();
         }
     }
-    
 }
 

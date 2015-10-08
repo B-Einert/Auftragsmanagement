@@ -40,8 +40,8 @@ public class ClientGUI extends Application {
 			e.printStackTrace();
 		}
         System.out.println("You connected to: "+ HOST);
+        sender = new ClientSender();
     	client = new ClientReceiver();
-    	sender = new ClientSender();
     	
         launch(args);
     }
@@ -125,7 +125,8 @@ public class ClientGUI extends Application {
 
     //Add button clicked
     public void newEntryButtonClicked(){
-    	{
+    	{	
+    		String[] newEntry=CreateBox.display();
     		sender.sendString("xyz");
     		//new CreateBox();
     	}

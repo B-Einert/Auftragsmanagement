@@ -12,14 +12,13 @@ import javafx.collections.ObservableList;
 public class ClientReceiver implements Runnable{
     
     private Socket SOCK;
-    private ObjectInputStream INPUT;
-    private ClientSender sender;
+    private ObjectInputStream objIn;
+    private Scanner INPUT;
     String message;
 
     public ClientReceiver() 
     {
     	this.SOCK = ClientGUI.SOCK;
-    	this.sender = ClientGUI.sender;
     	try
         {
             try
@@ -51,9 +50,6 @@ public class ClientReceiver implements Runnable{
             try
             {
             	initialize();
-//                INPUT = new ObjectInputStream(SOCK.getInputStream());
-//                OUT = new ObjectOutputStream(SOCK.getOutputStream());
-//                OUT.flush();
                 CheckStream();
             }
             finally
@@ -70,13 +66,18 @@ public class ClientReceiver implements Runnable{
     public void initialize(){
     	try
     	{
-    		INPUT = new ObjectInputStream(SOCK.getInputStream());
+    		objIn = new ObjectInputStream(new BufferedInputStream(SOCK.getInputStream()));
+    		System.out.println("objin init");
     		
+    		ClientGUI.sender.init();
+    		
+    		INPUT= new Scanner(SOCK.getInputStream());
+    		System.out.println("Input init");
     	
     		Object received = null;
     		while(received == null)
     		{
-    			received = INPUT.readObject();
+    			received = objIn.readObject();
     		}
     		ArrayList<String[]> initList = (ArrayList<String[]>) received;
     	
@@ -98,7 +99,8 @@ public class ClientReceiver implements Runnable{
     public void DISCONNECT() throws IOException
     {
     	
-        sender.sendString("disconnect");
+    	ClientGUI.sender.sendString("disconnect");
+        INPUT.close();
         SOCK.close();
         JOptionPane.showMessageDialog(null, "You disconnected");
         System.exit(0);
@@ -117,16 +119,20 @@ public class ClientReceiver implements Runnable{
     
     public void RECEIVE()
     {
-    	try{
-    	message = INPUT.readUTF();
-    	System.out.println(message);
-    	}
-    	catch(Exception e)
+    	if(INPUT.hasNext())
         {
-    		System.out.println(e);
-			e.printStackTrace();
-        	JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen");
+	    	try{
+	    	message = INPUT.nextLine();
+	    	System.out.println(message);
+	    	}
+	    	catch(Exception e)
+	        {
+	    		System.out.println(e);
+				e.printStackTrace();
+	        	JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen");
+	        }
+    
         }
-    }   
+    }
 }
 
