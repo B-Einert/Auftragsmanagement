@@ -63,7 +63,7 @@ public class ServerReturn implements Runnable
                     }
                     else if(message.contains("new")){
                     	String[] entry = (String[]) objIn.readObject();
-                    	System.out.println(entry);
+                    	entry = Server.dbManager.manageEntry(entry);
                     	sendString("new");
                     	sendStrings(entry);
                     }

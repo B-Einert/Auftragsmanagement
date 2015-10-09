@@ -33,7 +33,7 @@ public class DatabaseManager {
     	for(Customer c:customers)
     	{
     		for(Entry e:c.getEntries()){
-    			String[] initEntry = {e.getCustomer(), e.getItem(), e.getContact()};
+    			String[] initEntry = {e.getDate().toString(), e.getCustomer(), e.getItem(), e.getContact()};
     		    initList.add(initEntry);
     		}
     	}
@@ -94,13 +94,15 @@ public class DatabaseManager {
         }
     }
     
-//    public ObservableList<Entry> getEntries()
-//    {
-//    	return this.entries;
-//    }
-    
     public ArrayList<String[]> getInitList()
     {
     	return initList;
     }
+
+	public String[] manageEntry(String[] entry) {
+		Entry e= new Entry(LocalDate.now(), entry[0], entry[1], entry[2]);
+		String[] newEntry = {e.getDate().toString(), e.getCustomer(), e.getItem(), e.getContact()};
+		initList.add(newEntry);
+		return newEntry;
+	}
 }

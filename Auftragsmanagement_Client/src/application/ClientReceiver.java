@@ -2,6 +2,7 @@ package application;
 
 import java.net.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -14,7 +15,8 @@ public class ClientReceiver implements Runnable{
     private Socket SOCK;
     private ObjectInputStream objIn;
     private Scanner INPUT;
-    String message;
+    private String message;
+    private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
 
     public ClientReceiver() 
     {
@@ -83,8 +85,7 @@ public class ClientReceiver implements Runnable{
     	
     		for(String[] entry: initList)
     		{
-    			Entry e = new Entry(LocalDate.now(), entry[0], entry[1], entry[2]);
-    			ClientGUI.entries.add(e);
+    			addEntry(entry);
     		}
     	}
     	catch(Exception e)
@@ -94,6 +95,11 @@ public class ClientReceiver implements Runnable{
         	JOptionPane.showMessageDialog(null, "Initialisierung Fehlgeschlagen");
         	System.exit(0);
         }       
+    }
+    
+    public void addEntry(String[] entry){
+    	Entry e = new Entry(LocalDate.parse(entry[0]), entry[1], entry[2], entry[3]);
+		ClientGUI.entries.add(e);
     }
     
     public void DISCONNECT() throws IOException
@@ -121,13 +127,19 @@ public class ClientReceiver implements Runnable{
     {
     	if(INPUT.hasNext())
         {
-	    	try{
-	    	message = INPUT.nextLine();
-	    	System.out.println(message);
-	    	if(message.contains("new")){
-	    		String[] entry = (String[]) objIn.readObject();
-	    		System.out.println(entry[0]);
-	    	}
+	    	try
+	    	{	
+		    	message = INPUT.nextLine();
+		    	System.out.println(message);
+		    	if(message.contains("new")){
+		    		receiveNewEntry();
+		    	}
+		    	else if(message.contains("disconnect")){
+		    		INPUT.close();
+		            SOCK.close();
+		            JOptionPane.showMessageDialog(null, "Server reagiert nicht. Sorry");
+		            System.exit(0);
+		    	}
 	    	}
 	    	catch(Exception e)
 	        {
@@ -137,6 +149,18 @@ public class ClientReceiver implements Runnable{
 	        }
     
         }
+    }
+    
+    public void receiveNewEntry(){
+    	String[] entry;
+		try {
+			entry = (String[]) objIn.readObject();
+			addEntry(entry);
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen. bitte neu starten!");
+		}
+		
     }
 }
 
