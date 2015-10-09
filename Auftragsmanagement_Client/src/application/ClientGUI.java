@@ -128,7 +128,11 @@ public class ClientGUI extends Application {
     	{	
     		String[] newEntry=CreateBox.display();
     		if (newEntry[0]=="");
-    		else sender.sendString(newEntry[0]);
+    		else {
+    			sender.sendString("new");
+    			sender.sendEntry(newEntry);
+    		}
+    		
     		//new CreateBox();
     	}
     }

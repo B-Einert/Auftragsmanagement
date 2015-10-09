@@ -124,6 +124,10 @@ public class ClientReceiver implements Runnable{
 	    	try{
 	    	message = INPUT.nextLine();
 	    	System.out.println(message);
+	    	if(message.contains("new")){
+	    		String[] entry = (String[]) objIn.readObject();
+	    		System.out.println(entry[0]);
+	    	}
 	    	}
 	    	catch(Exception e)
 	        {

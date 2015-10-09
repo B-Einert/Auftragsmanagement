@@ -51,7 +51,6 @@ public class ServerReturn implements Runnable
                 while(true)
                 {
                     //CheckConnection();
-                    
                     if(!INPUT.hasNext())
                     {
                         return;
@@ -63,7 +62,10 @@ public class ServerReturn implements Runnable
                     	disconnect();
                     }
                     else if(message.contains("new")){
-                    	
+                    	String[] entry = (String[]) objIn.readObject();
+                    	System.out.println(entry);
+                    	sendString("new");
+                    	sendStrings(entry);
                     }
                     else{
                     	sendString(message);
@@ -118,6 +120,24 @@ public class ServerReturn implements Runnable
                 Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i-1);
                 PrintWriter TEMP_OUT = new PrintWriter(TEMP_SOCK.getOutputStream());
                 TEMP_OUT.println(message);
+                TEMP_OUT.flush();
+                System.out.println("Sent to: " + TEMP_SOCK.getLocalAddress());
+            }
+    	}
+    	catch(Exception e){
+    		System.out.println(e);
+    		e.printStackTrace();
+    
+    	}
+    }
+    
+    public void sendStrings(String[] message){
+    	try{
+            for(int i = 1; i <= Server.ConnectionArray.size(); i++)
+            {
+                Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i-1);
+                AppendingObjectOutputStream TEMP_OUT = new AppendingObjectOutputStream(TEMP_SOCK.getOutputStream());
+                TEMP_OUT.writeObject(message);
                 TEMP_OUT.flush();
                 System.out.println("Sent to: " + TEMP_SOCK.getLocalAddress());
             }

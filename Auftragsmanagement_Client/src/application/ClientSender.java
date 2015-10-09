@@ -42,13 +42,13 @@ public class ClientSender {
         
     }
     public void sendEntry(String[] entry){
-//    	try{
-//    		OUT.writeObject(entry);
-//    		OUT.flush();
-//    	} 
-//    	catch (IOException e) {
-//			System.out.println(e);
-//			e.printStackTrace();
-//		}
+    	try{
+    		objOut.writeObject(entry);
+    		objOut.flush();
+    	} 
+    	catch (IOException e) {
+			System.out.println(e);
+			e.printStackTrace();
+		}
     }
 }
