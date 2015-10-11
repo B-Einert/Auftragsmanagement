@@ -7,8 +7,8 @@ public class Customer {
 	private String name;
 	private LinkedList<Entry> entries;
 	
-	public Customer(String name, Entry entry){
-		this.name=name;
+	public Customer(Entry entry){
+		this.name=entry.getCustomer();
 		entries=new LinkedList<Entry>();
 		entries.add(entry);
 	}
