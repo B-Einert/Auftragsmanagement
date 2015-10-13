@@ -8,12 +8,17 @@ public class Entry {
     private String customer;
     private String item;
     private String contact;
+    private String phone;
+    private String agent;
+    private String link;
 
-    public Entry(LocalDate date, String customer, String item, String contact){
+    public Entry(LocalDate date, String customer, String item, String contact, String phone, String agent){
         this.date = date;
         this.customer = customer;
-        this.item=item;
-        this.contact=contact;
+        this.item = item;
+        this.contact = contact;
+        this.setPhone(phone);
+        this.setAgent(agent);
     }
 
     public LocalDate getDate() {
@@ -24,13 +29,13 @@ public class Entry {
         this.date = date;
     }
 
-//    public Button getLink() {
-//        return link;
-//    }
-//
-//    public void setLink(Button link) {
-//        this.link = link;
-//    }
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
     
     public String getCustomer() {
         return customer;
@@ -55,5 +60,21 @@ public class Entry {
     public void setContact(String contact) {
         this.contact = contact;
     }
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getAgent() {
+		return agent;
+	}
+
+	public void setAgent(String agent) {
+		this.agent = agent;
+	}
 }
 

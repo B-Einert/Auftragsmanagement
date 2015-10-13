@@ -7,7 +7,8 @@ import java.util.ArrayList;
 
 public class DatabaseManager {
 	
-    private File projectModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/Muster");
+    private File directoryModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Muster");
+    private File projectModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Project");
     private String db = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
     private ArrayList<String[]> initList;
     private ArrayList<Customer> customers;
@@ -23,9 +24,9 @@ public class DatabaseManager {
     {
     	//TODO: load actual entries
     	customers = new ArrayList<Customer>();
-    	Entry entry1 = new Entry(LocalDate.now(), "KundeA", "ItemA", "KontaktA");
-    	Entry entry2 = new Entry(LocalDate.now(), "KundeB", "ItemB", "KontaktB");
-    	Entry entry3 = new Entry(LocalDate.now(), "KundeC", "ItemC", "KontaktC");
+    	Entry entry1 = new Entry(LocalDate.now(), "KundeA", "ItemA", "KontaktA", "phonea", "agenta");
+    	Entry entry2 = new Entry(LocalDate.now(), "KundeB", "ItemB", "KontaktB", "phoneb", "agentb");
+    	Entry entry3 = new Entry(LocalDate.now(), "KundeC", "ItemC", "KontaktC", "phonec", "agentc");
     	customers.add(new Customer(entry1));
     	customers.add(new Customer(entry2));
     	customers.add(new Customer(entry3));
@@ -44,36 +45,54 @@ public class DatabaseManager {
     
     public boolean createNewProject(Entry entry) throws IOException
     {
-    	//directoryCheck();
-    	File file = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer());
+    	File file = new File(db + "/laufende_Vorgaenge/" + entry.getCustomer());
     	if (!file.exists()) {
     		if (file.mkdir()) {
-    			System.out.println("Directory is created!");
-    			System.out.println(projectModel.canRead());
-    			System.out.println(projectModel.canWrite());
     			
-//    			new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer() + "/Archiv").mkdir();
-//    			new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer() + "/QS-Vereinbarungen").mkdir();
-//    			new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer() + "/Vertraulichkeitsvereinbarungen").mkdir();
-//    			new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer() + "/Zeichnungen").mkdir();
-//    			file = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer() + "/" + entry.getDate().format(formatter) + "_" + entry.getItem());
-//    			file.mkdir();  
-    			
-    			
-    			for(File f:projectModel.listFiles().clone())
+    			for(File f:directoryModel.listFiles().clone())
     			{
     				File temp = new File(file.getPath() + "/" + f.getName());
-    				copy(f,temp);
+    				copyDirectory(f,temp);
     			}
-    			return true;
     		} else {
     			System.out.println("Failed to create directory!");
     			return false;
     		}
     	}
-    	else
-    	{
-    		System.out.println("Directory already exists");
+    	File project = new File(file.getPath() + "/" + entry.getDate().format(formatter) + "_" + entry.getItem());
+    	if (project.mkdir()){
+    		copyDirectory(projectModel, project);
+    		entry.setLink(project.getPath());
+    		
+    		try{
+    			File txtfile = new File(project + "/Protokoll.txt");
+    			System.out.println(txtfile.canRead());
+    			System.out.println(txtfile.exists());
+    			PrintWriter writer = new PrintWriter(new FileWriter(txtfile));
+    			writer.println("//Kunde");
+    			writer.println(entry.getCustomer());writer.println("");
+    			writer.println("//Gegenstand");
+    			writer.println(entry.getItem());writer.println("");
+    			writer.println("//Link");
+    			writer.println(entry.getLink());writer.println("");
+    			writer.println("//Ansprechpartner");
+    			writer.println(entry.getContact());writer.println("");
+    			writer.println("//Telefon");
+    			writer.println(entry.getPhone());writer.println("");
+    			writer.println("//Bearbeiter");
+    			writer.println(entry.getAgent());writer.println("");
+    			writer.println(entry.getDate().toString() + " Anfrage");
+    			writer.close();
+    		}
+    		catch (Exception e1) {
+    			System.out.println("Failed to write protocol");
+    			e1.printStackTrace();
+    			return false;
+    		}
+    		return true;
+    	}
+    	else {
+    		System.out.println("Failed to create Project!");
     		return false;
     	}
     }
@@ -115,15 +134,19 @@ public class DatabaseManager {
     }
 
 	public String[] manageEntry(String[] entry) {
-		Entry e= new Entry(LocalDate.now(), entry[0], entry[1], entry[2]);
-		addToCustomer(e);
+		Entry e= new Entry(LocalDate.now(), entry[0], entry[1], entry[2], entry[3], entry[4]);
 		try {
-			createNewProject(e);
+			if(createNewProject(e)) {
+				addToCustomer(e);
+				String[] newEntry = {e.getDate().toString(), e.getCustomer(), e.getItem(), e.getContact()};
+				initList.add(newEntry);
+				return newEntry;
+			}
+			else System.out.println("creation failed");
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		String[] newEntry = {e.getDate().toString(), e.getCustomer(), e.getItem(), e.getContact()};
-		initList.add(newEntry);
+		String[] newEntry={"-1"};
 		return newEntry;
 	}
 
