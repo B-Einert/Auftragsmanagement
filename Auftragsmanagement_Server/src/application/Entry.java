@@ -4,28 +4,33 @@ import java.time.LocalDate;
 
 public class Entry {
 
-    private LocalDate date;
+    private String date;
     private String customer;
     private String item;
-    private String contact;
-    private String phone;
-    private String agent;
     private String link;
+    private String lastContact;
+    
 
-    public Entry(LocalDate date, String customer, String item, String contact, String phone, String agent){
+    public Entry(String customer, String item){
+        this.date = LocalDate.now().toString();
+        this.customer = customer;
+        this.item = item;  
+        this.lastContact = getDate().toString() + " Anfrage";
+    }
+    
+    public Entry(String date, String link, String customer, String item, String lastContact){
+        this.link = link;
         this.date = date;
         this.customer = customer;
-        this.item = item;
-        this.contact = contact;
-        this.setPhone(phone);
-        this.setAgent(agent);
+        this.item = item;  
+        this.lastContact = lastContact;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -53,28 +58,17 @@ public class Entry {
         this.item = item;
     }
     
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        this.contact = contact;
-    }
-
-	public String getPhone() {
-		return phone;
+    public String getLastContact() {
+		return lastContact;
 	}
 
-	public void setPhone(String phone) {
-		this.phone = phone;
+	public void setLastContact(String lastContact) {
+		this.lastContact = lastContact;
 	}
-
-	public String getAgent() {
-		return agent;
-	}
-
-	public void setAgent(String agent) {
-		this.agent = agent;
+	
+	public String[] getStatus(){
+		String[] status = {getLink(), getDate(), getCustomer(), getItem(), getLastContact()};
+		return status;
 	}
 }
 

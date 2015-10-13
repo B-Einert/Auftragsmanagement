@@ -24,12 +24,56 @@ public class DatabaseManager {
     {
     	//TODO: load actual entries
     	customers = new ArrayList<Customer>();
-    	Entry entry1 = new Entry(LocalDate.now(), "KundeA", "ItemA", "KontaktA", "phonea", "agenta");
-    	Entry entry2 = new Entry(LocalDate.now(), "KundeB", "ItemB", "KontaktB", "phoneb", "agentb");
-    	Entry entry3 = new Entry(LocalDate.now(), "KundeC", "ItemC", "KontaktC", "phonec", "agentc");
-    	customers.add(new Customer(entry1));
-    	customers.add(new Customer(entry2));
-    	customers.add(new Customer(entry3));
+    	File files = new File(db + "laufende_Vorgaenge");
+    	BufferedReader in;
+    	String date; 
+    	String link; 
+    	String customer; 
+    	String item; 
+    	String lastContact;
+    	for(File f: files.listFiles()){
+    		Customer cust = new Customer(f.getName());
+    		customers.add(cust);
+    		for(File project: f.listFiles()){
+    			if(isProject(project.getName())){
+    				File temp = new File(project.getPath() + "/Protokoll.txt");
+    				try {
+						in = new BufferedReader(new FileReader(temp));
+						try{
+	    					in.readLine();
+	    					date=in.readLine();in.readLine();in.readLine();
+	    					lastContact=in.readLine();in.readLine();in.readLine();
+	    					customer=in.readLine();in.readLine();in.readLine();
+	    					item=in.readLine();in.readLine();in.readLine();
+	    					link=in.readLine();in.readLine();in.readLine();
+	    					cust.addEntry(new Entry(date, link, customer, item, lastContact));
+	    					in.close();
+	    				}
+	    				catch(Exception e){
+	    					System.out.println("couldnt read protocoll");
+	    					e.printStackTrace();
+	    				}
+					} catch (FileNotFoundException e) {
+						System.out.println("protokoll not found");
+						e.printStackTrace();
+					}
+    				
+    				
+    			}
+    		}
+    	}
+    }
+    
+    public boolean isProject(String name){
+    	try  
+    	{  
+    		Integer.parseInt(name.substring(0, 5));  
+    	}  
+    	catch(NumberFormatException nfe)  
+    	{
+    		return false;  
+    	}
+    	return true;
     }
     
     public void buildInitList(){
@@ -37,19 +81,18 @@ public class DatabaseManager {
     	for(Customer c:customers)
     	{
     		for(Entry e:c.getEntries()){
-    			String[] initEntry = {e.getDate().toString(), e.getCustomer(), e.getItem(), e.getContact()};
-    		    initList.add(initEntry);
+    		    initList.add(e.getStatus());
     		}
     	}
     }
     
-    public boolean createNewProject(Entry entry) throws IOException
+    public boolean createNewProject(Entry entry, String contact, String phone, String agent) throws IOException
     {
     	File file = new File(db + "/laufende_Vorgaenge/" + entry.getCustomer());
     	if (!file.exists()) {
     		if (file.mkdir()) {
     			
-    			for(File f:directoryModel.listFiles().clone())
+    			for(File f:directoryModel.listFiles())
     			{
     				File temp = new File(file.getPath() + "/" + f.getName());
     				copyDirectory(f,temp);
@@ -59,7 +102,7 @@ public class DatabaseManager {
     			return false;
     		}
     	}
-    	File project = new File(file.getPath() + "/" + entry.getDate().format(formatter) + "_" + entry.getItem());
+    	File project = new File(file.getPath() + "/" + LocalDate.parse(entry.getDate()).format(formatter) + "_" + entry.getItem());
     	if (project.mkdir()){
     		copyDirectory(projectModel, project);
     		entry.setLink(project.getPath());
@@ -69,6 +112,10 @@ public class DatabaseManager {
     			System.out.println(txtfile.canRead());
     			System.out.println(txtfile.exists());
     			PrintWriter writer = new PrintWriter(new FileWriter(txtfile));
+    			writer.println("//erster Kontakt");
+    			writer.println(entry.getLastContact().subSequence(0, 10));writer.println("");
+    			writer.println("//letzter Kontakt");
+    			writer.println(entry.getLastContact());writer.println("");
     			writer.println("//Kunde");
     			writer.println(entry.getCustomer());writer.println("");
     			writer.println("//Gegenstand");
@@ -76,12 +123,12 @@ public class DatabaseManager {
     			writer.println("//Link");
     			writer.println(entry.getLink());writer.println("");
     			writer.println("//Ansprechpartner");
-    			writer.println(entry.getContact());writer.println("");
+    			writer.println(contact);writer.println("");
     			writer.println("//Telefon");
-    			writer.println(entry.getPhone());writer.println("");
+    			writer.println(phone);writer.println("");
     			writer.println("//Bearbeiter");
-    			writer.println(entry.getAgent());writer.println("");
-    			writer.println(entry.getDate().toString() + " Anfrage");
+    			writer.println(agent);writer.println("");writer.println("");
+    			writer.println(entry.getLastContact());
     			writer.close();
     		}
     		catch (Exception e1) {
@@ -134,13 +181,13 @@ public class DatabaseManager {
     }
 
 	public String[] manageEntry(String[] entry) {
-		Entry e= new Entry(LocalDate.now(), entry[0], entry[1], entry[2], entry[3], entry[4]);
+		Entry e= new Entry(entry[0], entry[1]);
 		try {
-			if(createNewProject(e)) {
+			if(createNewProject(e, entry[2], entry[3], entry[4])) {
 				addToCustomer(e);
-				String[] newEntry = {e.getDate().toString(), e.getCustomer(), e.getItem(), e.getContact()};
-				initList.add(newEntry);
-				return newEntry;
+				
+				initList.add(e.getStatus());
+				return e.getStatus();
 			}
 			else System.out.println("creation failed");
 		} catch (IOException e1) {

@@ -14,7 +14,7 @@ public class Entry {
     private Button pursue;
     private Button detail;
 
-    public Entry(LocalDate date, String customer, String item, String contact){
+    public Entry(String link, LocalDate date, String customer, String item, String contact){
         this.date = date;
         this.link = new Button("Link");
         this.customer = customer;

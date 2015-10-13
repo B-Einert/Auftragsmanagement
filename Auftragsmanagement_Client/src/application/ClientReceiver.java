@@ -98,7 +98,7 @@ public class ClientReceiver implements Runnable{
     }
     
     public void addEntry(String[] entry){
-    	Entry e = new Entry(LocalDate.parse(entry[0]), entry[1], entry[2], entry[3]);
+    	Entry e = new Entry(entry[0], LocalDate.parse(entry[1]), entry[2], entry[3], entry[4]);
 		ClientGUI.entries.add(e);
     }
     

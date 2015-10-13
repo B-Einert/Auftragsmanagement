@@ -12,6 +12,10 @@ public class Customer {
 		entries=new LinkedList<Entry>();
 		entries.add(entry);
 	}
+	public Customer(String name){
+		this.name=name;
+		entries=new LinkedList<Entry>();
+	}
 	
 	public String getName(){
 		return this.name;
