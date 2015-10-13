@@ -44,14 +44,26 @@ public class DatabaseManager {
     
     public boolean createNewProject(Entry entry) throws IOException
     {
-    	File file = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/Testxyz");
+    	//directoryCheck();
+    	File file = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer());
     	if (!file.exists()) {
     		if (file.mkdir()) {
     			System.out.println("Directory is created!");
-    			//folderCount++;
-    			for(File f:projectModel.listFiles())
+    			System.out.println(projectModel.canRead());
+    			System.out.println(projectModel.canWrite());
+    			
+//    			new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer() + "/Archiv").mkdir();
+//    			new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer() + "/QS-Vereinbarungen").mkdir();
+//    			new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer() + "/Vertraulichkeitsvereinbarungen").mkdir();
+//    			new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer() + "/Zeichnungen").mkdir();
+//    			file = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/laufende_Vorgaenge/" + entry.getCustomer() + "/" + entry.getDate().format(formatter) + "_" + entry.getItem());
+//    			file.mkdir();  
+    			
+    			
+    			for(File f:projectModel.listFiles().clone())
     			{
-    				copyDirectory(f,file);
+    				File temp = new File(file.getPath() + "/" + f.getName());
+    				copy(f,temp);
     			}
     			return true;
     		} else {
@@ -65,42 +77,9 @@ public class DatabaseManager {
     		return false;
     	}
     }
-    
-    public void copyFolder(File src, File dest) throws IOException {
-    	  if (src.isDirectory()) {
-    	    //if directory not exists, create it
-    	    if (!dest.exists()) {
-    	      dest.mkdir();
-    	    }
-    	    //list all the directory contents
-    	    String files[] = src.list();
-    	    for (String file : files) {
-    	      //construct the src and dest file structure
-    	      File srcFile = new File(src, file);
-    	      File destFile = new File(dest+"\\"+src.getName(), file);
-    	      //recursive copy
-    	      copyFolder(srcFile,destFile);
-    	    }
-    	  } else {
-    	    //if file, then copy it
-    	    //Use bytes stream to support all file types
-    	    InputStream in = new FileInputStream(src);
-    	    OutputStream out = new FileOutputStream(dest); 
-    	    byte[] buffer = new byte[1024];
-    	    int length;
-    	    //copy the file content in bytes 
-    	    while ((length = in.read(buffer)) > 0){
-    	      out.write(buffer, 0, length);
-    	    }
-    	    in.close();
-    	    out.close();
-    	    System.out.println("File copied from " + src + " to " + dest);
-    	  }
-    	}
-    
-    public void copy(File sourceLocation, File targetLocation) throws IOException {
+
+	public void copy(File sourceLocation, File targetLocation) throws IOException {
         if (sourceLocation.isDirectory()) {
-        	System.out.println("hiyO");
             copyDirectory(sourceLocation, targetLocation);
         } else {
             copyFile(sourceLocation, targetLocation);
@@ -108,9 +87,9 @@ public class DatabaseManager {
     }
 
     private void copyDirectory(File source, File target) throws IOException {
-    	System.out.println("hallo?");
-        System.out.println(target.mkdir());
-        System.out.println("hey");
+        if (!target.exists()) {
+            target.mkdir();
+        }
 
         for (String f : source.list()) {
             copy(new File(source, f), new File(target, f));
