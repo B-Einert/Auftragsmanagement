@@ -1,5 +1,8 @@
 package application;
 
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 
 import javafx.scene.control.Button;
@@ -8,6 +11,7 @@ public class Entry {
 
     private LocalDate date;
     private Button link;
+    private String linkString;
     private String customer;
     private String item;
     private String contact;
@@ -16,12 +20,26 @@ public class Entry {
 
     public Entry(String link, LocalDate date, String customer, String item, String contact){
         this.date = date;
+        this.linkString = link;
         this.link = new Button("Link");
+        this.link.setOnAction(e -> linkClicked());
         this.customer = customer;
         this.item=item;
         this.contact=contact;
         this.pursue = new Button("pursue");
         this.detail = new Button("detail");
+    }
+    
+    public void linkClicked(){
+    	File dir = new File(linkString);
+    	if(Desktop.isDesktopSupported()){
+    		try {
+				Desktop.getDesktop().open(dir);
+			} catch (IOException e) {
+				System.out.println("could not open directory");
+				e.printStackTrace();
+			}
+    	}
     }
 
     public LocalDate getDate() {

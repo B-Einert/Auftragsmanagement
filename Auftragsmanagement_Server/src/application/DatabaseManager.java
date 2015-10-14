@@ -32,34 +32,36 @@ public class DatabaseManager {
     	String item; 
     	String lastContact;
     	for(File f: files.listFiles()){
-    		Customer cust = new Customer(f.getName());
-    		customers.add(cust);
-    		for(File project: f.listFiles()){
-    			if(isProject(project.getName())){
-    				File temp = new File(project.getPath() + "/Protokoll.txt");
-    				try {
-						in = new BufferedReader(new FileReader(temp));
-						try{
-	    					in.readLine();
-	    					date=in.readLine();in.readLine();in.readLine();
-	    					lastContact=in.readLine();in.readLine();in.readLine();
-	    					customer=in.readLine();in.readLine();in.readLine();
-	    					item=in.readLine();in.readLine();in.readLine();
-	    					link=in.readLine();in.readLine();in.readLine();
-	    					cust.addEntry(new Entry(date, link, customer, item, lastContact));
-	    					in.close();
-	    				}
-	    				catch(Exception e){
-	    					System.out.println("couldnt read protocoll");
-	    					e.printStackTrace();
-	    				}
-					} catch (FileNotFoundException e) {
-						System.out.println("protokoll not found");
-						e.printStackTrace();
-					}
-    				
-    				
-    			}
+    		if(f.isDirectory()){
+	    		Customer cust = new Customer(f.getName());
+	    		customers.add(cust);
+	    		for(File project: f.listFiles()){
+	    			if(isProject(project.getName())){
+	    				File temp = new File(project.getPath() + "/Protokoll.txt");
+	    				try {
+							in = new BufferedReader(new FileReader(temp));
+							try{
+		    					in.readLine();
+		    					date=in.readLine();in.readLine();in.readLine();
+		    					lastContact=in.readLine();in.readLine();in.readLine();
+		    					customer=in.readLine();in.readLine();in.readLine();
+		    					item=in.readLine();in.readLine();in.readLine();
+		    					link=in.readLine();in.readLine();in.readLine();
+		    					cust.addEntry(new Entry(date, link, customer, item, lastContact));
+		    					in.close();
+		    				}
+		    				catch(Exception e){
+		    					System.out.println("couldnt read protocoll");
+		    					e.printStackTrace();
+		    				}
+						} catch (FileNotFoundException e) {
+							System.out.println("protokoll not found");
+							e.printStackTrace();
+						}
+	    				
+	    				
+	    			}
+	    		}
     		}
     	}
     }
