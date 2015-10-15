@@ -140,6 +140,20 @@ public class ClientReceiver implements Runnable{
 		            JOptionPane.showMessageDialog(null, "Server reagiert nicht. Sorry");
 		            System.exit(0);
 		    	}
+		    	else if(message.contains("edit")){
+		    		message=INPUT.nextLine();
+		    		for(Entry e : ClientGUI.entries){
+		    			if(message.contains(e.getLinkString())){
+		    				e.setContact(INPUT.nextLine());
+		    				System.out.println(e.getContact());
+		    				Entry entry = new Entry(e.getLinkString(), e.getDate(), e.getCustomer(), e.getItem(), e.getContact());
+		    				ClientGUI.entries.remove(e);
+		    				ClientGUI.entries.add(entry);
+		    				//ClientGUI.updateTable();
+		    				break;
+		    			}
+		    		}
+		    	}
 	    	}
 	    	catch(Exception e)
 	        {

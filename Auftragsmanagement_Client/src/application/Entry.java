@@ -5,29 +5,35 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 
 public class Entry {
 
     private LocalDate date;
     private Button link;
     private String linkString;
-    private String customer;
-    private String item;
-    private String contact;
+	private SimpleStringProperty customer;
+    private SimpleStringProperty item;
+    private SimpleStringProperty contact;
     private Button pursue;
     private Button detail;
+    private boolean old = true;
 
     public Entry(String link, LocalDate date, String customer, String item, String contact){
         this.date = date;
         this.linkString = link;
         this.link = new Button("Link");
         this.link.setOnAction(e -> linkClicked());
-        this.customer = customer;
-        this.item=item;
-        this.contact=contact;
-        this.pursue = new Button("pursue");
-        this.detail = new Button("detail");
+        this.customer = new SimpleStringProperty(customer);
+        this.item= new SimpleStringProperty(item);
+        this.contact= new SimpleStringProperty(contact);
+        this.pursue = new Button("Weiterführen");
+        this.pursue.setOnMouseClicked(e -> pursueClicked(e));
+        this.detail = new Button("Detail");
+        this.detail.setOnAction(e -> linkClicked());
     }
     
     public void linkClicked(){
@@ -40,6 +46,19 @@ public class Entry {
 				e.printStackTrace();
 			}
     	}
+    }
+    
+    public void pursueClicked(MouseEvent event) {
+    	String answer = ChoiceBox.display(event.getScreenX(), event.getScreenY(), "Angebot erstellen", "Kontakt aufnehmen");
+    	if(answer != ""){
+    		ClientGUI.sender.sendString("edit");
+    		ClientGUI.sender.sendString(this.linkString);
+    		ClientGUI.sender.sendString(answer);
+    	}
+    }
+    
+    public void detailClicked(){
+    	
     }
 
     public LocalDate getDate() {
@@ -58,28 +77,36 @@ public class Entry {
         this.link = link;
     }
     
+    public String getLinkString() {
+		return linkString;
+	}
+
+	public void setLinkString(String linkString) {
+		this.linkString = linkString;
+	}
+    
     public String getCustomer() {
-        return customer;
+        return customer.get();
     }
 
     public void setCustomer(String customer) {
-        this.customer = customer;
+        this.customer.set(customer);;
     }
     
     public String getItem() {
-        return item;
+        return item.get();
     }
 
     public void setItem(String item) {
-        this.item = item;
+        this.item.set(linkString);
     }
     
     public String getContact() {
-        return contact;
+        return contact.get();
     }
 
     public void setContact(String contact) {
-        this.contact = contact;
+        this.contact.set(contact);
     }
     
     public Button getPursue() {
@@ -96,5 +123,9 @@ public class Entry {
 
     public void setDetail(Button detail) {
         this.detail = detail;
+    }
+    
+    public boolean tooOld(){
+    	return old;
     }
 }

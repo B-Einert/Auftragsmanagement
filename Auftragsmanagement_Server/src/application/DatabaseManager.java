@@ -9,7 +9,7 @@ public class DatabaseManager {
 	
     private File directoryModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Muster");
     private File projectModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Project");
-    private String db = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
+    public static String db = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
     private ArrayList<String[]> initList;
     private ArrayList<Customer> customers;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
@@ -22,7 +22,6 @@ public class DatabaseManager {
     
     public void loadData()
     {
-    	//TODO: load actual entries
     	customers = new ArrayList<Customer>();
     	File files = new File(db + "laufende_Vorgaenge");
     	BufferedReader in;
@@ -46,7 +45,7 @@ public class DatabaseManager {
 		    					lastContact=in.readLine();in.readLine();in.readLine();
 		    					customer=in.readLine();in.readLine();in.readLine();
 		    					item=in.readLine();in.readLine();in.readLine();
-		    					link=in.readLine();in.readLine();in.readLine();
+		    					link=in.readLine();
 		    					cust.addEntry(new Entry(date, link, customer, item, lastContact));
 		    					in.close();
 		    				}
@@ -83,7 +82,7 @@ public class DatabaseManager {
     	for(Customer c:customers)
     	{
     		for(Entry e:c.getEntries()){
-    		    initList.add(e.getStatus());
+    		    initList.add(e.getFirstStatus());
     		}
     	}
     }
@@ -111,8 +110,6 @@ public class DatabaseManager {
     		
     		try{
     			File txtfile = new File(project + "/Protokoll.txt");
-    			System.out.println(txtfile.canRead());
-    			System.out.println(txtfile.exists());
     			PrintWriter writer = new PrintWriter(new FileWriter(txtfile));
     			writer.println("//erster Kontakt");
     			writer.println(entry.getLastContact().subSequence(0, 10));writer.println("");
@@ -188,8 +185,8 @@ public class DatabaseManager {
 			if(createNewProject(e, entry[2], entry[3], entry[4])) {
 				addToCustomer(e);
 				
-				initList.add(e.getStatus());
-				return e.getStatus();
+				initList.add(e.getFirstStatus());
+				return e.getFirstStatus();
 			}
 			else System.out.println("creation failed");
 		} catch (IOException e1) {
@@ -207,5 +204,54 @@ public class DatabaseManager {
 			}
 		}
 		customers.add(new Customer(entry));
+	}
+
+	public Entry findEntry(String link){
+		for(Customer c: customers){
+			for(Entry e : c.getEntries()){
+				System.out.println(e.getLink());
+				if(link.contains(e.getLink())){
+					return e;
+				}
+			}
+		}
+		System.out.println("entry not found");
+		return null;
+	}
+	
+	public void editEntry(Entry entry, String edit) {
+		String newContact = LocalDate.now().toString() + " " + edit;
+		System.out.println(entry.getLink());
+		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
+		File tmp = new File(entry.getLink() + "/tmp.txt");
+		try {
+			BufferedReader file = new BufferedReader(new FileReader(txtfile));
+	        String line;
+	        PrintWriter writer = new PrintWriter(new FileWriter(tmp));
+	        int i=0;
+	        while ((line = file.readLine()) != null)
+	        {
+	        	if(i==4){
+	        		writer.println(newContact);
+	        	}
+	        	else writer.println(line);
+	        	i++;
+	        }
+	        writer.println(newContact);
+	        file.close();
+	        writer.close();
+	        System.out.println(txtfile.delete());
+	        System.out.println(tmp.renameTo(new File(entry.getLink() + "/Protokoll.txt")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		entry.setLastContact(newContact);
+		for(String[] s : initList){
+			if(entry.getLink().contains(s[0])){
+				initList.remove(s);
+				initList.add(entry.getFirstStatus());
+				break;
+			}
+		}
 	}
 }

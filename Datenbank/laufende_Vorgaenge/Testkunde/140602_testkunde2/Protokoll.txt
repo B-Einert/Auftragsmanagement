@@ -2,7 +2,7 @@
 2014-02-06
 
 //letzter Kontakt
-2015-10-13 Heute
+2015-10-15 Kontakt aufnehmen
 
 //Kunde
 Testkunde
@@ -24,4 +24,4 @@ alda
 
 
 2015-02-06 Anfrage
-2015-10-13 Heute
+2015-10-15 Kontakt aufnehmen
