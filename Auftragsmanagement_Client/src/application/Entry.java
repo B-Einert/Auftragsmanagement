@@ -49,15 +49,38 @@ public class Entry {
     }
     
     public void pursueClicked(MouseEvent event) {
-    	String answer = ChoiceBox.display(event.getScreenX(), event.getScreenY(), "Angebot erstellen", "Kontakt aufnehmen");
-    	if(answer != ""){
+    	String[] answers = getNextSteps();
+    	int answer = ChoiceBox.display(event.getScreenX(), event.getScreenY(), answers[0], answers[2]);
+    	if(answer != -1){
     		ClientGUI.sender.sendString("edit");
     		ClientGUI.sender.sendString(this.linkString);
-    		ClientGUI.sender.sendString(answer);
+    		ClientGUI.sender.sendString(answers[answer]);
     	}
     }
     
-    public void detailClicked(){
+    private String[] getNextSteps() {
+		String[] steps = new String[6];
+		String pre = this.getContact().substring(11);
+		switch (pre) {
+        	case "Anfrage" : steps[0] = "Angebot";
+        		steps[3]= "Angebot erstellen";
+        			break;
+        	case "Angebot" : steps[0] = "Auftrag";
+        		steps[3]= "Auftrag erstellen";
+        			break;
+        	case "Auftrag" : steps[0] = "Versand";
+        		steps[3]= "Angebot erstellen";
+        			break;
+        	case "Kontakt" : steps[0] = "Anfrage";
+        		steps[3] = "Anfrage erstellt";
+        	default:	steps = null;
+		}
+		steps[2] = "Kontakt";
+		steps[5] = "Kontakt aufnehmen";
+		return steps;
+	}
+
+	public void detailClicked(){
     	
     }
 

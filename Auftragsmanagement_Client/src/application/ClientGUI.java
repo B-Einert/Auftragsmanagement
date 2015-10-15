@@ -34,7 +34,7 @@ public class ClientGUI extends Application {
 
     public static void main(String[] args) {
     	final int PORT = 444;
-        final String HOST = "192.168.178.35";
+        final String HOST = "localhost";
         try {
 			SOCK = new Socket(HOST, PORT);
 		} catch (UnknownHostException e) {
@@ -190,11 +190,5 @@ public class ClientGUI extends Application {
     
     public void setEntry(ObservableList<Entry> entries){
     	ClientGUI.entries = entries;
-    }
-    
-    public static void updateTable(){
-//    	ObservableList<Entry> list = FXCollections.observableArrayList();
-//    	table.setItems(null);
-//    	table.setItems(entries);
     }
 }

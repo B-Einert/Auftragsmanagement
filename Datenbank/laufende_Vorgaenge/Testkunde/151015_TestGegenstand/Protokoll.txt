@@ -1,0 +1,26 @@
+//erster Kontakt
+2015-10-15
+
+//letzter Kontakt
+2015-10-15 Anfrage
+
+//Kunde
+Testkunde
+
+//Gegenstand
+TestGegenstand
+
+//Link
+C:\Users\Pyornez\Documents\Korropol\Auftragsmanagement\Datenbank\laufende_Vorgaenge\Testkunde\151015_TestGegenstand
+
+//Ansprechpartner
+Testkontakt
+
+//Telefon
+0815
+
+//Bearbeiter
+Testbearbeiter
+
+
+2015-10-15 Anfrage

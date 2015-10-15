@@ -9,9 +9,9 @@ import javafx.geometry.*;
 public class ChoiceBox {
 
     //Create variable
-    static String answer;
+    static int answer;
 
-    public static String display(double x, double y, String choiceA, String choiceB) {
+    public static int display(double x, double y, String choiceA, String choiceB) {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Weiterführen");
@@ -23,7 +23,7 @@ public class ChoiceBox {
         	//Fenster vom schließen hindern
         	try
         	{
-        		answer = "";
+        		answer = -1;
         	}
         	catch(Exception a)
         	{
@@ -38,11 +38,11 @@ public class ChoiceBox {
 
         //Clicking will set answer and close window
         buttonA.setOnAction(e -> {
-            answer = choiceA;
+            answer = 0;
             window.close();
         });
         buttonB.setOnAction(e -> {
-            answer = choiceB;
+            answer = 1;
             window.close();
         });
 
