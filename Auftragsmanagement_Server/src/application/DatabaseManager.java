@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 public class DatabaseManager {
 	
-    private File directoryModel=new File("C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/Datenbank/Muster");
-    private File projectModel=new File("C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/Datenbank/Project");
-    public static String db = "C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/Datenbank/";
+    private File directoryModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Muster");
+    private File projectModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Project");
+    public static String db = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
     private ArrayList<String[]> initList;
     private ArrayList<Customer> customers;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
@@ -30,6 +30,7 @@ public class DatabaseManager {
     	String customer; 
     	String item; 
     	String lastContact;
+    	String state;
     	for(File f: files.listFiles()){
     		if(f.isDirectory()){
 	    		Customer cust = new Customer(f.getName());
@@ -42,11 +43,12 @@ public class DatabaseManager {
 							try{
 		    					in.readLine();
 		    					date=in.readLine();in.readLine();in.readLine();
-		    					lastContact=in.readLine();in.readLine();in.readLine();
+		    					lastContact=in.readLine();
+		    					state=in.readLine().substring(1);in.readLine();in.readLine();
 		    					customer=in.readLine();in.readLine();in.readLine();
 		    					item=in.readLine();in.readLine();in.readLine();
 		    					link=in.readLine();
-		    					cust.addEntry(new Entry(date, link, customer, item, lastContact));
+		    					cust.addEntry(new Entry(date, link, customer, item, lastContact, state));
 		    					in.close();
 		    				}
 		    				catch(Exception e){
@@ -114,7 +116,8 @@ public class DatabaseManager {
     			writer.println("//erster Kontakt");
     			writer.println(entry.getLastContact().subSequence(0, 10));writer.println("");
     			writer.println("//letzter Kontakt");
-    			writer.println(entry.getLastContact());writer.println("");
+    			writer.println(entry.getLastContact());
+    			writer.println(entry.getState());writer.println("");
     			writer.println("//Kunde");
     			writer.println(entry.getCustomer());writer.println("");
     			writer.println("//Gegenstand");
@@ -219,7 +222,7 @@ public class DatabaseManager {
 		return null;
 	}
 	
-	public void editEntry(Entry entry, String edit) {
+	public void editEntry(Entry entry, String state, String edit) {
 		String newContact = LocalDate.now().toString() + " " + edit;
 		System.out.println(entry.getLink());
 		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
@@ -234,6 +237,7 @@ public class DatabaseManager {
 	        	if(i==4){
 	        		writer.println(newContact);
 	        	}
+	        	else if(i==5) writer.println(state);
 	        	else writer.println(line);
 	        	i++;
 	        }

@@ -2,13 +2,10 @@ package application;
 
 import java.net.*;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
-
-import javafx.collections.ObservableList;
 
 public class ClientReceiver implements Runnable{
     
@@ -16,7 +13,7 @@ public class ClientReceiver implements Runnable{
     private ObjectInputStream objIn;
     private Scanner INPUT;
     private String message;
-    private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
+   // private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
 
     public ClientReceiver() 
     {
@@ -98,7 +95,7 @@ public class ClientReceiver implements Runnable{
     }
     
     public void addEntry(String[] entry){
-    	Entry e = new Entry(entry[0], LocalDate.parse(entry[1]), entry[2], entry[3], entry[4]);
+    	Entry e = new Entry(entry[0], LocalDate.parse(entry[1]), entry[2], entry[3], entry[4], Integer.parseInt(entry[5]));
 		ClientGUI.entries.add(e);
     }
     
@@ -145,8 +142,9 @@ public class ClientReceiver implements Runnable{
 		    		for(Entry e : ClientGUI.entries){
 		    			if(message.contains(e.getLinkString())){
 		    				e.setContact(INPUT.nextLine());
+		    				e.setState(Integer.parseInt(INPUT.nextLine()));
 		    				System.out.println(e.getContact());
-		    				Entry entry = new Entry(e.getLinkString(), e.getDate(), e.getCustomer(), e.getItem(), e.getContact());
+		    				Entry entry = new Entry(e.getLinkString(), e.getDate(), e.getCustomer(), e.getItem(), e.getContact(), e.getState());
 		    				ClientGUI.entries.remove(e);
 		    				ClientGUI.entries.add(entry);
 		    				//ClientGUI.updateTable();

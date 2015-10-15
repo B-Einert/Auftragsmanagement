@@ -16,6 +16,7 @@ public class Entry {
     private String item;
     private String link;
     private String lastContact;
+    private String state;
     
 
     public Entry(String customer, String item){
@@ -23,14 +24,17 @@ public class Entry {
         this.customer = customer;
         this.item = item;  
         this.lastContact = getDate().toString() + " Anfrage";
+        this.state = "1";
     }
     
-    public Entry(String date, String link, String customer, String item, String lastContact){
+    public Entry(String date, String link, String customer, String item, String lastContact, String state){
         this.link = link;
         this.date = date;
         this.customer = customer;
         this.item = item;  
         this.lastContact = lastContact;
+        this.state = state;
+        System.out.println(state);
     }
 
     public String getDate() {
@@ -73,8 +77,16 @@ public class Entry {
 		this.lastContact = lastContact;
 	}
 	
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
 	public String[] getFirstStatus(){
-		String[] status = {getLink(), getDate(), getCustomer(), getItem(), getLastContact()};
+		String[] status = {getLink(), getDate(), getCustomer(), getItem(), getLastContact(), getState()};
 		return status;
 	}
 }

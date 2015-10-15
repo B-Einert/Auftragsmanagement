@@ -71,10 +71,12 @@ public class ServerReturn implements Runnable
                     }
                     else if(message.contains("edit")){
                     	Entry e = Server.dbManager.findEntry(INPUT.nextLine());
-                    	Server.dbManager.editEntry(e, INPUT.nextLine());
+                    	String state=(INPUT.nextLine());
+                    	Server.dbManager.editEntry(e, state, INPUT.nextLine());
                     	sendString("edit");
                     	sendString(e.getLink());
                     	sendString(e.getLastContact());
+                    	sendString(state.substring(1));
                     }
                     else{
                     	sendString(message);

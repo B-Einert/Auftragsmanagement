@@ -15,6 +15,7 @@ public class Entry {
     private LocalDate date;
     private Button link;
     private String linkString;
+    private int state;
 	private SimpleStringProperty customer;
     private SimpleStringProperty item;
     private SimpleStringProperty contact;
@@ -22,7 +23,7 @@ public class Entry {
     private Button detail;
     private boolean old = true;
 
-    public Entry(String link, LocalDate date, String customer, String item, String contact){
+    public Entry(String link, LocalDate date, String customer, String item, String contact, int state){
         this.date = date;
         this.linkString = link;
         this.link = new Button("Link");
@@ -34,6 +35,8 @@ public class Entry {
         this.pursue.setOnMouseClicked(e -> pursueClicked(e));
         this.detail = new Button("Detail");
         this.detail.setOnAction(e -> linkClicked());
+        this.state = state;
+        System.out.println(state);
     }
     
     public void linkClicked(){
@@ -54,29 +57,31 @@ public class Entry {
     	if(answer != -1){
     		ClientGUI.sender.sendString("edit");
     		ClientGUI.sender.sendString(this.linkString);
+    		ClientGUI.sender.sendString(answers[answer+6]);
     		ClientGUI.sender.sendString(answers[answer]);
     	}
     }
     
     private String[] getNextSteps() {
-		String[] steps = new String[6];
-		String pre = this.getContact().substring(11);
-		switch (pre) {
-        	case "Anfrage" : steps[0] = "Angebot";
+		String[] steps = new String[9];
+		switch (state) {
+        	case 1 : steps[0] = "Angebot";
         		steps[3]= "Angebot erstellen";
+        		steps[6]= "#2";
         			break;
-        	case "Angebot" : steps[0] = "Auftrag";
+        	case 2 : steps[0] = "Auftrag";
         		steps[3]= "Auftrag erstellen";
+        		steps[6]= "#3";
         			break;
-        	case "Auftrag" : steps[0] = "Versand";
+        	case 3 : steps[0] = "Versand";
         		steps[3]= "Angebot erstellen";
+        		steps[6] = "#4";
         			break;
-        	case "Kontakt" : steps[0] = "Anfrage";
-        		steps[3] = "Anfrage erstellt";
         	default:	steps = null;
 		}
 		steps[2] = "Kontakt";
 		steps[5] = "Kontakt aufnehmen";
+		steps[8] = "#" + Integer.toString(getState());
 		return steps;
 	}
 
@@ -132,7 +137,15 @@ public class Entry {
         this.contact.set(contact);
     }
     
-    public Button getPursue() {
+    public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public Button getPursue() {
         return pursue;
     }
 
