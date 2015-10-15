@@ -95,6 +95,28 @@ public class ClientGUI extends Application {
         TableColumn<Entry, String> contactColumn = new TableColumn<>("Kontakt");
         contactColumn.setMinWidth(120);
         contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
+        contactColumn.setCellFactory(column -> {
+        	return new TableCell<Entry, String>(){
+        		@Override
+        		protected void updateItem(String item, boolean empty) {
+        			super.updateItem(item, empty);
+        			System.out.println(item);
+        			if (item == null || empty) {
+                        setText(null);
+                        setStyle("");
+                    } else {
+                    	setText(item);
+                    	if(item.startsWith("old ")){
+            				((Node)this).getStyleClass().add("highlight");
+            			}
+            			else{
+            				((Node)this).getStyleClass().remove("highlight");
+            			}
+                    }
+//        			
+        		}
+        	};
+        });
         
         //pursue column
         TableColumn<Entry, String> pursueColumn = new TableColumn<>("Weiterführen");
@@ -133,25 +155,25 @@ public class ClientGUI extends Application {
         window.getScene().getStylesheets().add(getClass().getResource("application.css").toExternalForm());
         window.show();
         
-        int i=0;
-        System.out.println("before all that");
-        for (Node n: table.lookupAll(".table-row-cell")) {
-        	System.out.println(i);
-        	if (n instanceof TableRow) {
-        		System.out.println("get in row");
-        		TableRow row = (TableRow) n;
-        		if (table.getItems().get(i).tooOld()) {
-        			LinkedList<Node> cells = new LinkedList<Node>(row.lookupAll(".table-cell"));
-        			((TableCell)cells.get(4)).getStyleClass().add("highlight");
-        			System.out.println("highlight");
-        		} 
-        		else {
-        		
-        		}
-        	}
-        	i++;
-    		if (i == table.getItems().size()) break;
-        }
+//        int i=0;
+//        System.out.println("before all that");
+//        for (Node n: table.lookupAll(".table-row-cell")) {
+//        	System.out.println(i);
+//        	if (n instanceof TableRow) {
+//        		System.out.println("get in row");
+//        		TableRow row = (TableRow) n;
+//        		if (table.getItems().get(i).tooOld()) {
+//        			LinkedList<Node> cells = new LinkedList<Node>(row.lookupAll(".table-cell"));
+//        			((TableCell)cells.get(4)).getStyleClass().add("highlight");
+//        			System.out.println("highlight");
+//        		} 
+//        		else {
+//        		
+//        		}
+//        	}
+//        	i++;
+//    		if (i == table.getItems().size()) break;
+//        }
         
     }
 

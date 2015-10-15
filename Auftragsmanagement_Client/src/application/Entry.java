@@ -17,9 +17,9 @@ public class Entry {
     private Button link;
     private String linkString;
     private int state;
-	private SimpleStringProperty customer;
-    private SimpleStringProperty item;
-    private SimpleStringProperty contact;
+	private String customer;
+    private String item;
+    private String contact;
     private Button pursue;
     private Button detail;
     private boolean old = false;
@@ -29,9 +29,9 @@ public class Entry {
         this.linkString = link;
         this.link = new Button("Link");
         this.link.setOnAction(e -> linkClicked());
-        this.customer = new SimpleStringProperty(customer);
-        this.item= new SimpleStringProperty(item);
-        this.contact= new SimpleStringProperty(contact);
+        this.customer = customer;
+        this.item= item;
+        this.contact= contact;
         this.pursue = new Button("Weiterführen");
         this.pursue.setOnMouseClicked(e -> pursueClicked(e));
         this.detail = new Button("Detail");
@@ -119,27 +119,27 @@ public class Entry {
 	}
     
     public String getCustomer() {
-        return customer.get();
+        return customer;
     }
 
     public void setCustomer(String customer) {
-        this.customer.set(customer);;
+        this.customer= customer;
     }
     
     public String getItem() {
-        return item.get();
+        return item;
     }
 
     public void setItem(String item) {
-        this.item.set(linkString);
+        this.item = item;
     }
     
     public String getContact() {
-        return contact.get();
+        return contact;
     }
 
     public void setContact(String contact) {
-        this.contact.set(contact);
+        this.contact=contact;
     }
     
     public int getState() {
@@ -179,6 +179,7 @@ public class Entry {
     		days = ChronoUnit.DAYS.between(reference, today);
     		if (days>7){
     			this.old=true;
+    			this.setContact("old " + contact);
     		}
     	}
     	else{
