@@ -42,7 +42,7 @@ public class ChoiceBox {
             window.close();
         });
         buttonB.setOnAction(e -> {
-            answer = 1;
+            answer = 2;
             window.close();
         });
 
