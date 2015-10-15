@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.EventHandler;
@@ -21,7 +22,7 @@ public class Entry {
     private SimpleStringProperty contact;
     private Button pursue;
     private Button detail;
-    private boolean old = true;
+    private boolean old = false;
 
     public Entry(String link, LocalDate date, String customer, String item, String contact, int state){
         this.date = date;
@@ -37,6 +38,7 @@ public class Entry {
         this.detail.setOnAction(e -> linkClicked());
         this.state = state;
         System.out.println(state);
+        tryOld();
     }
     
     public void linkClicked(){
@@ -74,9 +76,12 @@ public class Entry {
         		steps[6]= "#3";
         			break;
         	case 3 : steps[0] = "Versand";
-        		steps[3]= "Angebot erstellen";
+        		steps[3]= "Versenden";
         		steps[6] = "#4";
         			break;
+        	case 4 : steps[0] = "Archiviert";
+        		steps[3] = "Archivieren";
+        		steps[6] = "#5";
         	default:	steps = null;
 		}
 		steps[2] = "Kontakt";
@@ -163,5 +168,26 @@ public class Entry {
     
     public boolean tooOld(){
     	return old;
+    }
+    
+    public void tryOld(){
+    	LocalDate today= LocalDate.now();
+    	LocalDate reference;
+    	long days;
+    	if (getState() ==1){
+    		reference = this.getDate();
+    		days = ChronoUnit.DAYS.between(reference, today);
+    		if (days>7){
+    			this.old=true;
+    		}
+    	}
+    	else{
+    		reference = LocalDate.parse(this.getContact().substring(0, 10));
+    		days = ChronoUnit.DAYS.between(reference, today);
+    		if (days>14){
+    			this.old=true;
+    		}
+    	}
+    	System.out.println(days);
     }
 }

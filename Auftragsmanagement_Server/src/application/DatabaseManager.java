@@ -7,9 +7,9 @@ import java.util.ArrayList;
 
 public class DatabaseManager {
 	
-    private File directoryModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Muster");
-    private File projectModel=new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Project");
-    public static String db = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
+    private File directoryModel=new File("C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/Datenbank/Muster");
+    private File projectModel=new File("C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/Datenbank/Project");
+    public static String db = "C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/Datenbank/";
     private ArrayList<String[]> initList;
     private ArrayList<Customer> customers;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
