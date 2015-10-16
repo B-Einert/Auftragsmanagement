@@ -106,12 +106,17 @@ public class ClientGUI extends Application {
                         setStyle("");
                     } else {
                     	setText(item);
+                    	if(item.contains("Archiviert")){
+                    		((Node)this).getStyleClass().add("archived");
+                    	}
+                    	else{
+                    		((Node)this).getStyleClass().remove("archived");
+                    	}
                     	if(item.startsWith("old ")){
                     		setText(item.substring(4));
             				((Node)this).getStyleClass().add("highlight");
             			}
             			else{
-            				setText(item);
             				((Node)this).getStyleClass().remove("highlight");
             			}
                     }

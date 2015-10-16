@@ -1,6 +1,9 @@
 .highlight{ 
-	-fx-background-color: radial-gradient( focus-angle 0.0deg, focus-distance 0.0%, center 50.0% 50.0%, radius 20.0%, rgb(230,77,77) 0.0, rgb(230,77,77) 20.0, rgb(255,255,255) 60.0, rgb(255,255,255) 100.0 );
+	-fx-background-color: red;
 }
 .center{
 	-fx-alignment: center;
+}
+.archived{
+	-fx-background-color:lightgray;
 }

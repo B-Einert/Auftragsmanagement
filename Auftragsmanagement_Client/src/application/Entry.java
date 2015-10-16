@@ -61,6 +61,14 @@ public class Entry {
     		ClientGUI.sender.sendString(this.linkString);
     		ClientGUI.sender.sendString(answers[answer+6]);
     		ClientGUI.sender.sendString(answers[answer]);
+    		if(answer ==2){
+    			try {
+    				Desktop dt = Desktop.getDesktop();
+					dt.open(new File(this.getLinkString() + "/01_Anfrage/Gesprächsnotizen.ods"));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    		}
     	}
     }
     
@@ -98,8 +106,13 @@ public class Entry {
         			
         	case 6 : steps[0] = "Archiviert";
         		steps[3] = "Archivieren";
-        		steps[6] = "#1";
+        		steps[6] = "#7";
         		break;
+        		
+        	case 7 : steps[0] = "vonVorn";
+    		steps[3] = "neu Starten";
+    		steps[6] = "#1";
+    		break;
         		
         	default:	steps = null;
 		}
