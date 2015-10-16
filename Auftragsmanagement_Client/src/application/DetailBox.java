@@ -1,0 +1,73 @@
+package application;
+
+import java.util.LinkedList;
+
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+
+public class DetailBox {
+	private static String[] details;
+	
+	public static void display()
+    {
+    	Stage window = new Stage();
+    	window.setTitle("Details " + details[0] + "_" + details[1]);
+        window.setWidth(400); 
+        window.setHeight(300);
+        
+    	LinkedList<Label> labels= new LinkedList<Label>();
+    	LinkedList<Label> entries= new LinkedList<Label>();    	
+    	labels.add(new Label("Kunde"));
+    	labels.add(new Label("Gegenstand"));
+    	labels.add(new Label("Link"));
+    	Label partner = new Label("Ansprechpartner");
+    	partner.minWidthProperty();
+    	labels.add(partner);
+    	labels.add(new Label("Telefonnummer"));
+    	labels.add(new Label("Bearbeiter"));
+        
+    	entries.add(new Label(details[0])); 
+    	entries.add(new Label(details[1]));
+    	Label link=new Label(details[2]);
+    	entries.add(link);
+    	entries.add(new Label(details[3]));
+    	entries.add(new Label(details[4]));
+    	entries.add(new Label(details[5]));
+    	                
+        VBox left= new VBox();
+        left.setMinWidth(130);
+        left.setPadding(new Insets(10, 10, 10, 10));
+        left.setSpacing(5);
+        VBox right=new VBox();
+        right.setPadding(new Insets(10, 10, 10, 10));
+        right.setSpacing(5);
+        HBox up = new HBox();
+        
+       left.getChildren().addAll(labels);
+       right.getChildren().addAll(entries);
+       up.getChildren().addAll(left, right);
+        
+        ListView<String> list = new ListView<String>();
+        for(int i=6; i<details.length; i++){
+        	if(details[i]!=null)list.getItems().add(details[i]);
+        	else break;
+        }
+        
+        VBox vbox=new VBox();
+        vbox.getChildren().addAll(up, list);
+
+        Scene scene = new Scene(vbox);
+        window.setScene(scene);
+        window.show();
+    }
+	
+	public static void setDetails(String[] details){
+		DetailBox.details=details;
+	}
+}

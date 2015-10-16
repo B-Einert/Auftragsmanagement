@@ -152,6 +152,16 @@ public class ClientReceiver implements Runnable{
 		    			}
 		    		}
 		    	}
+		    	else if(message.contains("detail")){
+		    		String[] details;
+		    		try {
+		    			details = (String[]) objIn.readObject();
+		    			DetailBox.setDetails(details);
+		    		} catch (Exception e) {
+		    			e.printStackTrace();
+		    			JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen. bitte neu starten!");
+		    		}
+		    	}
 	    	}
 	    	catch(Exception e)
 	        {

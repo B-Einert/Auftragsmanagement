@@ -4,6 +4,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class DatabaseManager {
 	
@@ -257,5 +258,42 @@ public class DatabaseManager {
 				break;
 			}
 		}
+	}
+
+	public String[] getDetails(String link) {
+		File file = new File(link + "/Protokoll.txt");
+		
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(file));
+			LinkedList<String> det = new LinkedList<String>();
+			String line;
+			try{
+				in.readLine();in.readLine();in.readLine();in.readLine();in.readLine();in.readLine();in.readLine();in.readLine();
+				det.add(in.readLine());in.readLine();in.readLine();
+				det.add(in.readLine());in.readLine();in.readLine();
+				det.add(in.readLine());in.readLine();in.readLine();
+				det.add(in.readLine());in.readLine();in.readLine();
+				det.add(in.readLine());in.readLine();in.readLine();
+				det.add(in.readLine());in.readLine();in.readLine();in.readLine();
+				while(true){
+					if((line=in.readLine())==null) break;
+					det.add(line);
+				}
+				in.close();
+				String[] details = det.toArray(new String[0]);
+				return details;
+			}
+			catch(Exception e){
+				System.out.println("couldnt read protocoll");
+				e.printStackTrace();
+				return null;
+			}
+			
+		} catch (FileNotFoundException e1) {
+			System.out.println("couldnt find protokoll");
+			e1.printStackTrace();
+		}
+		
+		return null;
 	}
 }

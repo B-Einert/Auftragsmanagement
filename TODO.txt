@@ -1,0 +1,11 @@
+//Stati hinzufügen
+detailanzeige
+beendete aufträge grau markieren
+archivierung der aufträge
+zu files weiterleiten
+bemerkungen writable
+server als consoleapp
+
+
+parallele arbeit
+autokorrektur vervollständigung

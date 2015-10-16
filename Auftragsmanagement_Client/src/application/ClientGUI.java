@@ -107,9 +107,11 @@ public class ClientGUI extends Application {
                     } else {
                     	setText(item);
                     	if(item.startsWith("old ")){
+                    		setText(item.substring(4));
             				((Node)this).getStyleClass().add("highlight");
             			}
             			else{
+            				setText(item);
             				((Node)this).getStyleClass().remove("highlight");
             			}
                     }
@@ -154,26 +156,6 @@ public class ClientGUI extends Application {
         window.setScene(scene);
         window.getScene().getStylesheets().add(getClass().getResource("application.css").toExternalForm());
         window.show();
-        
-//        int i=0;
-//        System.out.println("before all that");
-//        for (Node n: table.lookupAll(".table-row-cell")) {
-//        	System.out.println(i);
-//        	if (n instanceof TableRow) {
-//        		System.out.println("get in row");
-//        		TableRow row = (TableRow) n;
-//        		if (table.getItems().get(i).tooOld()) {
-//        			LinkedList<Node> cells = new LinkedList<Node>(row.lookupAll(".table-cell"));
-//        			((TableCell)cells.get(4)).getStyleClass().add("highlight");
-//        			System.out.println("highlight");
-//        		} 
-//        		else {
-//        		
-//        		}
-//        	}
-//        	i++;
-//    		if (i == table.getItems().size()) break;
-//        }
         
     }
 

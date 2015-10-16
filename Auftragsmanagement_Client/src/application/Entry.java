@@ -35,7 +35,7 @@ public class Entry {
         this.pursue = new Button("Weiterführen");
         this.pursue.setOnMouseClicked(e -> pursueClicked(e));
         this.detail = new Button("Detail");
-        this.detail.setOnAction(e -> linkClicked());
+        this.detail.setOnAction(e -> detailClicked());
         this.state = state;
         System.out.println(state);
         tryOld();
@@ -55,7 +55,7 @@ public class Entry {
     
     public void pursueClicked(MouseEvent event) {
     	String[] answers = getNextSteps();
-    	int answer = ChoiceBox.display(event.getScreenX(), event.getScreenY(), answers[0], answers[2]);
+    	int answer = ChoiceBox.display(event.getScreenX(), event.getScreenY(), answers[0], answers[1], answers[2]);
     	if(answer != -1){
     		ClientGUI.sender.sendString("edit");
     		ClientGUI.sender.sendString(this.linkString);
@@ -69,19 +69,38 @@ public class Entry {
 		switch (state) {
         	case 1 : steps[0] = "Angebot";
         		steps[3]= "Angebot erstellen";
-        		steps[6]= "#2";
-        			break;
-        	case 2 : steps[0] = "Auftrag";
+        		steps[6]= "#4";
+        		steps[1]= "M.Anfrage";
+        		steps[4]= "Modell Anfrage";
+        		steps[7]= "#2";
+        		break;
+        	
+        	case 2 : steps[0] = "M.Angebot";
+    			steps[3]= "Modell Angebot";
+    			steps[6]= "#3";
+        		break;
+        		
+        	case 3:
+        		steps[0] = "Angebot";
+        		steps[3]= "Angebot erstellen";
+        		steps[6]= "#4";
+        		break;
+        	
+        	case 4 : steps[0] = "Auftrag";
         		steps[3]= "Auftrag erstellen";
-        		steps[6]= "#3";
-        			break;
-        	case 3 : steps[0] = "Versand";
+        		steps[6]= "#5";
+        		break;
+        			
+        	case 5 : steps[0] = "Versand";
         		steps[3]= "Versenden";
-        		steps[6] = "#4";
-        			break;
-        	case 4 : steps[0] = "Archiviert";
+        		steps[6] = "#6";
+        		break;
+        			
+        	case 6 : steps[0] = "Archiviert";
         		steps[3] = "Archivieren";
-        		steps[6] = "#5";
+        		steps[6] = "#1";
+        		break;
+        		
         	default:	steps = null;
 		}
 		steps[2] = "Kontakt";
@@ -91,7 +110,15 @@ public class Entry {
 	}
 
 	public void detailClicked(){
-    	
+    	ClientGUI.sender.sendString("detail");
+    	ClientGUI.sender.sendString(this.linkString);
+    	try {
+			Thread.sleep(1000);
+			DetailBox.display();
+		} catch (InterruptedException e) {
+			System.out.println("interrupted");		
+			e.printStackTrace();
+		}
     }
 
     public LocalDate getDate() {
@@ -174,10 +201,10 @@ public class Entry {
     	LocalDate today= LocalDate.now();
     	LocalDate reference;
     	long days;
-    	if (getState() ==1){
+    	if (getState() ==1||getState() ==2||getState() ==3){
     		reference = this.getDate();
     		days = ChronoUnit.DAYS.between(reference, today);
-    		if (days>7){
+    		if (days>5){
     			this.old=true;
     			this.setContact("old " + contact);
     		}

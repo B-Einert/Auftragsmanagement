@@ -78,6 +78,14 @@ public class ServerReturn implements Runnable
                     	sendString(e.getLastContact());
                     	sendString(state.substring(1));
                     }
+                    else if (message.contains("detail")){
+                    	String link = INPUT.nextLine();
+                    	String[] details = Server.dbManager.getDetails(link);
+                    	OUT.println("detail");
+                        OUT.flush();
+                        objOut.writeObject(details);
+                        objOut.flush();
+                    }
                     else{
                     	sendString(message);
                     }
