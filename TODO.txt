@@ -1,11 +1,15 @@
 //Stati hinzufügen
-detailanzeige
-beendete aufträge grau markieren
+//detailanzeige
+//beendete aufträge grau markieren
 archivierung der aufträge
-zu files weiterleiten
+//zu files weiterleiten
 bemerkungen writable
 server als consoleapp
+kill client if server down
 
 
 parallele arbeit
 autokorrektur vervollständigung
+
+
+StreamCorruptedException

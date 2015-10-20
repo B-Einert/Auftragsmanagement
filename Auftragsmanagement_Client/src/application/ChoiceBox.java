@@ -33,12 +33,12 @@ public class ChoiceBox {
         });
 
         //Create two buttons
-        Button buttonA = new Button(choiceA);
+        Button buttonB = new Button(choiceB);
         Button buttonC = new Button(choiceC);
 
         //Clicking will set answer and close window
-        buttonA.setOnAction(e -> {
-            answer = 0;
+        buttonB.setOnAction(e -> {
+            answer = 1;
             window.close();
         });
         buttonC.setOnAction(e -> {
@@ -49,16 +49,16 @@ public class ChoiceBox {
         VBox layout = new VBox(10);
 
         //Add buttons
-        layout.getChildren().add(buttonA);
-        if (choiceB!=null){
+        if (choiceA!=null){
         	window.setHeight(180);
-        	Button buttonB = new Button(choiceB);
-        	buttonB.setOnAction(e -> {
-                answer = 1;
+        	Button buttonA = new Button(choiceA);
+        	buttonA.setOnAction(e -> {
+                answer = 0;
                 window.close();
             });
-            layout.getChildren().add(buttonB);
+            layout.getChildren().add(buttonA);
         }
+        layout.getChildren().add(buttonB);
         layout.getChildren().add(buttonC);
         layout.setAlignment(Pos.CENTER);
         Scene scene = new Scene(layout);

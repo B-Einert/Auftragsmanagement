@@ -83,6 +83,7 @@ public class ServerReturn implements Runnable
                     	String[] details = Server.dbManager.getDetails(link);
                     	OUT.println("detail");
                         OUT.flush();
+                        System.out.println(details[2]);
                         objOut.writeObject(details);
                         objOut.flush();
                     }

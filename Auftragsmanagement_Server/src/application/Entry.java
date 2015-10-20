@@ -19,8 +19,8 @@ public class Entry {
     private String state;
     
 
-    public Entry(String customer, String item){
-        this.date = LocalDate.now().toString();
+    public Entry(String date, String customer, String item, String lastContact){
+        this.date = date;
         this.customer = customer;
         this.item = item;  
         this.lastContact = getDate().toString() + " Anfrage";
@@ -76,7 +76,7 @@ public class Entry {
 	public void setLastContact(String lastContact) {
 		this.lastContact = lastContact;
 	}
-	
+
 	public String getState() {
 		return state;
 	}

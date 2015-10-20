@@ -1,0 +1,17 @@
+//Datenbank Verzeichniss
+D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank
+
+//Musterkunde Verzeichniss
+D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Musterkunde
+
+//Musterprojekt verzeichniss
+D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Musterprojekt
+
+//Tage nach Anfrage nach welchen sich die Anzeige rot färbt
+5
+
+//Tage nach letztem Kontakt nach welchen sich die Anzeige rot färbt
+14
+
+//Tage nach Bestätigungsdatum nach welchen sich die Anzeige rot färbt
+3

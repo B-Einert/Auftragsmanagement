@@ -22,7 +22,6 @@ public class Entry {
     private String contact;
     private Button pursue;
     private Button detail;
-    private boolean old = false;
 
     public Entry(String link, LocalDate date, String customer, String item, String contact, int state){
         this.date = date;
@@ -37,8 +36,6 @@ public class Entry {
         this.detail = new Button("Detail");
         this.detail.setOnAction(e -> detailClicked());
         this.state = state;
-        System.out.println(state);
-        tryOld();
     }
     
     public void linkClicked(){
@@ -73,52 +70,45 @@ public class Entry {
     }
     
     private String[] getNextSteps() {
+    	System.out.println(getState());
 		String[] steps = new String[9];
 		switch (state) {
         	case 1 : steps[0] = "Angebot";
         		steps[3]= "Angebot erstellen";
-        		steps[6]= "#4";
-        		steps[1]= "M.Anfrage";
-        		steps[4]= "Modell Anfrage";
-        		steps[7]= "#2";
+        		steps[6]= "#2";
         		break;
         	
-        	case 2 : steps[0] = "M.Angebot";
-    			steps[3]= "Modell Angebot";
-    			steps[6]= "#3";
+        	case 2 : steps[0] = "Auftrag";
+        		steps[3]= "Auftrag erstellen";
+        		steps[6]= "#3";
         		break;
         		
         	case 3:
-        		steps[0] = "Angebot";
-        		steps[3]= "Angebot erstellen";
+        		steps[0] = "versenden bis ";
+        		steps[3]= "Auftrag bestätigen";
         		steps[6]= "#4";
         		break;
-        	
-        	case 4 : steps[0] = "Auftrag";
-        		steps[3]= "Auftrag erstellen";
-        		steps[6]= "#5";
-        		break;
         			
-        	case 5 : steps[0] = "Versand";
+        	case 4 : steps[0] = "Versand";
         		steps[3]= "Versenden";
-        		steps[6] = "#6";
+        		steps[6] = "#5";
         		break;
         			
-        	case 6 : steps[0] = "Archiviert";
+        	case 5 : steps[0] = "Archiviert";
         		steps[3] = "Archivieren";
-        		steps[6] = "#7";
+        		steps[6] = "#1";
         		break;
-        		
-        	case 7 : steps[0] = "vonVorn";
-    		steps[3] = "neu Starten";
-    		steps[6] = "#1";
-    		break;
         		
         	default:	steps = null;
+        		break;
 		}
-		steps[2] = "Kontakt";
-		steps[5] = "Kontakt aufnehmen";
-		steps[8] = "#" + Integer.toString(getState());
+		steps[1] = "Kontakt";
+		steps[4] = "Kontakt aufnehmen";
+		steps[7] = "#" + Integer.toString(getState());
+		
+		steps[2] = "Archiviert";
+		steps[5] = "Archivieren";
+		steps[8] = "#1";
 		return steps;
 	}
 
@@ -126,7 +116,7 @@ public class Entry {
     	ClientGUI.sender.sendString("detail");
     	ClientGUI.sender.sendString(this.linkString);
     	try {
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 			DetailBox.display();
 		} catch (InterruptedException e) {
 			System.out.println("interrupted");		
@@ -204,31 +194,5 @@ public class Entry {
 
     public void setDetail(Button detail) {
         this.detail = detail;
-    }
-    
-    public boolean tooOld(){
-    	return old;
-    }
-    
-    public void tryOld(){
-    	LocalDate today= LocalDate.now();
-    	LocalDate reference;
-    	long days;
-    	if (getState() ==1||getState() ==2||getState() ==3){
-    		reference = this.getDate();
-    		days = ChronoUnit.DAYS.between(reference, today);
-    		if (days>5){
-    			this.old=true;
-    			this.setContact("old " + contact);
-    		}
-    	}
-    	else{
-    		reference = LocalDate.parse(this.getContact().substring(0, 10));
-    		days = ChronoUnit.DAYS.between(reference, today);
-    		if (days>14){
-    			this.old=true;
-    		}
-    	}
-    	System.out.println(days);
     }
 }
