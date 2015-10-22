@@ -54,7 +54,7 @@ public class ClientGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         window = primaryStage;
-        window.setWidth(837);
+        window.setWidth(937);
         window.setTitle("Auftragsmanagement");
         window.setOnCloseRequest(e -> {
         	//Fenster vom schlieﬂen hindern
@@ -91,8 +91,13 @@ public class ClientGUI extends Application {
         itemColumn.setMinWidth(200);
         itemColumn.setCellValueFactory(new PropertyValueFactory<>("item"));
         
-        //contact column
-        TableColumn<Entry, String> contactColumn = new TableColumn<>("Kontakt");
+        //contact date column
+        TableColumn<Entry, LocalDate> contactDateColumn = new TableColumn<>("Kontaktdatum");
+        contactDateColumn.setMinWidth(80);
+        contactDateColumn.setCellValueFactory(new PropertyValueFactory<>("contactDate"));
+        
+        //last contact column
+        TableColumn<Entry, String> contactColumn = new TableColumn<>("letzter Kontakt");
         contactColumn.setMinWidth(120);
         contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
         contactColumn.setCellFactory(column -> {
@@ -138,20 +143,18 @@ public class ClientGUI extends Application {
         detailColumn.getStyleClass().add("center");
 
         //Button
-        Button newEntryButton = new Button("neuer Vorgang");
+        Button newEntryButton = new Button("Neuer Vorgang");
         newEntryButton.setOnAction(e -> newEntryButtonClicked());
-        Button disconnectButton = new Button("Disconnect");
-        disconnectButton.setOnAction(e -> disconnectButtonClicked());
 
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(10,10,10,10));
         hBox.setSpacing(10);
-        hBox.getChildren().addAll(newEntryButton, disconnectButton);
+        hBox.getChildren().add(newEntryButton);
         
         table = new TableView<>();
         table.setItems(getEntry());
         table.getColumns().addAll(dateColumn, linkColumn, customerColumn, itemColumn, 
-        		contactColumn, pursueColumn, detailColumn);
+        		contactDateColumn, contactColumn, pursueColumn, detailColumn);
         table.setEditable(true);
 
         VBox vBox = new VBox();

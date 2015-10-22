@@ -129,6 +129,7 @@ public class ServerReturn implements Runnable
             	SOCK.close();
                 Server.ConnectionArray.remove(i);
                 Server.Threads.remove(i);
+                break;
             }
         }
     }
