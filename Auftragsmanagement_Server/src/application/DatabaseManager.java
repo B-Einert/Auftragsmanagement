@@ -1,6 +1,7 @@
 package application;
 
 import java.io.*;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -35,7 +36,6 @@ public class DatabaseManager {
 				db=in.readLine();in.readLine();in.readLine();
 				customerModel=in.readLine();in.readLine();in.readLine();
 				projectModel=in.readLine();in.readLine();in.readLine();
-				System.out.println(projectModel);
 				daysAfterAnfrage=Integer.parseInt(in.readLine());in.readLine();in.readLine();
 				daysAfterContact=Integer.parseInt(in.readLine());in.readLine();in.readLine();
 				daysAfterDate=Integer.parseInt(in.readLine());
@@ -104,22 +104,31 @@ public class DatabaseManager {
     public void checkOld(Entry e){
     	switch(Integer.parseInt(e.getState())){
     		case 1: 
-    			if (LocalDate.now().isAfter(LocalDate.now().plusDays(this.daysAfterAnfrage))){
+    			if (LocalDate.now().isAfter(LocalDate.now().plusDays(addWeekend(LocalDate.now(), this.daysAfterAnfrage)))){
     		        e.setLastContact("old " + e.getLastContact());
     	    	}
     			break;
     		case 4:
     			LocalDate reference = LocalDate.parse(e.getLastContact().substring(25));
-    			System.out.println(reference.toString());
-    			if(LocalDate.now().isAfter(reference.plusDays(daysAfterDate))){
+    			if(LocalDate.now().isAfter(reference.plusDays(addWeekend(reference, daysAfterDate)))){
     				e.setLastContact("old " + e.getLastContact());
     			}
-    			
+    			break;
     		default:
-    			if(LocalDate.now().isAfter(LocalDate.now().plusDays(daysAfterContact))){
+    			if(LocalDate.now().isAfter(LocalDate.now().plusDays(addWeekend(LocalDate.now(), daysAfterContact)))){
     				e.setLastContact("old " + e.getLastContact());
     			}
+    			break;
     	}
+    }
+    
+    public int addWeekend(LocalDate start, int days){
+    	for(int i=0; i<=days; i++){
+    		if(start.plusDays(i).getDayOfWeek() == DayOfWeek.SATURDAY||start.plusDays(i).getDayOfWeek() == DayOfWeek.SUNDAY){
+    			days ++;
+    		}
+    	}
+    	return days;
     }
     
     public boolean isProject(String name){
@@ -267,7 +276,6 @@ public class DatabaseManager {
 	public Entry findEntry(String link){
 		for(Customer c: customers){
 			for(Entry e : c.getEntries()){
-				System.out.println(e.getLink());
 				if(link.contains(e.getLink())){
 					return e;
 				}
@@ -280,7 +288,6 @@ public class DatabaseManager {
 	public void editEntry(Entry entry, String state, String edit) {
 		entry.setState(state.substring(1));
 		String newContact = LocalDate.now().toString() + " " + edit;
-		System.out.println(entry.getLink());
 		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
 		File tmp = new File(entry.getLink() + "/tmp.txt");
 		try {
@@ -300,8 +307,6 @@ public class DatabaseManager {
 	        writer.println(newContact);
 	        file.close();
 	        writer.close();
-	        System.out.println(txtfile.delete());
-	        System.out.println(tmp.renameTo(new File(entry.getLink() + "/Protokoll.txt")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -34,7 +34,6 @@ public class Entry {
         this.item = item;  
         this.lastContact = lastContact;
         this.state = state;
-        System.out.println(state);
     }
 
     public String getDate() {

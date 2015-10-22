@@ -1,10 +1,12 @@
 package application;
 
 import javafx.stage.*;
+import javafx.util.Callback;
 import javafx.scene.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 import javafx.geometry.*;
@@ -38,6 +40,24 @@ public class DateBox {
         Label label = new Label("bitte Versanddatum auswählen!");
         
         DatePicker datePicker = new DatePicker();
+        datePicker.setValue(LocalDate.now());
+        
+        Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell()
+        {
+            @Override
+            public void updateItem(LocalDate item, boolean empty)
+            {
+                super.updateItem(item, empty);
+
+                if(item.isBefore(LocalDate.now())||item.getDayOfWeek()==DayOfWeek.SATURDAY||item.getDayOfWeek()==DayOfWeek.SUNDAY)
+                {
+                    getStyleClass().add("disabled");
+                    setDisable(true);
+                }
+            }
+        };
+
+        datePicker.setDayCellFactory(dayCellFactory);
         
         //Create submit buttons
         Button submit = new Button("Auswählen");

@@ -5,5 +5,8 @@
 	-fx-alignment: center;
 }
 .archived{
-	-fx-background-color:lightgray;
+	-fx-background-color: lightgray;
+}
+.disabled{
+	-fx-background-color: lightgray; 
 }
