@@ -87,6 +87,16 @@ public class ServerReturn implements Runnable
                         objOut.writeObject(details);
                         objOut.flush();
                     }
+                    
+                    else if(message.contains("archive")){
+                    	String link = INPUT.nextLine();
+                    	if (Server.dbManager.archive(link)){
+                    		OUT.println("delete");
+                    		OUT.flush();
+                    		OUT.println(link);
+                    		OUT.flush();
+                    	}
+                    }
                     else{
                     	sendString(message);
                     }

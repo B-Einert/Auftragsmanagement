@@ -68,26 +68,32 @@ public class Entry {
 	    	String[] answers = getNextSteps();
 	    	int answer = ChoiceBox.display(event.getScreenX(), event.getScreenY(), answers[0], answers[1], answers[2]);
 	    	if(answer != -1){
-	    		if(answer == 1){
-	    			try {
-	    				Desktop dt = Desktop.getDesktop();
-						dt.open(new File(this.getLinkString() + "/01_Anfrage/Gesprächsnotizen.ods"));
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+	    		if(answer == 2){
+	    			ClientGUI.sender.sendString("archive");
+		    		ClientGUI.sender.sendString(this.linkString);
+		    		break;
 	    		}
-	    		if(answer == 0 && answers[0].contains("bestätigen")){
-	    			String date = DateBox.display(event.getScreenX(), event.getScreenY());
-	    			System.out.println(date);
-	    			if (date == "") continue;
-	    			answers[3]= answers[3] + date;
-	    			
+	    		else{
+		    		if(answer == 1){
+		    			try {
+		    				Desktop dt = Desktop.getDesktop();
+							dt.open(new File(this.getLinkString() + "/01_Anfrage/Gesprächsnotizen.ods"));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+		    		}
+		    		if(answer == 0 && answers[0].contains("bestätigen")){
+		    			String date = DateBox.display(event.getScreenX(), event.getScreenY());
+		    			System.out.println(date);
+		    			if (date == "") continue;
+		    			answers[3]= answers[3] + date;	
+		    		}
+		    		ClientGUI.sender.sendString("edit");
+		    		ClientGUI.sender.sendString(this.linkString);
+		    		ClientGUI.sender.sendString(answers[answer+6]);
+		    		ClientGUI.sender.sendString(answers[answer+3]);
+		    		break;
 	    		}
-	    		ClientGUI.sender.sendString("edit");
-	    		ClientGUI.sender.sendString(this.linkString);
-	    		ClientGUI.sender.sendString(answers[answer+6]);
-	    		ClientGUI.sender.sendString(answers[answer+3]);
-	    		break;
 	    	}
 	    	else break;
     	}

@@ -1,6 +1,8 @@
 package application;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -83,7 +85,6 @@ public class DatabaseManager {
 		    					cust.addEntry(e);
 		    					in.close();
 		    					checkOld(e);
-		    					
 		    				}
 		    				catch(Exception e){
 		    					System.out.println("couldnt read protocoll");
@@ -92,9 +93,7 @@ public class DatabaseManager {
 						} catch (FileNotFoundException e) {
 							System.out.println("protokoll not found");
 							e.printStackTrace();
-						}
-	    				
-	    				
+						}	
 	    			}
 	    		}
     		}
@@ -155,25 +154,18 @@ public class DatabaseManager {
     
     public boolean createNewProject(Entry entry, String contact, String phone, String agent) throws IOException
     {
-    	File file = new File(db + "/laufende_Vorgaenge/" + entry.getCustomer());
-    	if (!file.exists()) {
-    		if (file.mkdir()) {
-    			
-    			for(File f:new File(customerModel).listFiles())
-    			{
-    				File temp = new File(file.getPath() + "/" + f.getName());
-    				copyDirectory(f,temp);
-    			}
-    		} else {
-    			System.out.println("Failed to create directory!");
+    	File projectCustomer = new File(db + "/laufende_Vorgaenge/" + entry.getCustomer());
+    	if (!projectCustomer.exists()) {
+    		if (projectCustomer.mkdir());
+    		else {
+    			System.out.println("Failed to create customer directory in laufende Vorgänge!");
     			return false;
     		}
     	}
-    	File project = new File(file.getPath() + "/" + LocalDate.parse(entry.getDate()).format(formatter) + "_" + entry.getItem());
+    	File project = new File(projectCustomer.getPath() + "/" + LocalDate.parse(entry.getDate()).format(formatter) + "_" + entry.getItem());
     	if (project.mkdir()){
     		copyDirectory(new File(projectModel), project);
-    		entry.setLink(project.getPath());
-    		
+    		entry.setLink(project.getPath());	
     		try{
     			File txtfile = new File(project + "/Protokoll.txt");
     			PrintWriter writer = new PrintWriter(new FileWriter(txtfile));
@@ -202,12 +194,27 @@ public class DatabaseManager {
     			e1.printStackTrace();
     			return false;
     		}
-    		return true;
     	}
     	else {
     		System.out.println("Failed to create Project!");
     		return false;
     	}
+    	File customer = new File(db + "/Kundenverzeichnis/" + entry.getCustomer());
+    	if (!customer.exists()) {
+    		if (customer.mkdir()){
+    			for(File f:new File(customerModel).listFiles())
+    			{
+    				File temp = new File(customer.getPath() + "/" + f.getName());
+    				copyDirectory(f,temp);
+    			}
+    		}
+    		else {
+    			System.out.println("Failed to create customer directory in Kundenverzeichnis!");
+    			return false;
+    		}
+    	}
+    	return true;
+    	
     }
 
 	public void copy(File sourceLocation, File targetLocation) throws IOException {
@@ -285,7 +292,7 @@ public class DatabaseManager {
 		return null;
 	}
 	
-	public void editEntry(Entry entry, String state, String edit) {
+	public boolean editEntry(Entry entry, String state, String edit) {
 		entry.setState(state.substring(1));
 		String newContact = LocalDate.now().toString() + " " + edit;
 		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
@@ -307,8 +314,11 @@ public class DatabaseManager {
 	        writer.println(newContact);
 	        file.close();
 	        writer.close();
+	        txtfile.delete();
+	        tmp.renameTo(new File(entry.getLink() + "/Protokoll.txt"));
 		} catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
 		entry.setLastContact(newContact);
 		for(String[] s : initList){
@@ -318,6 +328,7 @@ public class DatabaseManager {
 				break;
 			}
 		}
+		return true;
 	}
 
 	public String[] getDetails(String link) {
@@ -355,5 +366,46 @@ public class DatabaseManager {
 		}
 		
 		return null;
+	}
+
+	public boolean archive(String link) {
+		Entry e = findEntry(link);
+		File projectLink = new File(e.getLink());
+		if(editEntry(e, "#6", "Archiviert")){
+			File customer = new File(db + "/abgeschlossene_Vorgaenge/" + e.getCustomer());
+	    	if (!customer.exists()) {
+	    		if (customer.mkdir());
+	    		else {
+	    			System.out.println("Failed to create customer directory in abgeschlossene Vorgänge!");
+	    			return false;
+	    		}
+	    	}
+	    	File project = new File(customer.getPath() + "/" + projectLink.getName());
+	    	try{
+	    		Files.move(projectLink.toPath(), project.toPath(), StandardCopyOption.ATOMIC_MOVE);
+	    		System.out.println(new File(db + "/laufende_Vorgaenge/" + e.getCustomer()).delete());
+	    		for(String[] s : initList){
+	    			if(e.getLink().contains(s[0])){
+	    				initList.remove(s);
+	    				break;
+	    			}
+	    		}
+	    		for(Customer c:this.customers){
+	    			if(c.getEntries().contains(e)){
+	    				c.getEntries().remove(e);
+	    				if(c.getEntries().size()==0) customers.remove(c);
+	    				break;
+	    			}
+	    		}
+	    		System.out.println("Vorgang " + customer.getName() + "/" + project.getName() + " archiviert");
+	    		return true;
+	    	}
+	    	catch(Exception ex){
+	    		System.out.println("couldnt archive");
+	    		ex.printStackTrace();
+	    		return false;
+	    	}
+		}
+		return false;
 	}
 }

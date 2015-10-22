@@ -162,6 +162,15 @@ public class ClientReceiver implements Runnable{
 		    			JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen. bitte neu starten!");
 		    		}
 		    	}
+		    	else if(message.contains("delete")){
+		    		message=INPUT.nextLine();
+		    		for(Entry e : ClientGUI.entries){
+		    			if(message.contains(e.getLinkString())){
+		    				ClientGUI.entries.remove(e);
+		    				break;
+		    			}
+		    		}
+		    	}
 	    	}
 	    	catch(Exception e)
 	        {

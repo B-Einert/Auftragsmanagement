@@ -1,5 +1,7 @@
 package application;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -142,14 +144,18 @@ public class ClientGUI extends Application {
         detailColumn.setCellValueFactory(new PropertyValueFactory<>("detail"));
         detailColumn.getStyleClass().add("center");
 
-        //Button
+        //Button neuer Vorgang
         Button newEntryButton = new Button("Neuer Vorgang");
         newEntryButton.setOnAction(e -> newEntryButtonClicked());
+        
+        ////Button Archiv
+        Button archiveButton = new Button("Archiv");
+        archiveButton.setOnAction(e -> archiveButtonClicked());
 
         HBox hBox = new HBox();
         hBox.setPadding(new Insets(10,10,10,10));
         hBox.setSpacing(10);
-        hBox.getChildren().add(newEntryButton);
+        hBox.getChildren().addAll(newEntryButton, archiveButton);
         
         table = new TableView<>();
         table.setItems(getEntry());
@@ -167,7 +173,16 @@ public class ClientGUI extends Application {
         
     }
 
-    //Add button clicked
+    public void archiveButtonClicked() {
+    	try {
+			Desktop dt = Desktop.getDesktop();
+			dt.open(new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/abgeschlossene_Vorgaenge"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	//Add button clicked
     public void newEntryButtonClicked(){
     	{	
     		String[] newEntry=CreateBox.display();
