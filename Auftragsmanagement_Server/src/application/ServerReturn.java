@@ -86,15 +86,15 @@ public class ServerReturn implements Runnable
                         System.out.println(details[2]);
                         objOut.writeObject(details);
                         objOut.flush();
+		    			System.out.println("sent details");
+
                     }
                     
                     else if(message.contains("archive")){
                     	String link = INPUT.nextLine();
                     	if (Server.dbManager.archive(link)){
-                    		OUT.println("delete");
-                    		OUT.flush();
-                    		OUT.println(link);
-                    		OUT.flush();
+                    		sendString("delete");
+                    		sendString(link);
                     	}
                     }
                     else{

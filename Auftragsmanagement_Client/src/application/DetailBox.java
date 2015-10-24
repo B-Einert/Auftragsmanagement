@@ -6,13 +6,13 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class DetailBox {
 	private static String[] details;
+	private static boolean ready;
 	
 	public static void display()
     {
@@ -69,5 +69,12 @@ public class DetailBox {
 	
 	public static void setDetails(String[] details){
 		DetailBox.details=details;
+	}
+	
+	public static boolean getReady(){
+		return ready;
+	}
+	public static void setReady(boolean ready){
+		DetailBox.ready = ready;
 	}
 }

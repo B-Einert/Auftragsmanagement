@@ -4,10 +4,6 @@ import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-
-import javafx.beans.property.SimpleStringProperty;
-import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 
@@ -145,13 +141,20 @@ public class Entry {
 	public void detailClicked(){
     	ClientGUI.sender.sendString("detail");
     	ClientGUI.sender.sendString(this.linkString);
-    	try {
-			Thread.sleep(2000);
-			DetailBox.display();
-		} catch (InterruptedException e) {
-			System.out.println("interrupted");		
-			e.printStackTrace();
-		}
+    	while(true){
+    		try {
+    			if(DetailBox.getReady()){
+    				DetailBox.setReady(false);
+    				DetailBox.display();
+    				break;
+    			}
+    			//System.out.println("not ready yet!");
+    			Thread.sleep(10);
+    		} catch (Exception e) {
+    			System.out.println("interrupted");		
+    			e.printStackTrace();
+    		}
+    	}
     }
 
     public LocalDate getDate() {

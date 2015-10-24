@@ -6,7 +6,6 @@ import java.nio.file.StandardCopyOption;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -283,7 +282,7 @@ public class DatabaseManager {
 	public Entry findEntry(String link){
 		for(Customer c: customers){
 			for(Entry e : c.getEntries()){
-				if(link.contains(e.getLink())){
+				if(link.contentEquals(e.getLink())){
 					return e;
 				}
 			}
@@ -322,7 +321,7 @@ public class DatabaseManager {
 		}
 		entry.setLastContact(newContact);
 		for(String[] s : initList){
-			if(entry.getLink().contains(s[0])){
+			if(entry.getLink().contentEquals(s[0])){
 				initList.remove(s);
 				initList.add(entry.getFirstStatus());
 				break;
@@ -385,7 +384,7 @@ public class DatabaseManager {
 	    		Files.move(projectLink.toPath(), project.toPath(), StandardCopyOption.ATOMIC_MOVE);
 	    		System.out.println(new File(db + "/laufende_Vorgaenge/" + e.getCustomer()).delete());
 	    		for(String[] s : initList){
-	    			if(e.getLink().contains(s[0])){
+	    			if(e.getLink().contentEquals(s[0])){
 	    				initList.remove(s);
 	    				break;
 	    			}

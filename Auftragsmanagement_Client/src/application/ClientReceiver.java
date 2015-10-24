@@ -140,23 +140,27 @@ public class ClientReceiver implements Runnable{
 		    	else if(message.contains("edit")){
 		    		message=INPUT.nextLine();
 		    		for(Entry e : ClientGUI.entries){
-		    			if(message.contains(e.getLinkString())){
+		    			if(message.contentEquals(e.getLinkString())){
 		    				e.setContact(INPUT.nextLine());
 		    				e.setState(Integer.parseInt(INPUT.nextLine()));
 		    				System.out.println(e.getContact());
 		    				Entry entry = new Entry(e.getLinkString(), e.getDate(), e.getCustomer(), e.getItem(), e.getContact(), e.getState());
 		    				ClientGUI.entries.remove(e);
 		    				ClientGUI.entries.add(entry);
-		    				//ClientGUI.updateTable();
 		    				break;
 		    			}
 		    		}
 		    	}
 		    	else if(message.contains("detail")){
+		    		System.out.println("in the details");
 		    		String[] details;
 		    		try {
+		    			System.out.println("before read");
 		    			details = (String[]) objIn.readObject();
+		    			System.out.println("after read");
 		    			DetailBox.setDetails(details);
+		    			DetailBox.setReady(true);
+		    			System.out.println("details set");
 		    		} catch (Exception e) {
 		    			e.printStackTrace();
 		    			JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen. bitte neu starten!");
@@ -165,7 +169,7 @@ public class ClientReceiver implements Runnable{
 		    	else if(message.contains("delete")){
 		    		message=INPUT.nextLine();
 		    		for(Entry e : ClientGUI.entries){
-		    			if(message.contains(e.getLinkString())){
+		    			if(message.contentEquals(e.getLinkString())){
 		    				ClientGUI.entries.remove(e);
 		    				break;
 		    			}
