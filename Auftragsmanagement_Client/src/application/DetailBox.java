@@ -11,13 +11,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class DetailBox {
-	private static String[] details;
+	private static LinkedList<String> details;
 	private static boolean ready;
 	
 	public static void display()
     {
     	Stage window = new Stage();
-    	window.setTitle("Details " + details[0] + "_" + details[1]);
+    	window.setTitle("Details " + details.get(0) + "_" + details.get(1));
         window.setWidth(400); 
         window.setHeight(300);
         
@@ -32,13 +32,13 @@ public class DetailBox {
     	labels.add(new Label("Telefonnummer"));
     	labels.add(new Label("Bearbeiter"));
         
-    	entries.add(new Label(details[0])); 
-    	entries.add(new Label(details[1]));
-    	Label link=new Label(details[2]);
+    	entries.add(new Label(details.get(0))); 
+    	entries.add(new Label(details.get(1)));
+    	Label link=new Label(details.get(2));
     	entries.add(link);
-    	entries.add(new Label(details[3]));
-    	entries.add(new Label(details[4]));
-    	entries.add(new Label(details[5]));
+    	entries.add(new Label(details.get(3)));
+    	entries.add(new Label(details.get(4)));
+    	entries.add(new Label(details.get(5)));
     	                
         VBox left= new VBox();
         left.setMinWidth(130);
@@ -54,8 +54,8 @@ public class DetailBox {
        up.getChildren().addAll(left, right);
         
         ListView<String> list = new ListView<String>();
-        for(int i=6; i<details.length; i++){
-        	if(details[i]!=null)list.getItems().add(details[i]);
+        for(int i=6; i<details.size(); i++){
+        	if(details.get(i)!=null)list.getItems().add(details.get(i));
         	else break;
         }
         
@@ -67,7 +67,7 @@ public class DetailBox {
         window.show();
     }
 	
-	public static void setDetails(String[] details){
+	public static void setDetails(LinkedList<String> details){
 		DetailBox.details=details;
 	}
 	

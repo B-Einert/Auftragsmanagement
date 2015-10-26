@@ -84,8 +84,20 @@ public class ServerReturn implements Runnable
                     	OUT.println("detail");
                         OUT.flush();
                         System.out.println(details[2]);
-                        objOut.writeObject(details);
-                        objOut.flush();
+                        try{
+                        	for(String s : details){
+                        		OUT.println(s);
+                        		OUT.flush();
+                        	}
+                        	OUT.println("!?#end");
+                        	OUT.flush();
+                        }
+                        catch(Exception e){
+                			e.printStackTrace();
+                        	System.out.println("couldnt send details");
+                        }
+//                        objOut.writeObject(details);
+//                        objOut.flush();
 		    			System.out.println("sent details");
 
                     }

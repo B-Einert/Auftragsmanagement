@@ -4,6 +4,7 @@ import java.net.*;
 import java.time.LocalDate;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
@@ -153,14 +154,17 @@ public class ClientReceiver implements Runnable{
 		    	}
 		    	else if(message.contains("detail")){
 		    		System.out.println("in the details");
-		    		String[] details;
+		    		LinkedList<String> details = new LinkedList<String>();
 		    		try {
-		    			System.out.println("before read");
-		    			details = (String[]) objIn.readObject();
-		    			System.out.println("after read");
+//		    			details = (String[]) objIn.readObject();
+		    			String next;
+		    			while(INPUT.hasNext()){
+		    				if(!(next=INPUT.nextLine()).contentEquals("!?#end"))details.add(next);
+		    				else break;
+		    			}
 		    			DetailBox.setDetails(details);
 		    			DetailBox.setReady(true);
-		    			System.out.println("details set");
+		    			System.out.println("details done");
 		    		} catch (Exception e) {
 		    			e.printStackTrace();
 		    			JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen. bitte neu starten!");
