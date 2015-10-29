@@ -85,6 +85,14 @@ public class ClientReceiver implements Runnable{
     		{
     			addEntry(entry);
     		}
+    		received = null;
+    		while(received == null)
+    		{
+    			received = objIn.readObject();
+    		}
+    		for(String customer : (ArrayList<String>) received){
+    			ClientGUI.customers.add(customer);
+    		}
     	}
     	catch(Exception e)
         {

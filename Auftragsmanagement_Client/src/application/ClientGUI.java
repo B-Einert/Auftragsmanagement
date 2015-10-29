@@ -29,6 +29,7 @@ public class ClientGUI extends Application {
     private Stage window;
     private TableView<Entry> table;
     public static ObservableList<Entry> entries = FXCollections.observableArrayList();
+    public static ObservableList<String> customers = FXCollections.observableArrayList();
     public static Socket SOCK;
 
     public static void main(String[] args) {

@@ -133,6 +133,8 @@ public class ServerReturn implements Runnable
     		
     		objOut.writeObject(Server.dbManager.getInitList());
     		objOut.flush();
+    		objOut.writeObject(Server.dbManager.getCustomerList());
+    		objOut.flush();
     	}
     	catch(Exception e)
     	{

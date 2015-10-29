@@ -2,9 +2,13 @@ package application;
 
 import java.util.LinkedList;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -19,7 +23,7 @@ public class CreateBox {
     	Stage window = new Stage();
     	LinkedList<Label> labels= new LinkedList<Label>();
     	LinkedList<Label> labelx= new LinkedList<Label>();
-    	LinkedList<TextField> fields= new LinkedList<TextField>();
+    	LinkedList<Node> fields= new LinkedList<Node>();
     	
     	labels.add(new Label("Kunde"));
     	labels.add(new Label("Gegenstand"));
@@ -33,9 +37,24 @@ public class CreateBox {
     	labelx.add(new Label("x"));
     	labelx.add(new Label("x"));
         
-    	fields.add(new TextField());
-    	fields.add(new TextField());
-    	fields.add(new TextField());
+    	ComboBox<String> customerBox = new ComboBox<String>();
+    	customerBox.setItems(ClientGUI.customers);
+    	new AutoCompleteComboBoxListener(customerBox);
+    	
+    	fields.add(customerBox);
+    	
+    	TextField itemField = new TextField();
+    	fields.add(itemField);
+    	
+    	ComboBox<String> partnerBox = new ComboBox<String>();
+    	partnerBox.setEditable(true);
+    	partnerBox.setOnKeyPressed(e->{
+    		partnerBox.hide();
+    	});
+    	partnerBox.setOnKeyReleased(e -> {
+    		partnerBox.setValue(partnerBox.getEditor().getText());
+    	});
+    	fields.add(partnerBox);
     	fields.add(new TextField());
     	fields.add(new TextField());
         Button createButton = new Button("Vorgang erstellen");
@@ -80,9 +99,28 @@ public class CreateBox {
         createButton.setOnAction(e -> 
         {
         	boolean missing = false;
-
-        	for(int i=0; i<=4; i++){
-        		if((fields.get(i)).getText().isEmpty()){
+        	if(customerBox.getValue()==null||customerBox.getValue().isEmpty()){
+        		(labelx.get(0)).setVisible(true);
+    			missing=true;
+        	}
+        	else {
+        		(labelx.get(0)).setVisible(false);
+        	}
+        	
+        	if(itemField.getText().isEmpty()){
+        		(labelx.get(1)).setVisible(true);
+    			missing=true;
+        	}
+        	else (labelx.get(1)).setVisible(false);
+        	
+        	if(partnerBox.getValue()==null||partnerBox.getValue().isEmpty()){
+        		(labelx.get(2)).setVisible(true);
+    			missing=true;
+        	}
+        	else (labelx.get(2)).setVisible(false);
+        	
+        	for(int i=3; i<=4; i++){
+        		if(((TextField)fields.get(i)).getText().isEmpty()){
         			(labelx.get(i)).setVisible(true);
         			missing=true;
         		}
@@ -91,7 +129,7 @@ public class CreateBox {
         	
         	if (missing == false)
         	{
-        		String[] entries = {fields.get(0).getText(), fields.get(1).getText(), fields.get(2).getText(), fields.get(3).getText(), fields.get(4).getText()};
+        		String[] entries = {(String)customerBox.getValue(), ((TextField)fields.get(1)).getText(), (String)partnerBox.getValue() ,((TextField)fields.get(3)).getText(), ((TextField)fields.get(4)).getText()};
         		newEntry = entries;
         		window.close();
         	}

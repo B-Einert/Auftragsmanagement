@@ -16,6 +16,7 @@ public class DatabaseManager {
     public String db;
     private ArrayList<String[]> initList;
     private ArrayList<Customer> customers;
+    private ArrayList<String> customerList;
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
     private int daysAfterAnfrage;
     private int daysAfterContact;
@@ -54,6 +55,12 @@ public class DatabaseManager {
     
     public void loadData()
     {
+    	customerList = new ArrayList<String>();
+    	File custs = new File(db + "/Kundenverzeichnis");
+    	for(File f : custs.listFiles()){
+    		if(f.isDirectory())customerList.add(f.getName());
+    	}
+    	
     	customers = new ArrayList<Customer>();
     	File files = new File(db + "/laufende_Vorgaenge");
     	BufferedReader in;
@@ -406,5 +413,9 @@ public class DatabaseManager {
 	    	}
 		}
 		return false;
+	}
+
+	public ArrayList<String> getCustomerList() {
+		return this.customerList;
 	}
 }
