@@ -11,19 +11,24 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.*;
 
 public class CreateBox {
     private static String[] newEntry;
+    private static ComboBox<String> customerBox, partnerBox;
+    private static LinkedList<Label> labels, labelx;
+    private static LinkedList<Node> fields;
+    private static Stage window;
 
     public static String[] display()
     {
-    	Stage window = new Stage();
-    	LinkedList<Label> labels= new LinkedList<Label>();
-    	LinkedList<Label> labelx= new LinkedList<Label>();
-    	LinkedList<Node> fields= new LinkedList<Node>();
+    	window = new Stage();
+    	labels= new LinkedList<Label>();
+    	labelx= new LinkedList<Label>();
+    	fields= new LinkedList<Node>();
     	
     	labels.add(new Label("Kunde"));
     	labels.add(new Label("Gegenstand"));
@@ -37,7 +42,7 @@ public class CreateBox {
     	labelx.add(new Label("x"));
     	labelx.add(new Label("x"));
         
-    	ComboBox<String> customerBox = new ComboBox<String>();
+    	customerBox = new ComboBox<String>();
     	customerBox.setItems(ClientGUI.customers);
     	new AutoCompleteComboBoxListener(customerBox);
     	
@@ -46,7 +51,7 @@ public class CreateBox {
     	TextField itemField = new TextField();
     	fields.add(itemField);
     	
-    	ComboBox<String> partnerBox = new ComboBox<String>();
+    	partnerBox = new ComboBox<String>();
     	partnerBox.setEditable(true);
     	partnerBox.setOnKeyPressed(e->{
     		partnerBox.hide();
@@ -96,8 +101,21 @@ public class CreateBox {
         
         grid.getChildren().add(createButton);
         
-        createButton.setOnAction(e -> 
-        {
+        createButton.setOnAction(e -> submit());
+        createButton.setOnKeyReleased(e -> {
+        	if(e.getCode()==KeyCode.ENTER){
+        		submit();
+        	}
+        });
+
+        Scene scene = new Scene(grid, 350, 260);
+        window.setScene(scene);
+        window.showAndWait();
+        return newEntry;
+    }
+    
+    private static void submit(){
+    	{
         	boolean missing = false;
         	if(customerBox.getValue()==null||customerBox.getValue().isEmpty()){
         		(labelx.get(0)).setVisible(true);
@@ -107,7 +125,7 @@ public class CreateBox {
         		(labelx.get(0)).setVisible(false);
         	}
         	
-        	if(itemField.getText().isEmpty()){
+        	if(labelx.get(1).getText().isEmpty()){
         		(labelx.get(1)).setVisible(true);
     			missing=true;
         	}
@@ -133,11 +151,6 @@ public class CreateBox {
         		newEntry = entries;
         		window.close();
         	}
-        }		);
-
-        Scene scene = new Scene(grid, 350, 260);
-        window.setScene(scene);
-        window.showAndWait();
-        return newEntry;
+        }
     }
 }
