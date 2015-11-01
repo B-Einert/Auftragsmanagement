@@ -2,6 +2,7 @@ package application;
 
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ServerReturn implements Runnable
@@ -67,6 +68,14 @@ public class ServerReturn implements Runnable
                     	if (!entry[0].equals("-1")){
                     		sendString("new");
                         	sendStrings(entry);
+                        	if(Server.dbManager.checkCustomer(entry[2])){
+                        		sendString("cust");
+                            	sendString(entry[2]);
+                        	}
+                    	}
+                    	else{
+                    		OUT.println("fail");
+                            OUT.flush();
                     	}
                     }
                     else if(message.contains("edit")){
@@ -109,8 +118,19 @@ public class ServerReturn implements Runnable
                     		sendString(link);
                     	}
                     }
-                    else{
-                    	sendString(message);
+                    else if(message.contentEquals("custInf")){
+                    	String customer = INPUT.nextLine();
+                    	Map<String, String> answer = Server.dbManager.getCustInf(customer);
+                    	OUT.println("custInf");
+                    	OUT.flush();
+                    	for(String a:answer.keySet()){
+                    		OUT.println(a);
+                        	OUT.flush();
+                        	OUT.println(answer.get(a));
+                        	OUT.flush();
+                    	}
+                    	OUT.println("!?#end");
+                    	OUT.flush();
                     }
                 }
             }

@@ -7,7 +7,10 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class DatabaseManager {
 	
@@ -417,5 +420,52 @@ public class DatabaseManager {
 
 	public ArrayList<String> getCustomerList() {
 		return this.customerList;
+	}
+
+	public boolean checkCustomer(String customer) {
+		if(this.customerList.contains(customer)){
+			return false;
+		}
+		else{
+			customerList.add(customer);
+			return true;
+		}
+	}
+
+	public Map<String, String> getCustInf(String customer) {
+		Map<String, String> answer= new HashMap<String,String>();
+		File[] files = {new File(db + "/abgeschlossene_Vorgaenge/" + customer), new File(db + "/laufende_Vorgaenge/" + customer)};
+		BufferedReader in;
+		String partner;
+		String phone;
+		for(File headfile: files){
+			if(headfile.exists()){
+				for(File f: headfile.listFiles()){
+					File temp = new File(f.getPath() + "/Protokoll.txt");
+					try {
+						in = new BufferedReader(new FileReader(temp));
+						try{
+							in.readLine();in.readLine();in.readLine();in.readLine();in.readLine();in.readLine();in.readLine();in.readLine();
+							in.readLine();in.readLine();in.readLine();
+							in.readLine();in.readLine();in.readLine();
+							in.readLine();in.readLine();in.readLine();
+							partner = in.readLine();in.readLine();in.readLine();
+							phone = in.readLine();
+							System.out.println(partner + " " + phone);
+							in.close();
+							answer.put(partner, phone);
+	    				}
+	    				catch(Exception e){
+	    					System.out.println("couldnt read protocoll");
+	    					e.printStackTrace();
+	    				}
+					} catch (FileNotFoundException e) {
+						System.out.println("protokoll not found");
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return answer;
 	}
 }

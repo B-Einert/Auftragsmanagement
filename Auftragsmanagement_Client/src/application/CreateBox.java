@@ -1,9 +1,12 @@
 package application;
 
 import java.util.LinkedList;
+import java.util.Map;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -19,12 +22,16 @@ import javafx.stage.*;
 public class CreateBox {
     private static String[] newEntry;
     private static ComboBox<String> customerBox, partnerBox;
+    private static ObservableList<String> partnerInfo;
+    private static Map<String, String> infoList;
     private static LinkedList<Label> labels, labelx;
     private static LinkedList<Node> fields;
     private static Stage window;
+    private static boolean ready;
 
     public static String[] display()
     {
+    	partnerInfo = FXCollections.observableArrayList();
     	window = new Stage();
     	labels= new LinkedList<Label>();
     	labelx= new LinkedList<Label>();
@@ -44,7 +51,6 @@ public class CreateBox {
         
     	customerBox = new ComboBox<String>();
     	customerBox.setItems(ClientGUI.customers);
-    	new AutoCompleteComboBoxListener(customerBox);
     	
     	fields.add(customerBox);
     	
@@ -52,16 +58,29 @@ public class CreateBox {
     	fields.add(itemField);
     	
     	partnerBox = new ComboBox<String>();
+    	partnerBox.setItems(partnerInfo);
     	partnerBox.setEditable(true);
-    	partnerBox.setOnKeyPressed(e->{
-    		partnerBox.hide();
+        partnerBox.setOnKeyPressed(e->{
+        	partnerBox.hide();
     	});
-    	partnerBox.setOnKeyReleased(e -> {
-    		partnerBox.setValue(partnerBox.getEditor().getText());
+        partnerBox.setOnKeyReleased(e -> {
+        	partnerBox.setValue(partnerBox.getEditor().getText());
     	});
+    	
+    	
     	fields.add(partnerBox);
     	fields.add(new TextField());
     	fields.add(new TextField());
+    	
+    	partnerBox.setOnAction(e ->{
+    		if(infoList.containsKey(partnerBox.getValue())){
+    			((TextField)fields.get(3)).setText(infoList.get(partnerBox.getValue()));
+    		}
+    	});
+    	
+
+    	new AutoCompleteComboBoxListener(customerBox, partnerBox, (TextField)fields.get(3));
+    	
         Button createButton = new Button("Vorgang erstellen");
                 
         GridPane grid = new GridPane();
@@ -121,11 +140,9 @@ public class CreateBox {
         		(labelx.get(0)).setVisible(true);
     			missing=true;
         	}
-        	else {
-        		(labelx.get(0)).setVisible(false);
-        	}
+        	else (labelx.get(0)).setVisible(false);
         	
-        	if(labelx.get(1).getText().isEmpty()){
+        	if(((TextField)fields.get(1)).getText().isEmpty()){
         		(labelx.get(1)).setVisible(true);
     			missing=true;
         	}
@@ -153,4 +170,25 @@ public class CreateBox {
         	}
         }
     }
+    
+    public static boolean getReady(){
+    	return ready;
+    }
+    
+    public static void setReady(boolean ready){
+    	CreateBox.ready = ready;
+    }
+	
+	public static void setPartnerInfo(Map<String, String> infoList){
+		//int i=0;
+		while(!partnerInfo.isEmpty()){
+			partnerInfo.remove(0);
+		}
+		CreateBox.infoList = infoList;
+		for(String info: infoList.keySet())
+		{		
+			partnerInfo.add(info);
+		}
+		if(!partnerInfo.isEmpty())CreateBox.partnerBox.setValue(partnerInfo.get(0));
+	}
 }

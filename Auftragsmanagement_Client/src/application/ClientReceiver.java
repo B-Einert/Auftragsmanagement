@@ -4,7 +4,10 @@ import java.net.*;
 import java.time.LocalDate;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
@@ -186,6 +189,26 @@ public class ClientReceiver implements Runnable{
 		    				break;
 		    			}
 		    		}
+		    	}
+		    	else if(message.contentEquals("cust")){
+		    		message=INPUT.nextLine();
+		    		ClientGUI.customers.add(message);
+		    	}
+		    	else if(message.contentEquals("custInf")){
+		    		Map<String,String> answer = new HashMap<String,String>();
+		    		try {
+		    			String next;
+		    			while(INPUT.hasNext()){
+		    				if(!(next=INPUT.nextLine()).contentEquals("!?#end"))answer.put(next, INPUT.nextLine());
+		    				else break;
+		    			}
+		    			CreateBox.setPartnerInfo(answer);
+		    			System.out.println("partners done");
+		    		} catch (Exception e) {
+		    			e.printStackTrace();
+		    			JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen. bitte neu starten!");
+		    		}
+		    		CreateBox.setReady(true);
 		    	}
 	    	}
 	    	catch(Exception e)

@@ -1,21 +1,28 @@
 package application;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
+public class AutoCompleteComboBoxListener implements EventHandler<KeyEvent> {
 
     private ComboBox<String> comboBox;
+    private ComboBox<String> partnerBox;
+    private TextField phone;
     private ObservableList<String> data;
     private boolean moveCaretToPos = false;
     private int caretPos;
 
-    public AutoCompleteComboBoxListener(final ComboBox<String> comboBox) {
+    public AutoCompleteComboBoxListener(final ComboBox<String> comboBox, final ComboBox<String> partnerBox, final TextField phone) {
         this.comboBox = comboBox;
+        this.partnerBox = partnerBox;
+        this.phone = phone;
         data = comboBox.getItems();
 
         this.comboBox.setEditable(true);
@@ -27,6 +34,26 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
             }
         });
         this.comboBox.setOnKeyReleased(AutoCompleteComboBoxListener.this);
+        
+        this.comboBox.setOnAction(e ->{
+        	if(data.contains(comboBox.getValue())){
+        		ClientGUI.sender.sendString("custInf");
+        		ClientGUI.sender.sendString(comboBox.getValue());  
+        		while(true){
+            		try {
+            			if(CreateBox.getReady()){
+            				CreateBox.setReady(false);
+            				break;
+            			}
+            			//System.out.println("not ready yet!");
+            			Thread.sleep(10);
+            		} catch (Exception ex) {
+            			System.out.println("interrupted");		
+            			ex.printStackTrace();
+            		}
+            	}
+        	}
+        });
     }
 
     @Override
@@ -57,13 +84,17 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
             return;
         }
 
-        ObservableList list = FXCollections.observableArrayList();
+        ObservableList<String> list = FXCollections.observableArrayList();
+        int border = 0;
         for (int i=0; i<data.size(); i++) {
-            if(data.get(i).toString().toLowerCase().startsWith(
-                AutoCompleteComboBoxListener.this.comboBox
-                .getEditor().getText().toLowerCase())) {
-                list.add(data.get(i));
+        	if(data.get(i).toString().toLowerCase().startsWith(
+                comboBox.getEditor().getText().toLowerCase())) {
+                list.add(border, data.get(i));
+                border ++;
             }
+        	else if(StringUtils.getLevenshteinDistance(data.get(i), comboBox.getEditor().getText())<3){
+        		list.add(data.get(i));
+        	}
         }
         String t = comboBox.getEditor().getText();
 
