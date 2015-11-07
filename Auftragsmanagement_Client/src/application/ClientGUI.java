@@ -8,7 +8,9 @@ import java.net.UnknownHostException;
 import java.time.LocalDate;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -32,15 +34,27 @@ public class ClientGUI extends Application {
     public static ObservableList<String> customers = FXCollections.observableArrayList();
     public static Socket SOCK;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {	
+        launch(args);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+    	
+    	Platform.setImplicitExit(false);
+
     	final int PORT = 444;
         final String HOST = "localhost";
         try {
 			SOCK = new Socket(HOST, PORT);
 		} catch (UnknownHostException e) {
+			AlertBox.display("Verbindung zum Server konnte nicht hergestellt werden.");
+			System.exit(0);
 			System.out.println(e);
 			e.printStackTrace();
 		} catch (IOException e) {
+			AlertBox.display("Verbindung zum Server konnte nicht hergestellt werden.");
+			System.exit(0);
 			System.out.println(e);
 			e.printStackTrace();
 		}
@@ -48,11 +62,6 @@ public class ClientGUI extends Application {
         sender = new ClientSender();
     	client = new ClientReceiver();
     	
-        launch(args);
-    }
-
-    @Override
-    public void start(Stage primaryStage) throws Exception {
         window = primaryStage;
         window.setWidth(937);
         window.setTitle("Auftragsmanagement");
@@ -61,7 +70,7 @@ public class ClientGUI extends Application {
         	e.consume(); 
         	try
         	{
-        		client.DISCONNECT();
+        		ClientReceiver.DISCONNECT();
         	}
         	catch(Exception a)
         	{
@@ -76,7 +85,7 @@ public class ClientGUI extends Application {
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         
         //link column
-        TableColumn<Entry, String> linkColumn = new TableColumn<>("Link");
+        TableColumn<Entry, Button> linkColumn = new TableColumn<>("Link");
         linkColumn.setMinWidth(50);
         linkColumn.setCellValueFactory(new PropertyValueFactory<>("link"));
         linkColumn.getStyleClass().add("center");
@@ -131,13 +140,13 @@ public class ClientGUI extends Application {
         });
         
         //pursue column
-        TableColumn<Entry, String> pursueColumn = new TableColumn<>("Weiterführen");
+        TableColumn<Entry, Button> pursueColumn = new TableColumn<>("Weiterführen");
         pursueColumn.setMinWidth(80);
         pursueColumn.setCellValueFactory(new PropertyValueFactory<>("pursue"));
         pursueColumn.getStyleClass().add("center");
         
         //detail column
-        TableColumn<Entry, String> detailColumn = new TableColumn<>("Detail");
+        TableColumn<Entry, Button> detailColumn = new TableColumn<>("Detail");
         detailColumn.setMinWidth(60);
         detailColumn.setCellValueFactory(new PropertyValueFactory<>("detail"));
         detailColumn.getStyleClass().add("center");
@@ -160,6 +169,17 @@ public class ClientGUI extends Application {
         table.getColumns().addAll(dateColumn, linkColumn, customerColumn, itemColumn, 
         		contactDateColumn, contactColumn, pursueColumn, detailColumn);
         table.setEditable(true);
+        
+        entries.addListener(new ListChangeListener<Entry>()
+    {
+            @Override
+            public void onChanged(ListChangeListener.Change<? extends Entry> change) 
+            {               
+            	table.requestFocus();
+                table.getSelectionModel().select(0);
+                table.getFocusModel().focus(0);
+            }
+        });
 
         VBox vBox = new VBox();
         vBox.getChildren().addAll(table, hBox);
@@ -192,21 +212,7 @@ public class ClientGUI extends Application {
     		
     		//new CreateBox();
     	}
-    }
-
-    //Delete button clicked
-    public void disconnectButtonClicked(){
-    	try
-     	{
-    		client.DISCONNECT();
-     	}
-    	catch(Exception e)
-    	{
-    		System.out.println(e);
-			e.printStackTrace();
-    	}
-    }
-        
+    }   
 
     //Get all of the products
     public ObservableList<Entry> getEntry(){

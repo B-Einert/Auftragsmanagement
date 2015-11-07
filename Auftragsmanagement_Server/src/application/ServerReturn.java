@@ -24,7 +24,7 @@ public class ServerReturn implements Runnable
     {
         if(!SOCK.isConnected())
         {
-        	disconnect();
+        	disconnect(SOCK);
         }
     }
     
@@ -60,7 +60,7 @@ public class ServerReturn implements Runnable
                     System.out.println(message);
                     
                     if(message.contains("disconnect")){
-                    	disconnect();
+                    	disconnect(SOCK);
                     }
                     else if(message.contains("new")){
                     	String[] entry = (String[]) objIn.readObject();
@@ -105,8 +105,6 @@ public class ServerReturn implements Runnable
                 			e.printStackTrace();
                         	System.out.println("couldnt send details");
                         }
-//                        objOut.writeObject(details);
-//                        objOut.flush();
 		    			System.out.println("sent details");
 
                     }
@@ -164,11 +162,13 @@ public class ServerReturn implements Runnable
     	}
     }
     
-    public void disconnect() throws IOException{
+    public void disconnect(Socket s) throws IOException{
     	for(int i = 0; i <= Server.ConnectionArray.size(); i++)
         {
-            if(Server.ConnectionArray.get(i)==SOCK)
+            if(Server.ConnectionArray.get(i)==s)
             {
+
+            	ServerGUI.tableEntries.add(new TableEntry("Client " + s.getLocalAddress() + " hat das Programm beendet."));
             	System.out.println("disconnected");
             	SOCK.close();
                 Server.ConnectionArray.remove(i);
@@ -183,9 +183,16 @@ public class ServerReturn implements Runnable
             for(int i = 1; i <= Server.ConnectionArray.size(); i++)
             {
                 Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i-1);
-                PrintWriter TEMP_OUT = new PrintWriter(TEMP_SOCK.getOutputStream());
-                TEMP_OUT.println(message);
-                TEMP_OUT.flush();
+                try{
+                	PrintWriter TEMP_OUT = new PrintWriter(TEMP_SOCK.getOutputStream());
+                	TEMP_OUT.println(message);
+                	TEMP_OUT.flush();
+                }
+                catch(SocketException e){
+                	e.printStackTrace();
+                	disconnect(TEMP_SOCK);
+                	System.out.println("disconnected");
+                }
                 System.out.println("Sent to: " + TEMP_SOCK.getLocalAddress());
             }
     	}

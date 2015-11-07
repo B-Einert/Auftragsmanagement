@@ -13,9 +13,9 @@ import javax.swing.JOptionPane;
 
 public class ClientReceiver implements Runnable{
     
-    private Socket SOCK;
+    private static Socket SOCK;
     private ObjectInputStream objIn;
-    private Scanner INPUT;
+    private static Scanner INPUT;
     private String message;
    // private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
 
@@ -34,16 +34,14 @@ public class ClientReceiver implements Runnable{
             {
             	System.out.println(e);
     			e.printStackTrace();
-            	JOptionPane.showMessageDialog(null, "Thread not startable");
-            	System.exit(0);
+    			ExitBox.display("Verbindung zum Server konnte nicht hergestellt werden.");
             }                     
         }
         catch(Exception e)
         {
         	System.out.println(e);
 			e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Server reagiert nicht.");
-            System.exit(0);
+			ExitBox.display("Verbindung zum Server konnte nicht hergestellt werden.");
         }
     }
     public void run()
@@ -101,8 +99,7 @@ public class ClientReceiver implements Runnable{
         {
     		System.out.println(e);
 			e.printStackTrace();
-        	JOptionPane.showMessageDialog(null, "Initialisierung Fehlgeschlagen");
-        	System.exit(0);
+			ExitBox.display("Beim Erstellen der Tabelle ist ein Fehler aufgetreten.");
         }       
     }
     
@@ -111,13 +108,17 @@ public class ClientReceiver implements Runnable{
 		ClientGUI.entries.add(e);
     }
     
-    public void DISCONNECT() throws IOException
+    public static void DISCONNECT() throws IOException
     {
     	
-    	ClientGUI.sender.sendString("disconnect");
+    	try{
+    		ClientGUI.sender.sendString("disconnect");
+    	}
+    	catch(Exception e){
+    		
+    	}
         INPUT.close();
         SOCK.close();
-        JOptionPane.showMessageDialog(null, "You disconnected");
         System.exit(0);
     }
     
@@ -146,7 +147,7 @@ public class ClientReceiver implements Runnable{
 		    	else if(message.contains("disconnect")){
 		    		INPUT.close();
 		            SOCK.close();
-		            JOptionPane.showMessageDialog(null, "Server reagiert nicht. Sorry");
+		            AlertBox.display("Das Serverprogramm wurde beendet.");
 		            System.exit(0);
 		    	}
 		    	else if(message.contains("edit")){
@@ -178,7 +179,7 @@ public class ClientReceiver implements Runnable{
 		    			System.out.println("details done");
 		    		} catch (Exception e) {
 		    			e.printStackTrace();
-		    			JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen. bitte neu starten!");
+		    			AlertBox.display("Details konnten nicht korrekt geladen werden.");
 		    		}
 		    	}
 		    	else if(message.contains("delete")){
@@ -206,7 +207,7 @@ public class ClientReceiver implements Runnable{
 		    			System.out.println("partners done");
 		    		} catch (Exception e) {
 		    			e.printStackTrace();
-		    			JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen. bitte neu starten!");
+		    			AlertBox.display("Datenübertragung fehlgeschlagen");
 		    		}
 		    		CreateBox.setReady(true);
 		    	}
@@ -215,7 +216,7 @@ public class ClientReceiver implements Runnable{
 	        {
 	    		System.out.println(e);
 				e.printStackTrace();
-	        	JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen");
+				AlertBox.display("Datenübertragung fehlgeschlagen");
 	        }
     
         }
@@ -228,9 +229,8 @@ public class ClientReceiver implements Runnable{
 			addEntry(entry);
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "receiving fehlgeschlagen. bitte neu starten!");
+			ExitBox.display("Datenübertragung fehlgeschlagen.");
 		}
-		
     }
 }
 
