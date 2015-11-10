@@ -24,6 +24,7 @@ public class Server implements Runnable
     public static LinkedList<Socket> ConnectionArray = new LinkedList<Socket>();
     public static LinkedList<Thread> Threads = new LinkedList<Thread>();
     public static DatabaseManager dbManager;
+    //public static ActivityChecker checker;
 
 	public static void DISCONNECT(){
 		for(Socket s : ConnectionArray){
@@ -45,6 +46,9 @@ public class Server implements Runnable
 	@Override
 	public void run() {
 		Server.dbManager = new DatabaseManager();
+		//checker = new ActivityChecker();
+		//Thread check = new Thread(checker);
+        //check.start();
 		
 		try
         {

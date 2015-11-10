@@ -1,5 +1,6 @@
 package application;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,45 +13,58 @@ public class AlertBox {
 	
 	//Create variable
     static int answer;
+    private static Stage window;
 
     public static int display(String string) {
-        Stage window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Meldung");
-        window.setMinWidth(250);
-        window.setHeight(120);
-        window.setOnCloseRequest(e -> {
-        	//Fenster vom schließen hindern
-        	try
-        	{
-        		answer = -1;
-        	}
-        	catch(Exception a)
-        	{
-        		System.out.println(a);
-    			a.printStackTrace();
-        	}
-        });
-
-        //Create two buttons
-        Button buttonA = new Button("OK");
-
-        //Clicking will set answer and close window
-        buttonA.setOnAction(e -> {
-            answer = 1;
-            window.close();
-        });
-
-        VBox layout = new VBox(10);
-
-        layout.getChildren().addAll(new Label(string), buttonA);
-        layout.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(layout);
-        window.setScene(scene);
-        window.showAndWait();
-
-        //Make sure to return answer
-        return answer;
+    	
+    	Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+    	
+	        window = new Stage();
+	        window.initModality(Modality.APPLICATION_MODAL);
+	        window.setTitle("Meldung");
+	        window.setMinWidth(250);
+	        window.setHeight(120);
+	        window.setOnCloseRequest(e -> {
+	        	//Fenster vom schließen hindern
+	        	try
+	        	{
+	        		answer = -1;
+	        		System.exit(0);
+	        	}
+	        	catch(Exception a)
+	        	{
+	        		System.out.println(a);
+	    			a.printStackTrace();
+	        	}
+	        });
+	
+	        //Create two buttons
+	        Button buttonA = new Button("OK");
+	
+	        //Clicking will set answer and close window
+	        buttonA.setOnAction(e -> {
+	            answer = 1;
+	            window.close();
+	            System.exit(0);
+	        });
+	
+	        VBox layout = new VBox(10);
+	
+	        layout.getChildren().addAll(new Label(string), buttonA);
+	        layout.setAlignment(Pos.CENTER);
+	        Scene scene = new Scene(layout);
+	        window.setScene(scene);
+	        window.showAndWait();
+	
+	        //Make sure to return answer
+	        
+            }
+            
+    	
+        
+    	});
+    	return answer;
     }
-
 }

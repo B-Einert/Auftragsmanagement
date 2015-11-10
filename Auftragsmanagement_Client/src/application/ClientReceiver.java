@@ -143,8 +143,9 @@ public class ClientReceiver implements Runnable{
 		    	else if(message.contains("disconnect")){
 		    		INPUT.close();
 		            SOCK.close();
-		            ClientGUI.alert("Das Serverprogramm wurde beendet.");
-		            System.exit(0);
+		            AlertBox.display("Das Serverprogramm wurde beendet");
+//		            ClientGUI.alert("Das Serverprogramm wurde beendet.");
+//		            System.exit(0);
 		    	}
 		    	else if(message.contains("edit")){
 		    		message=INPUT.nextLine();
@@ -175,7 +176,7 @@ public class ClientReceiver implements Runnable{
 		    			System.out.println("details done");
 		    		} catch (Exception e) {
 		    			e.printStackTrace();
-		    			AlertBox.display("Details konnten nicht korrekt geladen werden.");
+		    			ExitBox.display("Details konnten nicht korrekt geladen werden.");
 		    		}
 		    	}
 		    	else if(message.contains("delete")){
@@ -203,7 +204,7 @@ public class ClientReceiver implements Runnable{
 		    			System.out.println("partners done");
 		    		} catch (Exception e) {
 		    			e.printStackTrace();
-		    			AlertBox.display("Datenübertragung fehlgeschlagen");
+		    			ExitBox.display("Datenübertragung fehlgeschlagen");
 		    		}
 		    		CreateBox.setReady(true);
 		    	}
@@ -212,7 +213,7 @@ public class ClientReceiver implements Runnable{
 	        {
 	    		System.out.println(e);
 				e.printStackTrace();
-				AlertBox.display("Datenübertragung fehlgeschlagen");
+				ExitBox.display("Datenübertragung fehlgeschlagen");
 	        }
     
         }
@@ -228,13 +229,6 @@ public class ClientReceiver implements Runnable{
 		Entry e = new Entry(entry.get(0), LocalDate.parse(entry.get(1)), entry.get(2), entry.get(3), entry.get(4), Integer.parseInt(entry.get(5)));
 		ClientGUI.entries.add(e);
     	
-//		try {
-//			entry = (String[]) objIn.readObject();
-//			addEntry(entry);
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//			ExitBox.display("Datenübertragung fehlgeschlagen.");
-//		}
     }
 }
 

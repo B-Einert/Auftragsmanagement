@@ -175,6 +175,7 @@ public class ServerReturn implements Runnable
             {
                 Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i-1);
                 try{
+                	System.out.println("send " + message + " to " +TEMP_SOCK.getLocalAddress());
                 	PrintWriter TEMP_OUT = new PrintWriter(TEMP_SOCK.getOutputStream());
                 	TEMP_OUT.println(message);
                 	TEMP_OUT.flush();
@@ -182,9 +183,7 @@ public class ServerReturn implements Runnable
                 catch(SocketException e){
                 	e.printStackTrace();
                 	disconnect(TEMP_SOCK);
-                	System.out.println("disconnected");
                 }
-                System.out.println("Sent to: " + TEMP_SOCK.getLocalAddress());
             }
     	}
     	catch(Exception e){
@@ -207,21 +206,6 @@ public class ServerReturn implements Runnable
 			e.printStackTrace();
         	System.out.println("couldnt send message");
         }
-//    	try{
-//            for(int i = 1; i <= Server.ConnectionArray.size(); i++)
-//            {
-//                Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i-1);
-//                AppendingObjectOutputStream TEMP_OUT = new AppendingObjectOutputStream(TEMP_SOCK.getOutputStream());
-//                TEMP_OUT.writeObject(message);
-//                TEMP_OUT.flush();
-//                System.out.println("Sent to: " + TEMP_SOCK.getLocalAddress());
-//            }
-//    	}
-//    	catch(Exception e){
-//    		System.out.println(e);
-//    		e.printStackTrace();
-//    
-//    	}
     }
 }
 

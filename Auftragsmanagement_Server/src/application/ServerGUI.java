@@ -8,6 +8,7 @@ import java.util.LinkedList;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -75,6 +76,18 @@ public class ServerGUI extends Application
         table.setItems(tableEntries);
         table.getColumns().addAll(timeColumn, entryColumn);
         table.setEditable(true);
+        table.getItems().addListener((ListChangeListener<TableEntry>) (c -> {
+            c.next();
+            final int size = table.getItems().size();
+            if (size > 0) {
+                try{
+                	table.scrollTo(size - 1);
+                }
+                catch (IllegalStateException oi){
+                	System.out.println(oi);
+                }
+            }
+        }));
 
         VBox vBox = new VBox();
         vBox.getChildren().addAll(table, close);

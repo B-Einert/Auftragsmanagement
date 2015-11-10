@@ -8,13 +8,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class ExitBox {
+public class AlertBox2 {
+	static int answer;
 	
-	//Create variable
-    static int answer;
-
-    public static int display(String string) {
-    	Stage window = new Stage();
+	public static int display(String string) {
+		Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Meldung");
         window.setMinWidth(250);
@@ -23,9 +21,8 @@ public class ExitBox {
         	//Fenster vom schließen hindern
         	try
         	{
-        		ClientReceiver.DISCONNECT();
         		answer = -1;
-        		window.close();
+        		System.exit(0);
         	}
         	catch(Exception a)
         	{
@@ -39,25 +36,22 @@ public class ExitBox {
 
         //Clicking will set answer and close window
         buttonA.setOnAction(e -> {
-        	try {
-				ClientReceiver.DISCONNECT();
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
             answer = 1;
             window.close();
+            System.exit(0);
         });
 
         VBox layout = new VBox(10);
 
-        layout.getChildren().addAll(new Label(string), new Label("Bitte starten Sie das Programm neu!"), buttonA);
+        layout.getChildren().addAll(new Label(string), buttonA);
         layout.setAlignment(Pos.CENTER);
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
 
         //Make sure to return answer
-        return answer;
-    }
-
+        
+        
+	return answer;
+	}
 }

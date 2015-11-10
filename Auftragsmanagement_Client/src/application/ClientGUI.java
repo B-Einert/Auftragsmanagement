@@ -8,7 +8,6 @@ import java.net.UnknownHostException;
 import java.time.LocalDate;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -45,12 +44,12 @@ public class ClientGUI extends Application {
         try {
 			SOCK = new Socket(HOST, PORT);
 		} catch (UnknownHostException e) {
-			AlertBox.display("Verbindung zum Server konnte nicht hergestellt werden.");
+			AlertBox2.display("Verbindung zum Server konnte nicht hergestellt werden.");
 			System.exit(0);
 			System.out.println(e);
 			e.printStackTrace();
 		} catch (IOException e) {
-			AlertBox.display("Verbindung zum Server konnte nicht hergestellt werden.");
+			AlertBox2.display("Verbindung zum Server konnte nicht hergestellt werden.");
 			System.exit(0);
 			System.out.println(e);
 			e.printStackTrace();
@@ -179,21 +178,6 @@ public class ClientGUI extends Application {
                 table.scrollTo(size - 1);
             }
         }));
-        
-//        table.requestFocus();
-//        table.getSelectionModel().select(entries.size()-1);
-//        table.getFocusModel().focus(entries.size()-1);
-        
-//        entries.addListener(new ListChangeListener<Entry>()
-//    {
-//            @Override
-//            public void onChanged(ListChangeListener.Change<? extends Entry> change) 
-//            {               
-//            	//table.requestFocus();
-//                table.getSelectionModel().select(entries.size()-1);
-//                table.getFocusModel().focus(entries.size()-1);
-//            }
-//        });
 
         VBox vBox = new VBox();
         vBox.getChildren().addAll(table, hBox);

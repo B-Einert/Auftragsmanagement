@@ -40,7 +40,7 @@ public class DateBox {
         Label label = new Label("bitte Versanddatum auswählen!");
         
         DatePicker datePicker = new DatePicker();
-        datePicker.setValue(LocalDate.now());
+        datePicker.setValue(LocalDate.now().plusDays(14));
         
         Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell()
         {
