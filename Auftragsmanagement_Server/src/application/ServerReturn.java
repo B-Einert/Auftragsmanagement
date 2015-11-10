@@ -93,18 +93,8 @@ public class ServerReturn implements Runnable
                     	OUT.println("detail");
                         OUT.flush();
                         System.out.println(details[2]);
-                        try{
-                        	for(String s : details){
-                        		OUT.println(s);
-                        		OUT.flush();
-                        	}
-                        	OUT.println("!?#end");
-                        	OUT.flush();
-                        }
-                        catch(Exception e){
-                			e.printStackTrace();
-                        	System.out.println("couldnt send details");
-                        }
+                        sendStrings(details);
+                        
 		    			System.out.println("sent details");
 
                     }
@@ -170,9 +160,10 @@ public class ServerReturn implements Runnable
 
             	ServerGUI.tableEntries.add(new TableEntry("Client " + s.getLocalAddress() + " hat das Programm beendet."));
             	System.out.println("disconnected");
-            	SOCK.close();
-                Server.ConnectionArray.remove(i);
+            	Server.ConnectionArray.remove(i);
                 Server.Threads.remove(i);
+                
+            	SOCK.close();
                 break;
             }
         }
@@ -205,20 +196,32 @@ public class ServerReturn implements Runnable
     
     public void sendStrings(String[] message){
     	try{
-            for(int i = 1; i <= Server.ConnectionArray.size(); i++)
-            {
-                Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i-1);
-                AppendingObjectOutputStream TEMP_OUT = new AppendingObjectOutputStream(TEMP_SOCK.getOutputStream());
-                TEMP_OUT.writeObject(message);
-                TEMP_OUT.flush();
-                System.out.println("Sent to: " + TEMP_SOCK.getLocalAddress());
-            }
-    	}
-    	catch(Exception e){
-    		System.out.println(e);
-    		e.printStackTrace();
-    
-    	}
+        	for(String s : message){
+        		OUT.println(s);
+        		OUT.flush();
+        	}
+        	OUT.println("!?#end");
+        	OUT.flush();
+        }
+        catch(Exception e){
+			e.printStackTrace();
+        	System.out.println("couldnt send message");
+        }
+//    	try{
+//            for(int i = 1; i <= Server.ConnectionArray.size(); i++)
+//            {
+//                Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i-1);
+//                AppendingObjectOutputStream TEMP_OUT = new AppendingObjectOutputStream(TEMP_SOCK.getOutputStream());
+//                TEMP_OUT.writeObject(message);
+//                TEMP_OUT.flush();
+//                System.out.println("Sent to: " + TEMP_SOCK.getLocalAddress());
+//            }
+//    	}
+//    	catch(Exception e){
+//    		System.out.println(e);
+//    		e.printStackTrace();
+//    
+//    	}
     }
 }
 

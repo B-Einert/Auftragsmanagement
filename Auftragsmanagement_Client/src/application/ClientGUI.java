@@ -40,9 +40,6 @@ public class ClientGUI extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-    	
-    	Platform.setImplicitExit(false);
-
     	final int PORT = 444;
         final String HOST = "localhost";
         try {
@@ -58,7 +55,6 @@ public class ClientGUI extends Application {
 			System.out.println(e);
 			e.printStackTrace();
 		}
-        System.out.println("You connected to: "+ HOST);
         sender = new ClientSender();
     	client = new ClientReceiver();
     	
@@ -86,6 +82,7 @@ public class ClientGUI extends Application {
         
         //link column
         TableColumn<Entry, Button> linkColumn = new TableColumn<>("Link");
+        linkColumn.setSortable(false);
         linkColumn.setMinWidth(50);
         linkColumn.setCellValueFactory(new PropertyValueFactory<>("link"));
         linkColumn.getStyleClass().add("center");
@@ -114,7 +111,6 @@ public class ClientGUI extends Application {
         		@Override
         		protected void updateItem(String item, boolean empty) {
         			super.updateItem(item, empty);
-        			System.out.println(item);
         			if (item == null || empty) {
                         setText(null);
                         setStyle("");
@@ -141,12 +137,14 @@ public class ClientGUI extends Application {
         
         //pursue column
         TableColumn<Entry, Button> pursueColumn = new TableColumn<>("Weiterführen");
+        pursueColumn.setSortable(false);
         pursueColumn.setMinWidth(80);
         pursueColumn.setCellValueFactory(new PropertyValueFactory<>("pursue"));
         pursueColumn.getStyleClass().add("center");
         
         //detail column
         TableColumn<Entry, Button> detailColumn = new TableColumn<>("Detail");
+        detailColumn.setSortable(false);
         detailColumn.setMinWidth(60);
         detailColumn.setCellValueFactory(new PropertyValueFactory<>("detail"));
         detailColumn.getStyleClass().add("center");
@@ -164,22 +162,38 @@ public class ClientGUI extends Application {
         hBox.setSpacing(10);
         hBox.getChildren().addAll(newEntryButton, archiveButton);
         
+        
         table = new TableView<>();
         table.setItems(getEntry());
         table.getColumns().addAll(dateColumn, linkColumn, customerColumn, itemColumn, 
         		contactDateColumn, contactColumn, pursueColumn, detailColumn);
         table.setEditable(true);
+        table.getSortOrder().add(dateColumn);
+        table.getSortOrder().add(customerColumn);
+        table.scrollTo(table.getItems().size() - 1);
         
-        entries.addListener(new ListChangeListener<Entry>()
-    {
-            @Override
-            public void onChanged(ListChangeListener.Change<? extends Entry> change) 
-            {               
-            	table.requestFocus();
-                table.getSelectionModel().select(0);
-                table.getFocusModel().focus(0);
+        table.getItems().addListener((ListChangeListener<Entry>) (c -> {
+            c.next();
+            final int size = table.getItems().size();
+            if (size > 0) {
+                table.scrollTo(size - 1);
             }
-        });
+        }));
+        
+//        table.requestFocus();
+//        table.getSelectionModel().select(entries.size()-1);
+//        table.getFocusModel().focus(entries.size()-1);
+        
+//        entries.addListener(new ListChangeListener<Entry>()
+//    {
+//            @Override
+//            public void onChanged(ListChangeListener.Change<? extends Entry> change) 
+//            {               
+//            	//table.requestFocus();
+//                table.getSelectionModel().select(entries.size()-1);
+//                table.getFocusModel().focus(entries.size()-1);
+//            }
+//        });
 
         VBox vBox = new VBox();
         vBox.getChildren().addAll(table, hBox);
@@ -222,4 +236,8 @@ public class ClientGUI extends Application {
     public void setEntry(ObservableList<Entry> entries){
     	ClientGUI.entries = entries;
     }
+
+	public static void alert(String alert) {
+        AlertBox.display(alert);
+	}
 }

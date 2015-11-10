@@ -84,7 +84,8 @@ public class ClientReceiver implements Runnable{
     	
     		for(String[] entry: initList)
     		{
-    			addEntry(entry);
+    			Entry e = new Entry(entry[0], LocalDate.parse(entry[1]), entry[2], entry[3], entry[4], Integer.parseInt(entry[5]));
+    			ClientGUI.entries.add(e);
     		}
     		received = null;
     		while(received == null)
@@ -101,11 +102,6 @@ public class ClientReceiver implements Runnable{
 			e.printStackTrace();
 			ExitBox.display("Beim Erstellen der Tabelle ist ein Fehler aufgetreten.");
         }       
-    }
-    
-    public void addEntry(String[] entry){
-    	Entry e = new Entry(entry[0], LocalDate.parse(entry[1]), entry[2], entry[3], entry[4], Integer.parseInt(entry[5]));
-		ClientGUI.entries.add(e);
     }
     
     public static void DISCONNECT() throws IOException
@@ -147,7 +143,7 @@ public class ClientReceiver implements Runnable{
 		    	else if(message.contains("disconnect")){
 		    		INPUT.close();
 		            SOCK.close();
-		            AlertBox.display("Das Serverprogramm wurde beendet.");
+		            ClientGUI.alert("Das Serverprogramm wurde beendet.");
 		            System.exit(0);
 		    	}
 		    	else if(message.contains("edit")){
@@ -223,14 +219,22 @@ public class ClientReceiver implements Runnable{
     }
     
     public void receiveNewEntry(){
-    	String[] entry;
-		try {
-			entry = (String[]) objIn.readObject();
-			addEntry(entry);
-		} catch (Exception e) {
-			e.printStackTrace();
-			ExitBox.display("Datenübertragung fehlgeschlagen.");
+    	LinkedList<String> entry=new LinkedList<String>();
+    	String next;
+		while(INPUT.hasNext()){
+			if(!(next=INPUT.nextLine()).contentEquals("!?#end"))entry.add(next);
+			else break;
 		}
+		Entry e = new Entry(entry.get(0), LocalDate.parse(entry.get(1)), entry.get(2), entry.get(3), entry.get(4), Integer.parseInt(entry.get(5)));
+		ClientGUI.entries.add(e);
+    	
+//		try {
+//			entry = (String[]) objIn.readObject();
+//			addEntry(entry);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			ExitBox.display("Datenübertragung fehlgeschlagen.");
+//		}
     }
 }
 
