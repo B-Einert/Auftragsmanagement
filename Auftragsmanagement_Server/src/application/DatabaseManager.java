@@ -339,6 +339,8 @@ public class DatabaseManager {
 	public boolean editEntry(Entry entry, String state, String edit) {
 		entry.setState(state.substring(1));
 		String newContact = LocalDate.now().toString() + " " + edit;
+		String weirdContact="";
+		if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) weirdContact = LocalDate.now().toString() + entry.getLastContact().substring(10);
 		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
 		File tmp = new File(entry.getLink() + "/tmp.txt");
 		try {
@@ -348,12 +350,7 @@ public class DatabaseManager {
 			int i = 0;
 			while ((line = file.readLine()) != null) {
 				if (i == 4) {
-					if(entry.getLastContact().contains("Los")){
-						if(newContact.contains("Kontakt")){
-							writer.println(line);
-						}
-						else writer.println(newContact);
-					}
+					if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) writer.println(weirdContact);
 					else writer.println(newContact);
 				} else if (i == 5)
 					writer.println(state);
@@ -375,7 +372,8 @@ public class DatabaseManager {
 			e.printStackTrace();
 			return false;
 		}
-		entry.setLastContact(newContact);
+		if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) entry.setLastContact(weirdContact);
+		else entry.setLastContact(newContact);
 		for (String[] s : initList) {
 			if (entry.getLink().contentEquals(s[0])) {
 				initList.remove(s);

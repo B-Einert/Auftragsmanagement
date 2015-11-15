@@ -102,7 +102,7 @@ public class ClientGUI extends Application {
         contactDateColumn.setCellValueFactory(new PropertyValueFactory<>("contactDate"));
         
         //last contact column
-        TableColumn<Entry, String> contactColumn = new TableColumn<>("letzter Kontakt");
+        TableColumn<Entry, String> contactColumn = new TableColumn<>("Aktion");
         contactColumn.setMinWidth(120);
         contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
         contactColumn.setCellFactory(column -> {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalTime;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -75,15 +76,23 @@ public class ServerGUI extends Application
         table.setEditable(true);
         table.getItems().addListener((ListChangeListener<TableEntry>) (c -> {
             c.next();
-            final int size = table.getItems().size();
-            if (size > 0) {
-                try{
-                	table.scrollTo(size - 1);
+            
+            Platform.runLater(new Runnable() {
+
+                @Override
+                public void run() {
+                	final int size = table.getItems().size();
+                    if (size > 0) {
+                        try{
+                        	table.scrollTo(size - 1);
+                        }
+                        catch (IllegalStateException oi){
+                        	System.out.println(oi);
+                        }
+                    }
                 }
-                catch (IllegalStateException oi){
-                	System.out.println(oi);
-                }
-            }
+            });
+            
         }));
 
         VBox vBox = new VBox();
