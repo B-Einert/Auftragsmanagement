@@ -2,7 +2,6 @@ package application;
 
 import java.net.Socket;
 import java.io.IOException;
-import java.net.InetAddress;
 
 public class ActivityChecker implements Runnable{
 

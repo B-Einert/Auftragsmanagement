@@ -6,8 +6,8 @@ import java.nio.file.StandardCopyOption;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -133,23 +133,30 @@ public class DatabaseManager {
 	}
 
 	public void checkOld(Entry e) {
-		switch (Integer.parseInt(e.getState())) {
-		case 1:
-			if (LocalDate.now().isAfter(LocalDate.now().plusDays(addWeekend(LocalDate.now(), this.daysAfterAnfrage)))) {
-				e.setLastContact("old " + e.getLastContact());
+		try{
+			switch (Integer.parseInt(e.getState())) {
+			case 1:
+				if (LocalDate.now().isAfter(LocalDate.parse(e.getDate()).plusDays(addWeekend(LocalDate.now(), this.daysAfterAnfrage)))) {
+					e.setLastContact("old " + e.getLastContact());
+				}
+				break;
+			case 4:
+				LocalDate reference = LocalDate.parse(e.getLastContact().substring(21, 31));
+				if (LocalDate.now().isAfter(reference.plusDays(addWeekend(reference, daysAfterDate)))) {
+					e.setLastContact("old " + e.getLastContact());
+				}
+				break;
+			default:
+				LocalDate ref = LocalDate.parse(e.getLastContact().substring(0, 10));
+				if (LocalDate.now().isAfter(ref.plusDays(addWeekend(LocalDate.now(), daysAfterContact)))) {
+					e.setLastContact("old " + e.getLastContact());
+				}
+				break;
 			}
-			break;
-		case 4:
-			LocalDate reference = LocalDate.parse(e.getLastContact().substring(25));
-			if (LocalDate.now().isAfter(reference.plusDays(addWeekend(reference, daysAfterDate)))) {
-				e.setLastContact("old " + e.getLastContact());
-			}
-			break;
-		default:
-			if (LocalDate.now().isAfter(LocalDate.now().plusDays(addWeekend(LocalDate.now(), daysAfterContact)))) {
-				e.setLastContact("old " + e.getLastContact());
-			}
-			break;
+		}
+		catch (DateTimeParseException dtpe){
+			ExitBox.display(
+					"Letzter Kontakt vom Protokoll von " + e.getCustomer() + "_" + e.getItem() + " konnte nicht geladen werden.");
 		}
 	}
 
@@ -224,6 +231,9 @@ public class DatabaseManager {
 				writer.println("");
 				writer.println("//Bearbeiter");
 				writer.println(agent);
+				writer.println("");
+				writer.println("//Bestätigungsnummer");
+				writer.println("");
 				writer.println("");
 				writer.println("");
 				writer.println(entry.getLastContact());
@@ -338,11 +348,20 @@ public class DatabaseManager {
 			int i = 0;
 			while ((line = file.readLine()) != null) {
 				if (i == 4) {
-					writer.println(newContact);
+					if(entry.getLastContact().contains("Los")){
+						if(newContact.contains("Kontakt")){
+							writer.println(line);
+						}
+						else writer.println(newContact);
+					}
+					else writer.println(newContact);
 				} else if (i == 5)
 					writer.println(state);
-				else
-					writer.println(line);
+				else if (i == 26){
+					if(edit.contains("Bestätigung")) writer.println(edit.substring(12));
+					else writer.println(line);
+				}
+				else writer.println(line);
 				i++;
 			}
 			writer.println(newContact);
@@ -364,6 +383,9 @@ public class DatabaseManager {
 				break;
 			}
 		}
+		if(edit.contains("Projekt beendet")){
+			archive(entry.getLink());
+		}
 		return true;
 	}
 
@@ -381,6 +403,9 @@ public class DatabaseManager {
 				in.readLine();
 				in.readLine();
 				in.readLine();
+				in.readLine();
+				in.readLine();
+				det.add(in.readLine());
 				in.readLine();
 				in.readLine();
 				det.add(in.readLine());

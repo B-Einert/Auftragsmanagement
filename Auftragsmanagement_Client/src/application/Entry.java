@@ -23,14 +23,18 @@ public class Entry {
     public Entry(String link, LocalDate date, String customer, String item, String contact, int state){
         this.date = date;
         this.linkString = link;
-        this.link = new Button("Link");
+        this.link = new Button();
+        this.link.getStyleClass().add("folderbtn");
+        this.link.setMaxSize(10, 10);
         this.link.setOnAction(e -> linkClicked());
         this.customer = customer;
         this.item= item;
         checkOld(contact);
-        this.pursue = new Button("Weiterf¸hren");
+        this.pursue = new Button();
+        this.pursue.getStyleClass().add("pursuebtn");
         this.pursue.setOnMouseClicked(e -> pursueClicked(e));
-        this.detail = new Button("Detail");
+        this.detail = new Button();
+        this.detail.getStyleClass().add("detailbtn");
         this.detail.setOnAction(e -> detailClicked());
         this.state = state;
     }
@@ -64,7 +68,7 @@ public class Entry {
 	    	String[] answers = getNextSteps();
 	    	int answer = ChoiceBox.display(event.getScreenX(), event.getScreenY(), answers[0], answers[1], answers[2]);
 	    	if(answer != -1){
-	    		if(answer == 2){
+	    		if(answers[answer].contains("Archiv")){
 	    			ClientGUI.sender.sendString("archive");
 		    		ClientGUI.sender.sendString(this.linkString);
 		    		break;
@@ -79,11 +83,30 @@ public class Entry {
 						}
 		    		}
 		    		if(answer == 0 && answers[0].contains("best‰tigen")){
-		    			String date = DateBox.display(event.getScreenX(), event.getScreenY());
-		    			System.out.println(date);
-		    			if (date == "") continue;
-		    			answers[3]= answers[3] + date;	
+		    			String data = DateBox.display(event.getScreenX(), event.getScreenY(), true);
+		    			if (data == "") continue;
+		    			answers[3]= answers[3] + data.substring(11);	
+		    			ClientGUI.sender.sendString("edit");
+			    		ClientGUI.sender.sendString(this.linkString);
+			    		ClientGUI.sender.sendString(answers[answer+6]);
+			    		ClientGUI.sender.sendString(answers[answer+3]);
+			    		ClientGUI.sender.sendString("Los 1 bis " + data.substring(0, 10) + " versenden!");
+			    		break;
 		    		}
+		    		if(answer == 0 && answers[0].contains("versenden")){
+		    			String data = DateBox.display(event.getScreenX(), event.getScreenY(), false);
+		    			if (data == "") continue;
+		    			answers[3]= answers[3];	
+		    			ClientGUI.sender.sendString("edit");
+			    		ClientGUI.sender.sendString(this.linkString);
+			    		ClientGUI.sender.sendString(answers[answer+6]);
+			    		ClientGUI.sender.sendString(answers[answer+3]);
+			    		if(this.getContact().contains("old")){
+			    		ClientGUI.sender.sendString("Los " + (Integer.parseInt(this.getContact().substring(8, 9))+1) + " bis " + data + " versenden!");
+			    		}
+			    		else ClientGUI.sender.sendString("Los " + (Integer.parseInt(this.getContact().substring(4, 5))+1) + " bis " + data + " versenden!");
+			    		break;
+			    	}
 		    		ClientGUI.sender.sendString("edit");
 		    		ClientGUI.sender.sendString(this.linkString);
 		    		ClientGUI.sender.sendString(answers[answer+6]);
@@ -96,8 +119,16 @@ public class Entry {
     }
     
     private String[] getNextSteps() {
-    	System.out.println(getState());
-		String[] steps = new String[9];
+    	String[] steps = new String[9];
+    	
+    	steps[1] = "Kontakt aufnehmen";
+		steps[4] = "Kontakt";
+		steps[7] = "#" + Integer.toString(getState());
+		
+		steps[2] = "Archivieren";
+		steps[5] = "Archiviert";
+		steps[8] = "#6";
+    	
 		switch (state) {
         	case 1 : steps[0] = "Angebot erstellen";
         		steps[3]= "Angebot";
@@ -111,30 +142,29 @@ public class Entry {
         		
         	case 3:
         		steps[0] = "Auftrag best‰tigen";
-        		steps[3]= "versenden bis ";
+        		steps[3]= "Best‰tigung ";
         		steps[6]= "#4";
         		break;
         			
-        	case 4 : steps[0] = "Versenden";
-        		steps[3]= "Versandt";
-        		steps[6] = "#5";
-        		break;
-        			
-        	case 5 : steps[0] = "Archivieren";
-        		steps[3] = "Archiviert";
-        		steps[6] = "#1";
+        	case 4 : 
+        		if(this.getContact().contains("old")){
+        			steps[0] = this.getContact().substring(4, 9) + " versenden";
+            		steps[3]= this.getContact().substring(4, 9) + " versandt";
+        		}
+        		else{steps[0] = this.getContact().substring(0, 5) + " versenden";
+        		steps[3]= this.getContact().substring(0, 5) + " versandt";
+        		
+        		}steps[6] = "#4";
+        	
+        		steps[2] = "Versand abschlieﬂen und Projekt beenden";
+        		steps[5] = "Versand abgeschlossen, Projekt beendet";
+        		steps[8] = "#6";
         		break;
         		
         	default:	steps = null;
         		break;
 		}
-		steps[1] = "Kontakt aufnehmen";
-		steps[4] = "Kontakt";
-		steps[7] = "#" + Integer.toString(getState());
 		
-		steps[2] = "Archivieren";
-		steps[5] = "Archiviert";
-		steps[8] = "#1";
 		return steps;
 	}
 
@@ -151,7 +181,7 @@ public class Entry {
     			//System.out.println("not ready yet!");
     			Thread.sleep(10);
     		} catch (Exception e) {
-    			System.out.println("interrupted");		
+    			System.out.println("interrupted");
     			e.printStackTrace();
     		}
     	}

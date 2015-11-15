@@ -1,10 +1,7 @@
 package application;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.time.LocalTime;
-import java.util.LinkedList;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;

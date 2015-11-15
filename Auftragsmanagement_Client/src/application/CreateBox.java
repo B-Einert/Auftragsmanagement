@@ -3,8 +3,6 @@ package application;
 import java.util.LinkedList;
 import java.util.Map;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -73,8 +71,13 @@ public class CreateBox {
     	fields.add(new TextField());
     	
     	partnerBox.setOnAction(e ->{
-    		if(infoList.containsKey(partnerBox.getValue())){
-    			((TextField)fields.get(3)).setText(infoList.get(partnerBox.getValue()));
+    		try{
+    			if(infoList.containsKey(partnerBox.getValue())){
+    				((TextField)fields.get(3)).setText(infoList.get(partnerBox.getValue()));
+    			}
+    		}
+    		catch(NullPointerException nulle){
+    			System.out.println(nulle);
     		}
     	});
     	

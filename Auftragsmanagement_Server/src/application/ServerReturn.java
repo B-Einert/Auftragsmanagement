@@ -81,7 +81,23 @@ public class ServerReturn implements Runnable
                     else if(message.contains("edit")){
                     	Entry e = Server.dbManager.findEntry(INPUT.nextLine());
                     	String state=(INPUT.nextLine());
-                    	Server.dbManager.editEntry(e, state, INPUT.nextLine());
+                    	String edit=INPUT.nextLine();
+                    	if(edit.contains("Bestätigung")){
+                    		Server.dbManager.editEntry(e, state, edit);
+                    		Server.dbManager.editEntry(e, state, INPUT.nextLine());
+                    		
+                    	}
+                    	else if(edit.contains("Projekt beendet")){
+                    		Server.dbManager.editEntry(e, state, edit);
+                    		sendString("delete");
+                    		sendString(e.getLink());
+                    		return;
+                    	}
+                    	else if(edit.contains("Los")){
+                    		Server.dbManager.editEntry(e, state, edit);
+                    		Server.dbManager.editEntry(e, state, INPUT.nextLine());
+                    	}
+                    	else Server.dbManager.editEntry(e, state, edit);
                     	sendString("edit");
                     	sendString(e.getLink());
                     	sendString(e.getLastContact());

@@ -10,3 +10,15 @@
 .disabled{
 	-fx-background-color: lightgray; 
 }
+
+.detailbtn{
+	-fx-graphic:url(buttons/detailbtn.png);
+}
+
+.pursuebtn{
+	-fx-graphic:url(buttons/pursuebtn.png);
+}
+
+.folderbtn{
+	-fx-graphic:url(buttons/folderbtn.png);
+}

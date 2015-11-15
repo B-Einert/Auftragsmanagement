@@ -39,6 +39,11 @@ public class DetailBox {
     	entries.add(new Label(details.get(3)));
     	entries.add(new Label(details.get(4)));
     	entries.add(new Label(details.get(5)));
+    	
+    	if(!details.get(6).contentEquals("")){
+     	   labels.add(new Label("Bearbeitungsnummer"));
+     	   entries.add(new Label(details.get(6)));
+        }
     	                
         VBox left= new VBox();
         left.setMinWidth(130);
@@ -54,9 +59,15 @@ public class DetailBox {
        up.getChildren().addAll(left, right);
         
         ListView<String> list = new ListView<String>();
-        for(int i=6; i<details.size(); i++){
+        for(int i=7; i<details.size(); i++){
         	if(details.get(i)!=null)list.getItems().add(details.get(i));
         	else break;
+        }
+        try{
+        	list.scrollTo(list.getItems().size() - 1);
+        }
+        catch (IllegalStateException oi){
+        	System.out.println(oi);
         }
         
         VBox vbox=new VBox();

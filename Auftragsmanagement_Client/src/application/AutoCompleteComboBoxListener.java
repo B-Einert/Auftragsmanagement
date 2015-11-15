@@ -13,16 +13,12 @@ import javafx.scene.input.KeyEvent;
 public class AutoCompleteComboBoxListener implements EventHandler<KeyEvent> {
 
     private ComboBox<String> comboBox;
-    private ComboBox<String> partnerBox;
-    private TextField phone;
     private ObservableList<String> data;
     private boolean moveCaretToPos = false;
     private int caretPos;
 
     public AutoCompleteComboBoxListener(final ComboBox<String> comboBox, final ComboBox<String> partnerBox, final TextField phone) {
         this.comboBox = comboBox;
-        this.partnerBox = partnerBox;
-        this.phone = phone;
         data = comboBox.getItems();
 
         this.comboBox.setEditable(true);
