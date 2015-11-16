@@ -61,6 +61,7 @@ public class ServerReturn implements Runnable
                     
                     if(message.contains("disconnect")){
                     	disconnect(SOCK);
+                    	ServerGUI.tableEntries.add(new TableEntry("Client " + SOCK.getInetAddress() + " hat das Programm beendet."));
                     }
                     else if(message.contains("new")){
                     	String[] entry = (String[]) objIn.readObject();
@@ -173,8 +174,6 @@ public class ServerReturn implements Runnable
         {
             if(Server.ConnectionArray.get(i)== s)
             {
-
-            	ServerGUI.tableEntries.add(new TableEntry("Client " + s.getInetAddress() + " hat das Programm beendet."));
             	System.out.println("disconnected");
             	Server.ConnectionArray.remove(i);
                 Server.Threads.remove(i);
@@ -198,6 +197,7 @@ public class ServerReturn implements Runnable
                 }
                 catch(SocketException e){
                 	e.printStackTrace();
+                	ServerGUI.tableEntries.add(new TableEntry("Das Programm von " + TEMP_SOCK.getInetAddress() + " ist abgestürzt."));
                 	disconnect(TEMP_SOCK);
                 	i--;
                 }
