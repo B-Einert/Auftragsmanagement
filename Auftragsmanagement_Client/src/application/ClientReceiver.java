@@ -155,7 +155,6 @@ public class ClientReceiver implements Runnable{
 		    				Entry entry = new Entry(e.getLinkString(), e.getDate(), e.getCustomer(), e.getItem(), e.getContact(), e.getState());
 		    				ClientGUI.entries.remove(e);
 		    				ClientGUI.entries.add(entry);
-		    				break;
 		    			}
 		    		}
 		    	}

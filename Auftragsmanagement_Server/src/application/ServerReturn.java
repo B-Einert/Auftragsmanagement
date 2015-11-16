@@ -171,7 +171,7 @@ public class ServerReturn implements Runnable
     public void disconnect(Socket s) throws IOException{
     	for(int i = 0; i <= Server.ConnectionArray.size(); i++)
         {
-            if(Server.ConnectionArray.get(i).getInetAddress()==s.getInetAddress())
+            if(Server.ConnectionArray.get(i)== s)
             {
 
             	ServerGUI.tableEntries.add(new TableEntry("Client " + s.getInetAddress() + " hat das Programm beendet."));
@@ -179,8 +179,8 @@ public class ServerReturn implements Runnable
             	Server.ConnectionArray.remove(i);
                 Server.Threads.remove(i);
                 
-            	SOCK.close();
-                break;
+            	s.close();
+                return;
             }
         }
     }
@@ -199,6 +199,7 @@ public class ServerReturn implements Runnable
                 catch(SocketException e){
                 	e.printStackTrace();
                 	disconnect(TEMP_SOCK);
+                	i--;
                 }
             }
     	}
