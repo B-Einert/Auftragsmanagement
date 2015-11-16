@@ -32,6 +32,8 @@ public class ClientGUI extends Application {
     public static ObservableList<Entry> entries = FXCollections.observableArrayList();
     public static ObservableList<String> customers = FXCollections.observableArrayList();
     public static Socket SOCK;
+    //TODO
+    private File archive = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/abgeschlossene_Vorgaenge");
 
     public static void main(String[] args) {	
         launch(args);
@@ -40,7 +42,7 @@ public class ClientGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
     	final int PORT = 444;
-        final String HOST = "localhost";
+        final String HOST = "192.168.178.35";
         try {
 			SOCK = new Socket(HOST, PORT);
 		} catch (UnknownHostException e) {
@@ -192,7 +194,7 @@ public class ClientGUI extends Application {
     public void archiveButtonClicked() {
     	try {
 			Desktop dt = Desktop.getDesktop();
-			dt.open(new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/abgeschlossene_Vorgaenge"));
+			dt.open(archive);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

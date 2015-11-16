@@ -12,13 +12,13 @@
 }
 
 .detailbtn{
-	-fx-graphic:url(buttons/detailbtn.png);
+	-fx-graphic:url(images/detailbtn.png);
 }
 
 .pursuebtn{
-	-fx-graphic:url(buttons/pursuebtn.png);
+	-fx-graphic:url(images/pursuebtn.png);
 }
 
 .folderbtn{
-	-fx-graphic:url(buttons/folderbtn.png);
+	-fx-graphic:url(images/folderbtn.png);
 }
