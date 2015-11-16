@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -36,6 +37,7 @@ public class ServerGUI extends Application
         window = primaryStage;
         window.setWidth(937);
         window.setTitle("Auftragsmanagement Server");
+        window.getIcons().add(new Image("images/LSK.jpg"));
         window.setOnCloseRequest(e -> {
         	//Fenster vom schließen hindern
         	e.consume(); 

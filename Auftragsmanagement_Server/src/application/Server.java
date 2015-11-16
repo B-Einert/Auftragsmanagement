@@ -54,7 +54,7 @@ public class Server implements Runnable
                 Thread X = new Thread(connection);
                 X.start();
                 Threads.add(X);
-                ServerGUI.tableEntries.add(new TableEntry("Client " + SOCK.getLocalAddress() + " hinzugefügt"));
+                ServerGUI.tableEntries.add(new TableEntry("Client " + SOCK.getLocalSocketAddress() + " hinzugefügt"));
             }
         }
         catch(Exception e)

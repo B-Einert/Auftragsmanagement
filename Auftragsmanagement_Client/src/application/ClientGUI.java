@@ -19,6 +19,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -33,7 +34,7 @@ public class ClientGUI extends Application {
     public static ObservableList<String> customers = FXCollections.observableArrayList();
     public static Socket SOCK;
     //TODO
-    private File archive = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/abgeschlossene_Vorgaenge");
+    public static String datenbank = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
 
     public static void main(String[] args) {	
         launch(args);
@@ -62,6 +63,7 @@ public class ClientGUI extends Application {
         window = primaryStage;
         window.setWidth(937);
         window.setTitle("Auftragsmanagement");
+        window.getIcons().add(new Image("application/images/LSK.jpg"));
         window.setOnCloseRequest(e -> {
         	//Fenster vom schlieﬂen hindern
         	e.consume(); 
@@ -194,7 +196,7 @@ public class ClientGUI extends Application {
     public void archiveButtonClicked() {
     	try {
 			Desktop dt = Desktop.getDesktop();
-			dt.open(archive);
+			dt.open(new File(datenbank + "abgeschlossene_Vorgaenge"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
