@@ -46,7 +46,7 @@ public class DetailBox {
         }
     	                
         VBox left= new VBox();
-        left.setMinWidth(130);
+        left.setMinWidth(140);
         left.setPadding(new Insets(10, 10, 10, 10));
         left.setSpacing(5);
         VBox right=new VBox();

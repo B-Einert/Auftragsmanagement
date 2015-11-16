@@ -171,10 +171,10 @@ public class ServerReturn implements Runnable
     public void disconnect(Socket s) throws IOException{
     	for(int i = 0; i <= Server.ConnectionArray.size(); i++)
         {
-            if(Server.ConnectionArray.get(i)==s)
+            if(Server.ConnectionArray.get(i).getInetAddress()==s.getInetAddress())
             {
 
-            	ServerGUI.tableEntries.add(new TableEntry("Client " + s.getLocalAddress() + " hat das Programm beendet."));
+            	ServerGUI.tableEntries.add(new TableEntry("Client " + s.getInetAddress() + " hat das Programm beendet."));
             	System.out.println("disconnected");
             	Server.ConnectionArray.remove(i);
                 Server.Threads.remove(i);
@@ -191,7 +191,7 @@ public class ServerReturn implements Runnable
             {
                 Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i-1);
                 try{
-                	System.out.println("send " + message + " to " +TEMP_SOCK.getLocalAddress());
+                	System.out.println("send " + message + " to " +TEMP_SOCK.getInetAddress());
                 	PrintWriter TEMP_OUT = new PrintWriter(TEMP_SOCK.getOutputStream());
                 	TEMP_OUT.println(message);
                 	TEMP_OUT.flush();

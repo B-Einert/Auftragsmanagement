@@ -2,3 +2,5 @@
 *.db
 *.gitignore
 *.txt
+*.classpath
+*.log
