@@ -4,15 +4,17 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.geometry.*;
 
 public class ChoiceBox {
 
     //Create variable
     static int answer;
+    private static Stage window;
 
     public static int display(double x, double y, String choiceA, String choiceB, String choiceC) {
-        Stage window = new Stage();
+        window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Weiterführen");
         window.setX(x + 10);
@@ -37,13 +39,17 @@ public class ChoiceBox {
         Button buttonC = new Button(choiceC);
 
         //Clicking will set answer and close window
-        buttonB.setOnAction(e -> {
-            answer = 1;
-            window.close();
+        buttonB.setOnAction(e -> bb());
+        buttonB.setOnKeyReleased(e -> {
+        	if(e.getCode()==KeyCode.ENTER){
+        		bb();
+        	}
         });
-        buttonC.setOnAction(e -> {
-            answer = 2;
-            window.close();
+        buttonC.setOnAction(e -> bc());
+        buttonC.setOnKeyReleased(e -> {
+        	if(e.getCode()==KeyCode.ENTER){
+        		bc();
+        	}
         });
 
         VBox layout = new VBox(10);
@@ -52,9 +58,11 @@ public class ChoiceBox {
         if (choiceA!=null){
         	window.setHeight(180);
         	Button buttonA = new Button(choiceA);
-        	buttonA.setOnAction(e -> {
-                answer = 0;
-                window.close();
+        	buttonA.setOnAction(e -> ba());
+            buttonA.setOnKeyReleased(e -> {
+            	if(e.getCode()==KeyCode.ENTER){
+            		ba();
+            	}
             });
             layout.getChildren().add(buttonA);
         }
@@ -68,5 +76,20 @@ public class ChoiceBox {
         //Make sure to return answer
         return answer;
     }
+    
+    private static void ba(){
+    	answer = 0;
+        window.close();
+	}
+    
+    private static void bb(){
+    	answer = 1;
+        window.close();
+	}
+    
+    private static void bc(){
+    	answer = 2;
+        window.close();
+	}
 
 }

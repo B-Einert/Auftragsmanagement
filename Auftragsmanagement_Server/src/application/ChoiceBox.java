@@ -4,15 +4,17 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.geometry.*;
 
 public class ChoiceBox {
 
     //Create variable
     static int answer;
+    private static Stage window;
 
     public static int display(String choiceA, String choiceB) {
-        Stage window = new Stage();
+        window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Programm schließen");
         window.setMinWidth(250);
@@ -36,13 +38,17 @@ public class ChoiceBox {
         Button buttonB = new Button(choiceB);
 
         //Clicking will set answer and close window
-        buttonA.setOnAction(e -> {
-            answer = 0;
-            window.close();
+        buttonA.setOnAction(e -> ba());
+        buttonA.setOnKeyReleased(e -> {
+        	if(e.getCode()==KeyCode.ENTER){
+        		ba();
+        	}
         });
-        buttonB.setOnAction(e -> {
-            answer = 1;
-            window.close();
+        buttonB.setOnAction(e -> bb());
+        buttonB.setOnKeyReleased(e -> {
+        	if(e.getCode()==KeyCode.ENTER){
+        		bb();
+        	}
         });
 
         VBox layout = new VBox(10);
@@ -59,5 +65,15 @@ public class ChoiceBox {
         //Make sure to return answer
         return answer;
     }
+    
+    private static void ba(){
+    	answer = 0;
+        window.close();
+	}
+    
+    private static void bb(){
+    	answer = 1;
+        window.close();
+	}
 
 }

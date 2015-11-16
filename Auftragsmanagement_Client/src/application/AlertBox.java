@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -44,10 +45,11 @@ public class AlertBox {
 	        Button buttonA = new Button("OK");
 	
 	        //Clicking will set answer and close window
-	        buttonA.setOnAction(e -> {
-	            answer = 1;
-	            window.close();
-	            System.exit(0);
+	        buttonA.setOnAction(e -> ba());
+	        buttonA.setOnKeyReleased(e -> {
+	        	if(e.getCode()==KeyCode.ENTER){
+	        		ba();
+	        	}
 	        });
 	
 	        VBox layout = new VBox(10);
@@ -67,4 +69,10 @@ public class AlertBox {
     	});
     	return answer;
     }
+    
+    private static void ba(){
+    	answer = 1;
+        window.close();
+        System.exit(0);
+	}
 }

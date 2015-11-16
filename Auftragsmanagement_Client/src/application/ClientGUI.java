@@ -61,7 +61,7 @@ public class ClientGUI extends Application {
     	client = new ClientReceiver();
     	
         window = primaryStage;
-        window.setWidth(937);
+        window.setWidth(947);
         window.setTitle("Auftragsmanagement");
         window.getIcons().add(new Image("application/images/LSK.jpg"));
         window.setOnCloseRequest(e -> {
@@ -107,7 +107,7 @@ public class ClientGUI extends Application {
         
         //last contact column
         TableColumn<Entry, String> contactColumn = new TableColumn<>("Aktion");
-        contactColumn.setMinWidth(120);
+        contactColumn.setMinWidth(130);
         contactColumn.setCellValueFactory(new PropertyValueFactory<>("contact"));
         contactColumn.setCellFactory(column -> {
         	return new TableCell<Entry, String>(){

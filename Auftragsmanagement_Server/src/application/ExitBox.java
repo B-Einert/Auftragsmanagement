@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -40,11 +41,12 @@ public class ExitBox {
 				Button buttonA = new Button("OK");
 
 				// Clicking will set answer and close window
-				buttonA.setOnAction(e -> {
-					Server.DISCONNECT();
-					answer = 1;
-					window.close();
-				});
+				 buttonA.setOnAction(e -> ba());
+			        buttonA.setOnKeyReleased(e -> {
+			        	if(e.getCode()==KeyCode.ENTER){
+			        		ba();
+			        	}
+			        });
 
 				VBox layout = new VBox(10);
 
@@ -61,5 +63,11 @@ public class ExitBox {
 		});
 		return answer;
 
+	}
+	
+	private static void ba(){
+		Server.DISCONNECT();
+		answer = 1;
+		window.close();
 	}
 }
