@@ -83,7 +83,7 @@ public class Entry {
 						}
 		    		}
 		    		if(answer == 0 && answers[0].contains("bestätigen")){
-		    			String data = DateBox.display(event.getScreenX(), event.getScreenY(), true);
+		    			String data = DateBox.display(event.getScreenX(), event.getScreenY(), true, "Los 1");
 		    			if (data == "") continue;
 		    			answers[3]= answers[3] + data.substring(11);	
 		    			ClientGUI.sender.sendString("edit");
@@ -94,7 +94,7 @@ public class Entry {
 			    		break;
 		    		}
 		    		if(answer == 0 && answers[0].contains("versenden")){
-		    			String data = DateBox.display(event.getScreenX(), event.getScreenY(), false);
+		    			String data = DateBox.display(event.getScreenX(), event.getScreenY(), false, "Los " + (Integer.parseInt(answers[0].substring(4, 5))+1));
 		    			if (data == "") continue;
 		    			answers[3]= answers[3];	
 		    			ClientGUI.sender.sendString("edit");

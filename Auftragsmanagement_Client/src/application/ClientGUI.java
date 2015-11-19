@@ -43,7 +43,8 @@ public class ClientGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
     	final int PORT = 444;
-        final String HOST = "192.168.178.35";
+        //final String HOST = "192.168.178.49";
+    	final String HOST = "192.168.178.35";
         try {
 			SOCK = new Socket(HOST, PORT);
 		} catch (UnknownHostException e) {

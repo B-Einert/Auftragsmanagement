@@ -100,7 +100,6 @@ public class DatabaseManager {
 								in.readLine();
 								in.readLine();
 								lastContact = in.readLine();
-								state = in.readLine().substring(1);
 								in.readLine();
 								in.readLine();
 								customer = in.readLine();
@@ -110,6 +109,7 @@ public class DatabaseManager {
 								in.readLine();
 								in.readLine();
 								link = in.readLine();
+								state = getState(lastContact);
 								Entry e = new Entry(date, link, customer, item, lastContact, state);
 								cust.addEntry(e);
 								in.close();
@@ -141,9 +141,14 @@ public class DatabaseManager {
 				}
 				break;
 			case 4:
-				LocalDate reference = LocalDate.parse(e.getLastContact().substring(21, 31));
-				if (LocalDate.now().isAfter(reference.plusDays(addWeekend(reference, daysAfterDate)))) {
-					e.setLastContact("old " + e.getLastContact());
+				try{
+					LocalDate reference = LocalDate.parse(e.getLastContact().substring(21, 31));
+					if (LocalDate.now().isAfter(reference.plusDays(addWeekend(reference, daysAfterDate)))) {
+						e.setLastContact("old " + e.getLastContact());
+					}
+				}
+				catch(Exception ex){
+					break;
 				}
 				break;
 			default:
@@ -158,6 +163,16 @@ public class DatabaseManager {
 			ExitBox.display(
 					"Letzter Kontakt vom Protokoll von " + e.getCustomer() + "_" + e.getItem() + " konnte nicht geladen werden.");
 		}
+	}
+	
+	public String getState(String action){
+		String answer="";
+		if (action.contentEquals("Anfrage"))answer="1";
+		else if(action.contentEquals("Angebot"))answer="2";
+		else if(action.contentEquals("Auftrag"))answer="3";
+		else if(action.contains("Bestätigung ")||action.contains("versandt")||action.contains("versenden"))answer="4";
+		else if(action.contains("Projekt beendet")||action.contains("Archiviert"))answer="6";
+		return answer;
 	}
 
 	public int addWeekend(LocalDate start, int days) {
@@ -212,7 +227,6 @@ public class DatabaseManager {
 				writer.println("");
 				writer.println("//letzter Kontakt");
 				writer.println(entry.getLastContact());
-				writer.println("#" + entry.getState());
 				writer.println("");
 				writer.println("//Kunde");
 				writer.println(entry.getCustomer());
@@ -340,7 +354,8 @@ public class DatabaseManager {
 		entry.setState(state.substring(1));
 		String newContact = LocalDate.now().toString() + " " + edit;
 		String weirdContact="";
-		if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) weirdContact = LocalDate.now().toString() + entry.getLastContact().substring(10);
+		//if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) weirdContact = LocalDate.now().toString() + entry.getLastContact().substring(10);
+		if(newContact.contains("Kontakt")) weirdContact = LocalDate.now().toString() + entry.getLastContact().substring(10);
 		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
 		File tmp = new File(entry.getLink() + "/tmp.txt");
 		try {
@@ -352,9 +367,8 @@ public class DatabaseManager {
 				if (i == 4) {
 					if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) writer.println(weirdContact);
 					else writer.println(newContact);
-				} else if (i == 5)
-					writer.println(state);
-				else if (i == 26){
+				} 
+				else if (i == 25){
 					if(edit.contains("Bestätigung")) writer.println(edit.substring(12));
 					else writer.println(line);
 				}
@@ -372,7 +386,8 @@ public class DatabaseManager {
 			e.printStackTrace();
 			return false;
 		}
-		if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) entry.setLastContact(weirdContact);
+		//if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) entry.setLastContact(weirdContact);
+		if(newContact.contains("Kontakt")) entry.setLastContact(weirdContact);
 		else entry.setLastContact(newContact);
 		for (String[] s : initList) {
 			if (entry.getLink().contentEquals(s[0])) {
@@ -395,7 +410,6 @@ public class DatabaseManager {
 			LinkedList<String> det = new LinkedList<String>();
 			String line;
 			try {
-				in.readLine();
 				in.readLine();
 				in.readLine();
 				in.readLine();
@@ -517,7 +531,6 @@ public class DatabaseManager {
 					try {
 						in = new BufferedReader(new FileReader(temp));
 						try {
-							in.readLine();
 							in.readLine();
 							in.readLine();
 							in.readLine();

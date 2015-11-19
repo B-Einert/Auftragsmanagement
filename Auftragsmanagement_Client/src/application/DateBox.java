@@ -17,7 +17,7 @@ public class DateBox {
     //Create variable
     static String answer;
 
-    public static String display(double x, double y, boolean boo) {
+    public static String display(double x, double y, boolean boo, String los) {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Versanddatum");
@@ -38,13 +38,13 @@ public class DateBox {
         	}
         });
         
-        Label label1 = new Label("bitte Bestätigungsnummer eingeben!");
+        Label label1 = new Label("Bitte Bestätigungsnummer eingeben!");
         TextField tf= new TextField();
         tf.setPrefWidth(100);
         Label label3 = new Label("Die Bestätigungsnummer fehlt.");
         label3.setTextFill(Color.RED);
         
-        Label label2 = new Label("bitte Versanddatum auswählen!");
+        Label label2 = new Label("Bitte für " + los + " Versanddatum auswählen!");
         
         DatePicker datePicker = new DatePicker();
         datePicker.setValue(LocalDate.now().plusDays(14));
