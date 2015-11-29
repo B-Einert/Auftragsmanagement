@@ -2,9 +2,10 @@ package application;
 
 import java.net.*;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Scanner;
@@ -15,6 +16,7 @@ public class ClientReceiver implements Runnable{
     private ObjectInputStream objIn;
     private static Scanner INPUT;
     private String message;
+    private DateTimeFormatter date = DateTimeFormatter.ofPattern("dd.MM.yyyy");
    // private DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
 
     public ClientReceiver() 
@@ -78,11 +80,11 @@ public class ClientReceiver implements Runnable{
     		{
     			received = objIn.readObject();
     		}
-    		ArrayList<String[]> initList = (ArrayList<String[]>) received;
+    		HashSet<String[]> initList = (HashSet<String[]>) received;
     	
     		for(String[] entry: initList)
     		{
-    			Entry e = new Entry(entry[0], LocalDate.parse(entry[1]), entry[2], entry[3], entry[4], Integer.parseInt(entry[5]));
+    			Entry e = new Entry(entry[0], entry[1], entry[2], entry[3], entry[4], Integer.parseInt(entry[5]));
     			ClientGUI.entries.add(e);
     		}
     		received = null;
@@ -90,8 +92,16 @@ public class ClientReceiver implements Runnable{
     		{
     			received = objIn.readObject();
     		}
-    		for(String customer : (ArrayList<String>) received){
+    		for(String customer : (HashSet<String>) received){
     			ClientGUI.customers.add(customer);
+    		}
+    		received = null;
+    		while(received == null)
+    		{
+    			received = objIn.readObject();
+    		}
+    		for(String customer : (HashSet<String>) received){
+    			ClientGUI.archived.add(customer);
     		}
     	}
     	catch(Exception e)
@@ -155,6 +165,7 @@ public class ClientReceiver implements Runnable{
 		    				Entry entry = new Entry(e.getLinkString(), e.getDate(), e.getCustomer(), e.getItem(), e.getContact(), e.getState());
 		    				ClientGUI.entries.remove(e);
 		    				ClientGUI.entries.add(entry);
+		    				break;
 		    			}
 		    		}
 		    	}
@@ -223,7 +234,7 @@ public class ClientReceiver implements Runnable{
 			if(!(next=INPUT.nextLine()).contentEquals("!?#end"))entry.add(next);
 			else break;
 		}
-		Entry e = new Entry(entry.get(0), LocalDate.parse(entry.get(1)), entry.get(2), entry.get(3), entry.get(4), Integer.parseInt(entry.get(5)));
+		Entry e = new Entry(entry.get(0), entry.get(1), entry.get(2), entry.get(3), entry.get(4), Integer.parseInt(entry.get(5)));
 		ClientGUI.entries.add(e);
     	
     }

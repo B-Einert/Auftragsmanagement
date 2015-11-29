@@ -10,11 +10,11 @@ public class Entry {
     private String state;
     
 
-    public Entry(String date, String customer, String item, String lastContact){
+    public Entry(String date, String customer, String item){
         this.date = date;
         this.customer = customer;
         this.item = item;  
-        this.lastContact = getDate().toString() + " Anfrage";
+        this.lastContact = getDate() + " Anfrage erstellt";
         this.state = "1";
     }
     

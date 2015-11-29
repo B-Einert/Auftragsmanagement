@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.time.LocalDate;
+import java.util.Comparator;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -32,8 +33,10 @@ public class ClientGUI extends Application {
     private TableView<Entry> table;
     public static ObservableList<Entry> entries = FXCollections.observableArrayList();
     public static ObservableList<String> customers = FXCollections.observableArrayList();
+    public static ObservableList<String> archived = FXCollections.observableArrayList();
     public static Socket SOCK;
-    //TODO
+    
+    //TODO set db
     public static String datenbank = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
 
     public static void main(String[] args) {	
@@ -80,9 +83,17 @@ public class ClientGUI extends Application {
         });
 
         //date column
-        TableColumn<Entry, LocalDate> dateColumn = new TableColumn<>("Anfrage");
+        TableColumn<Entry, String> dateColumn = new TableColumn<>("Anfrage");
         dateColumn.setMinWidth(80);
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        dateColumn.setComparator(new Comparator<String>(){
+        	@Override
+			public int compare(String s1, String s2) {
+				LocalDate l1 = LocalDate.parse(s1.substring(6) + "-" + s1.substring(3, 5) + "-" + s1.substring(0, 2));
+				LocalDate l2 = LocalDate.parse(s2.substring(6) + "-" + s2.substring(3, 5) + "-" + s2.substring(0, 2));
+				return l1.compareTo(l2);
+			}
+        });
         
         //link column
         TableColumn<Entry, Button> linkColumn = new TableColumn<>("Link");
@@ -102,9 +113,17 @@ public class ClientGUI extends Application {
         itemColumn.setCellValueFactory(new PropertyValueFactory<>("item"));
         
         //contact date column
-        TableColumn<Entry, LocalDate> contactDateColumn = new TableColumn<>("Kontaktdatum");
+        TableColumn<Entry, String> contactDateColumn = new TableColumn<>("Kontaktdatum");
         contactDateColumn.setMinWidth(80);
         contactDateColumn.setCellValueFactory(new PropertyValueFactory<>("contactDate"));
+        contactDateColumn.setComparator(new Comparator<String>(){
+        	@Override
+			public int compare(String s1, String s2) {
+				LocalDate l1 = LocalDate.parse(s1.substring(6) + "-" + s1.substring(3, 5) + "-" + s1.substring(0, 2));
+				LocalDate l2 = LocalDate.parse(s2.substring(6) + "-" + s2.substring(3, 5) + "-" + s2.substring(0, 2));
+				return l1.compareTo(l2);
+			}
+        });
         
         //last contact column
         TableColumn<Entry, String> contactColumn = new TableColumn<>("Aktion");
@@ -133,6 +152,7 @@ public class ClientGUI extends Application {
             			else{
             				((Node)this).getStyleClass().remove("highlight");
             			}
+                    	this.setWrapText(true);
                     }
 //        			
         		}
@@ -173,7 +193,6 @@ public class ClientGUI extends Application {
         		contactDateColumn, contactColumn, pursueColumn, detailColumn);
         table.setEditable(true);
         table.getSortOrder().add(dateColumn);
-        table.getSortOrder().add(customerColumn);
         table.scrollTo(table.getItems().size() - 1);
         
         table.getItems().addListener((ListChangeListener<Entry>) (c -> {

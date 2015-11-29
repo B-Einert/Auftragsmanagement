@@ -7,20 +7,24 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+
+import javafx.util.converter.LocalDateStringConverter;
 
 public class DatabaseManager {
 
 	private String customerModel;
 	private String projectModel;
 	public String db;
-	private ArrayList<String[]> initList;
-	private ArrayList<Customer> customers;
-	private ArrayList<String> customerList;
+	private HashSet<String[]> initList;
+	private HashSet<Customer> customers;
+	private HashSet<String> customerList;
+	private HashSet<String> archivedList;
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+	private DateFormat date = new DateFormat(); 
 	private int daysAfterAnfrage;
 	private int daysAfterContact;
 	private int daysAfterDate;
@@ -69,14 +73,16 @@ public class DatabaseManager {
 
 	public void loadData() {
 		ServerGUI.tableEntries.add(new TableEntry("Daten werden geladen"));
-		customerList = new ArrayList<String>();
-		File custs = new File(db + "/Kundenverzeichnis");
+		customerList = new HashSet<String>();
+		archivedList = new HashSet<String>();
+		File custs = new File(db + "/abgeschlossene_Vorgaenge");
 		for (File f : custs.listFiles()) {
 			if (f.isDirectory())
 				customerList.add(f.getName());
+				archivedList.add(f.getName());
 		}
 
-		customers = new ArrayList<Customer>();
+		customers = new HashSet<Customer>();
 		File files = new File(db + "/laufende_Vorgaenge");
 		BufferedReader in;
 		String date = null;
@@ -87,6 +93,7 @@ public class DatabaseManager {
 		String state = null;
 		for (File f : files.listFiles()) {
 			if (f.isDirectory()) {
+				customerList.add(f.getName());
 				Customer cust = new Customer(f.getName());
 				customers.add(cust);
 				for (File project : f.listFiles()) {
@@ -117,13 +124,12 @@ public class DatabaseManager {
 							} catch (Exception e) {
 								System.out.println("couldnt read protocoll");
 								e.printStackTrace();
-								ExitBox.display(
-										"Protokoll von " + customer + "_" + item + " konnte nicht geladen werden.");
+								ServerGUI.tableEntries.add(new TableEntry("Protokoll von " + customer + "/" + project.getName() + " konnte nicht geladen werden."));
 							}
 						} catch (FileNotFoundException e) {
 							System.out.println("protokoll not found");
 							e.printStackTrace();
-							ExitBox.display("Protokoll von " + customer + "_" + item + " wurde nicht gefunden.");
+							ExitBox.display("Protokoll von " + customer + "/" + project.getName() + " wurde nicht gefunden.");
 						}
 					}
 				}
@@ -134,25 +140,32 @@ public class DatabaseManager {
 
 	public void checkOld(Entry e) {
 		try{
+			System.out.println(e.getState());
 			switch (Integer.parseInt(e.getState())) {
 			case 1:
-				if (LocalDate.now().isAfter(LocalDate.parse(e.getDate()).plusDays(addWeekend(LocalDate.now(), this.daysAfterAnfrage)))) {
+				LocalDate ref1 = date.toDate(e.getLastContact().substring(0, 10));
+				System.out.println(ref1);
+				if (LocalDate.now().isAfter(ref1.plusDays(addWeekend(LocalDate.now(), this.daysAfterAnfrage)))) {
 					e.setLastContact("old " + e.getLastContact());
 				}
 				break;
 			case 4:
 				try{
-					LocalDate reference = LocalDate.parse(e.getLastContact().substring(21, 31));
+					System.out.println(e.getLastContact().substring(30));
+					LocalDate reference = date.toDate(e.getLastContact().substring(30));
+					System.out.println(reference);
 					if (LocalDate.now().isAfter(reference.plusDays(addWeekend(reference, daysAfterDate)))) {
 						e.setLastContact("old " + e.getLastContact());
 					}
 				}
 				catch(Exception ex){
+					ex.printStackTrace();
 					break;
 				}
 				break;
 			default:
-				LocalDate ref = LocalDate.parse(e.getLastContact().substring(0, 10));
+				LocalDate ref = date.toDate(e.getLastContact().substring(0, 10));
+				System.out.println(ref);
 				if (LocalDate.now().isAfter(ref.plusDays(addWeekend(LocalDate.now(), daysAfterContact)))) {
 					e.setLastContact("old " + e.getLastContact());
 				}
@@ -160,18 +173,20 @@ public class DatabaseManager {
 			}
 		}
 		catch (DateTimeParseException dtpe){
-			ExitBox.display(
-					"Letzter Kontakt vom Protokoll von " + e.getCustomer() + "_" + e.getItem() + " konnte nicht geladen werden.");
+			ServerGUI.tableEntries.add(new TableEntry(
+					"Letzter Kontakt vom Protokoll von " + e.getCustomer() + "_" + e.getItem() + " konnte nicht geladen werden."));
 		}
 	}
 	
 	public String getState(String action){
 		String answer="";
-		if (action.contentEquals("Anfrage"))answer="1";
-		else if(action.contentEquals("Angebot"))answer="2";
-		else if(action.contentEquals("Auftrag"))answer="3";
-		else if(action.contains("Bestätigung ")||action.contains("versandt")||action.contains("versenden"))answer="4";
-		else if(action.contains("Projekt beendet")||action.contains("Archiviert"))answer="6";
+		if (action.contains("Anfrage erstellt"))answer="1";
+		else if(action.contains("Angebot erstellt"))answer="2";
+		else if(action.contains("Auftrag erhalten"))answer="3";
+		else if(action.contains("Projekt abgeschlossen")||action.contains("Archiviert"))answer="6";
+		else if(action.contains("Auftrag bestätigt")||action.contains("Los")) answer = "4";
+		System.out.println(action);
+		System.out.println(answer);
 		return answer;
 	}
 
@@ -195,7 +210,7 @@ public class DatabaseManager {
 	}
 
 	public void buildInitList() {
-		this.initList = new ArrayList<String[]>();
+		this.initList = new HashSet<String[]>();
 		for (Customer c : customers) {
 			for (Entry e : c.getEntries()) {
 				initList.add(e.getFirstStatus());
@@ -214,7 +229,7 @@ public class DatabaseManager {
 				return false;
 			}
 		}
-		File project = new File(projectCustomer.getPath() + "/" + LocalDate.parse(entry.getDate()).format(formatter)
+		File project = new File(projectCustomer.getPath() + "/" + LocalDate.now().format(formatter)
 				+ "_" + entry.getItem());
 		if (project.mkdir()) {
 			copyDirectory(new File(projectModel), project);
@@ -307,12 +322,17 @@ public class DatabaseManager {
 		}
 	}
 
-	public ArrayList<String[]> getInitList() {
+	public HashSet<String[]> getInitList() {
 		return initList;
+	}
+	
+	public HashSet<String> getArchivedList() {
+		return archivedList;
 	}
 
 	public String[] manageEntry(String[] entry) {
-		Entry e = new Entry(LocalDate.now().toString(), entry[0], entry[1], LocalDate.now().toString() + " Anfrage");
+		Entry e = new Entry(this.date.toString(LocalDate.now()), entry[0], entry[1]);
+		System.out.println(e.getLastContact());
 		try {
 			if (createNewProject(e, entry[2], entry[3], entry[4])) {
 				addToCustomer(e);
@@ -352,10 +372,10 @@ public class DatabaseManager {
 
 	public boolean editEntry(Entry entry, String state, String edit) {
 		entry.setState(state.substring(1));
-		String newContact = LocalDate.now().toString() + " " + edit;
+		String newContact = this.date.toString(LocalDate.now()) + " " + edit;
 		String weirdContact="";
 		//if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) weirdContact = LocalDate.now().toString() + entry.getLastContact().substring(10);
-		if(newContact.contains("Kontakt")) weirdContact = LocalDate.now().toString() + entry.getLastContact().substring(10);
+		if(newContact.contains("Kontakt")) weirdContact = this.date.toString(LocalDate.now()) + entry.getLastContact().substring(10);
 		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
 		File tmp = new File(entry.getLink() + "/tmp.txt");
 		try {
@@ -369,7 +389,10 @@ public class DatabaseManager {
 					else writer.println(newContact);
 				} 
 				else if (i == 25){
-					if(edit.contains("Bestätigung")) writer.println(edit.substring(12));
+					if(edit.contains("Auftrag bestätigt")) {
+						System.out.println(edit);
+						writer.println(edit.substring(18));
+					}
 					else writer.println(line);
 				}
 				else writer.println(line);
@@ -396,7 +419,7 @@ public class DatabaseManager {
 				break;
 			}
 		}
-		if(edit.contains("Projekt beendet")){
+		if(edit.contains("Projekt abgeschlossen")){
 			archive(entry.getLink());
 		}
 		return true;
@@ -466,8 +489,9 @@ public class DatabaseManager {
 		if (editEntry(e, "#6", "Archiviert")) {
 			File customer = new File(db + "/abgeschlossene_Vorgaenge/" + e.getCustomer());
 			if (!customer.exists()) {
-				if (customer.mkdir())
-					;
+				if (customer.mkdir()){
+					archivedList.add(e.getCustomer());
+				}
 				else {
 					System.out.println("Failed to create customer directory in abgeschlossene Vorgänge!");
 					return false;
@@ -504,7 +528,7 @@ public class DatabaseManager {
 		return false;
 	}
 
-	public ArrayList<String> getCustomerList() {
+	public HashSet<String> getCustomerList() {
 		return this.customerList;
 	}
 

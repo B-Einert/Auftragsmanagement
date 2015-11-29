@@ -83,12 +83,12 @@ public class ServerReturn implements Runnable
                     	Entry e = Server.dbManager.findEntry(INPUT.nextLine());
                     	String state=(INPUT.nextLine());
                     	String edit=INPUT.nextLine();
-                    	if(edit.contains("Bestätigung")){
+                    	if(edit.contains("Auftrag bestätigt")){
                     		Server.dbManager.editEntry(e, state, edit);
                     		Server.dbManager.editEntry(e, state, INPUT.nextLine());
                     		
                     	}
-                    	else if(edit.contains("Projekt beendet")){
+                    	else if(edit.contains("Projekt abgeschlossen")){
                     		Server.dbManager.editEntry(e, state, edit);
                     		sendString("delete");
                     		sendString(e.getLink());
@@ -159,6 +159,8 @@ public class ServerReturn implements Runnable
     		objOut.writeObject(Server.dbManager.getInitList());
     		objOut.flush();
     		objOut.writeObject(Server.dbManager.getCustomerList());
+    		objOut.flush();
+    		objOut.writeObject(Server.dbManager.getArchivedList());
     		objOut.flush();
     	}
     	catch(Exception e)

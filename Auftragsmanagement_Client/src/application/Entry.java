@@ -9,18 +9,18 @@ import javafx.scene.input.MouseEvent;
 
 public class Entry {
 
-    private LocalDate date;
+    private String date;
     private Button link;
     private String linkString;
     private int state;
 	private String customer;
     private String item;
     private String contact;
-    private LocalDate contactDate;
+    private String contactDate;
     private Button pursue;
     private Button detail;
 
-    public Entry(String link, LocalDate date, String customer, String item, String contact, int state){
+    public Entry(String link, String date, String customer, String item, String contact, int state){
         this.date = date;
         this.linkString = link;
         this.link = new Button();
@@ -42,11 +42,11 @@ public class Entry {
     public void checkOld(String contact){
     	if(contact.startsWith("old ")){
 
-            this.contactDate = LocalDate.parse(contact.substring(4, 14));
+            this.contactDate = contact.substring(4, 14);
             this.contact= "old " + contact.substring(15);
     	}
     	else{
-            this.contactDate = LocalDate.parse(contact.substring(0, 10));
+            this.contactDate = contact.substring(0, 10);
             this.contact= contact.substring(11);
     	}
     }
@@ -82,35 +82,32 @@ public class Entry {
 							e.printStackTrace();
 						}
 		    		}
-		    		if(answer == 0 && answers[0].contains("best‰tigen")){
+		    		if(answer == 0 && answers[0].contains("Auftrag best‰tigt ")){
 		    			String data = DateBox.display(event.getScreenX(), event.getScreenY(), true, "Los 1");
 		    			if (data == "") continue;
-		    			answers[3]= answers[3] + data.substring(11);	
+		    			answers[0]= answers[0] + data.substring(30);	
 		    			ClientGUI.sender.sendString("edit");
 			    		ClientGUI.sender.sendString(this.linkString);
-			    		ClientGUI.sender.sendString(answers[answer+6]);
 			    		ClientGUI.sender.sendString(answers[answer+3]);
-			    		ClientGUI.sender.sendString("Los 1 bis " + data.substring(0, 10) + " versenden!");
+			    		ClientGUI.sender.sendString(answers[answer]);
+			    		ClientGUI.sender.sendString(data.substring(0, 29));
 			    		break;
 		    		}
-		    		if(answer == 0 && answers[0].contains("versenden")){
-		    			String data = DateBox.display(event.getScreenX(), event.getScreenY(), false, "Los " + (Integer.parseInt(answers[0].substring(4, 5))+1));
+		    		if(answer == 0 && answers[0].contains("Neues Los")){
+		    			int neuesLos = Integer.parseInt(answers[0].substring(4, 5))+1;
+		    			String data = DateBox.display(event.getScreenX(), event.getScreenY(), false, "Los " + neuesLos);
 		    			if (data == "") continue;
-		    			answers[3]= answers[3];	
 		    			ClientGUI.sender.sendString("edit");
 			    		ClientGUI.sender.sendString(this.linkString);
-			    		ClientGUI.sender.sendString(answers[answer+6]);
 			    		ClientGUI.sender.sendString(answers[answer+3]);
-			    		if(this.getContact().contains("old")){
-			    		ClientGUI.sender.sendString("Los " + (Integer.parseInt(this.getContact().substring(8, 9))+1) + " bis " + data + " versenden!");
-			    		}
-			    		else ClientGUI.sender.sendString("Los " + (Integer.parseInt(this.getContact().substring(4, 5))+1) + " bis " + data + " versenden!");
+			    		ClientGUI.sender.sendString(answers[answer]);
+			    		ClientGUI.sender.sendString(data);
 			    		break;
 			    	}
 		    		ClientGUI.sender.sendString("edit");
 		    		ClientGUI.sender.sendString(this.linkString);
-		    		ClientGUI.sender.sendString(answers[answer+6]);
 		    		ClientGUI.sender.sendString(answers[answer+3]);
+		    		ClientGUI.sender.sendString(answers[answer]);
 		    		break;
 	    		}
 	    	}
@@ -119,46 +116,36 @@ public class Entry {
     }
     
     private String[] getNextSteps() {
-    	String[] steps = new String[9];
+    	String[] steps = new String[6];
     	
-    	steps[1] = "Kontakt aufnehmen";
-		steps[4] = "Kontakt";
-		steps[7] = "#" + Integer.toString(getState());
+    	steps[1] = "Kontakt aufgenommen";
+		steps[4] = "#" + Integer.toString(getState());
 		
 		steps[2] = "Archivieren";
-		steps[5] = "Archiviert";
-		steps[8] = "#6";
+		steps[5] = "#6";
     	
 		switch (state) {
-        	case 1 : steps[0] = "Angebot erstellen";
-        		steps[3]= "Angebot";
-        		steps[6]= "#2";
+        	case 1 : steps[0] = "Angebot erstellt";
+        		steps[3]= "#2";
         		break;
         	
-        	case 2 : steps[0] = "Auftrag erstellen";
-        		steps[3]= "Auftrag";
-        		steps[6]= "#3";
+        	case 2 : steps[0] = "Auftrag erhalten";
+        		steps[3]= "#3";
         		break;
         		
         	case 3:
-        		steps[0] = "Auftrag best‰tigen";
-        		steps[3]= "Best‰tigung ";
-        		steps[6]= "#4";
+        		steps[0] = "Auftrag best‰tigt ";
+        		steps[3]= "#4";
         		break;
         			
         	case 4 : 
-        		if(this.getContact().contains("old")){
-        			steps[0] = this.getContact().substring(4, 9) + " versenden";
-            		steps[3]= this.getContact().substring(4, 9) + " versandt";
-        		}
-        		else{steps[0] = this.getContact().substring(0, 5) + " versenden";
-        		steps[3]= this.getContact().substring(0, 5) + " versandt";
-        		
-        		}steps[6] = "#4";
+        		if(this.getContact().contains("old")) steps[0] = this.getContact().substring(17, 22) + " Versandt + Neues Los";
+        		else steps[0] = this.getContact().substring(13, 18) + " Versandt + Neues Los";
+        		steps[3] = "#4";
         	
-        		steps[2] = "Versand abschlieﬂen und Projekt beenden";
-        		steps[5] = "Versand abgeschlossen, Projekt beendet";
-        		steps[8] = "#6";
+        		if(this.getContact().contains("old")) steps[2] = this.getContact().substring(17, 22) + " Versandt + Projekt abgeschlossen";
+        		else steps[2] = this.getContact().substring(13, 18) + " Versandt + Projekt abgeschlossen";
+        		steps[5] = "#6";
         		break;
         		
         	default:	steps = null;
@@ -187,11 +174,11 @@ public class Entry {
     	}
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -259,11 +246,11 @@ public class Entry {
         this.detail = detail;
     }
 
-	public LocalDate getContactDate() {
+	public String getContactDate() {
 		return contactDate;
 	}
 
-	public void setContactDate(LocalDate contactDate) {
+	public void setContactDate(String contactDate) {
 		this.contactDate = contactDate;
 	}
 }

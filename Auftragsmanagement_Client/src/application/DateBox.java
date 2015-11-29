@@ -9,6 +9,7 @@ import javafx.scene.control.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javafx.geometry.*;
 
@@ -16,6 +17,7 @@ public class DateBox {
 
     //Create variable
     static String answer;
+    private static DateTimeFormatter date = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     public static String display(double x, double y, boolean boo, String los) {
         Stage window = new Stage();
@@ -75,7 +77,7 @@ public class DateBox {
         submit.setOnAction(e -> {
             if(boo){
             	if(!tf.getText().isEmpty()){
-            		answer = datePicker.getValue().toString() + " " + tf.getText();
+            		answer = "Versanddatum " + los + " " + date.format(datePicker.getValue()) + " " + tf.getText();
             		window.close();
             	}
             	else{
@@ -83,7 +85,7 @@ public class DateBox {
             	}
             }
             else {
-            	answer = datePicker.getValue().toString();
+            	answer = "Versanddatum " + los + " " + date.format(datePicker.getValue());
             	window.close();
             }
         });
