@@ -89,7 +89,7 @@ public class CreateBox {
         GridPane grid = new GridPane();
     	
         window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("neuer Vorgang");
+        window.setTitle("Neuer Vorgang");
         window.setMinWidth(250);     
         
         window.setOnCloseRequest(e -> {

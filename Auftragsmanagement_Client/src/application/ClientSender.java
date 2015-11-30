@@ -39,7 +39,6 @@ public class ClientSender {
     {
         OUT.println(x);
 		OUT.flush();
-        
     }
     public void sendEntry(String[] entry){
     	try{

@@ -169,11 +169,26 @@ public class ClientReceiver implements Runnable{
 		    			}
 		    		}
 		    	}
+		    	else if(message.contains("miniDetail")){
+		    		LinkedList<String> details = new LinkedList<String>();
+		    		try {
+		    			String next;
+		    			while(INPUT.hasNext()){
+		    				if(!(next=INPUT.nextLine()).contentEquals("!?#end"))details.add(next);
+		    				else break;
+		    			}
+		    			AuftragsBox.setDetails(details);
+		    			AuftragsBox.setReady(true);
+		    			System.out.println("details done");
+		    		} catch (Exception e) {
+		    			e.printStackTrace();
+		    			ExitBox.display("Details konnten nicht korrekt geladen werden.");
+		    		}
+		    	}
 		    	else if(message.contains("detail")){
 		    		System.out.println("in the details");
 		    		LinkedList<String> details = new LinkedList<String>();
 		    		try {
-//		    			details = (String[]) objIn.readObject();
 		    			String next;
 		    			while(INPUT.hasNext()){
 		    				if(!(next=INPUT.nextLine()).contentEquals("!?#end"))details.add(next);
@@ -192,6 +207,16 @@ public class ClientReceiver implements Runnable{
 		    		for(Entry e : ClientGUI.entries){
 		    			if(message.contentEquals(e.getLinkString())){
 		    				ClientGUI.entries.remove(e);
+		    				break;
+		    			}
+		    		}
+		    	}
+		    	else if(message.contains("changeLink")){
+		    		String link=INPUT.nextLine();
+		    		String newLink=INPUT.nextLine();
+		    		for(Entry e : ClientGUI.entries){
+		    			if(link.contentEquals(e.getLinkString())){
+		    				e.setLinkString(newLink);
 		    				break;
 		    			}
 		    		}

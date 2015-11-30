@@ -2,6 +2,7 @@ package application;
 
 import java.io.*;
 import java.net.*;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -79,6 +80,21 @@ public class ServerReturn implements Runnable
                             OUT.flush();
                     	}
                     }
+                    else if(message.contains("editDetails")){
+                    	String link=INPUT.nextLine();
+                    	Entry e = Server.dbManager.findEntry(link);
+                    	LinkedList<String> edits=new LinkedList<String>();
+                    	for(int i = 0; i<=4; i++){
+                    		edits.add(INPUT.nextLine());
+                    	}
+                    	Server.dbManager.editWholeProject(e, edits);
+                    	if(!link.contentEquals(e.getLink())){
+                    		sendString("changeLink");
+                    		sendString(link);
+                    		sendString(e.getLink());
+                    	}
+                    	
+                    }
                     else if(message.contains("edit")){
                     	Entry e = Server.dbManager.findEntry(INPUT.nextLine());
                     	String state=(INPUT.nextLine());
@@ -104,12 +120,18 @@ public class ServerReturn implements Runnable
                     	sendString(e.getLastContact());
                     	sendString(state.substring(1));
                     }
+                    else if (message.contains("miniDetail")){
+                    	String link = INPUT.nextLine();
+                    	String[] details = Server.dbManager.getAuftragsDetails(link);
+                    	OUT.println("miniDetail");
+                        OUT.flush();
+                        sendStrings(details);
+                    }
                     else if (message.contains("detail")){
                     	String link = INPUT.nextLine();
                     	String[] details = Server.dbManager.getDetails(link);
                     	OUT.println("detail");
                         OUT.flush();
-                        System.out.println(details[2]);
                         sendStrings(details);
                         
 		    			System.out.println("sent details");

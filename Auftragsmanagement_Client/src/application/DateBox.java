@@ -11,6 +11,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.*;
 
 public class DateBox {
@@ -40,13 +42,21 @@ public class DateBox {
         	}
         });
         
-        Label label1 = new Label("Bitte Bestätigungsnummer eingeben!");
+        Label label1 = new Label("ABN eingeben!");
         TextField tf= new TextField();
-        tf.setPrefWidth(100);
-        Label label3 = new Label("Die Bestätigungsnummer fehlt.");
+        tf.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(final ObservableValue<? extends String> ov, final String oldValue, final String newValue) {
+                if (tf.getText().length() > 6) {
+                    String s = tf.getText().substring(0, 6);
+                    tf.setText(s);
+                }
+            }
+        });
+        Label label3 = new Label("ABN fehlt.");
         label3.setTextFill(Color.RED);
         
-        Label label2 = new Label("Bitte für " + los + " Versanddatum auswählen!");
+        Label label2 = new Label("Versanddatum für " + los + "  auswählen!");
         
         DatePicker datePicker = new DatePicker();
         datePicker.setValue(LocalDate.now().plusDays(14));
@@ -71,7 +81,7 @@ public class DateBox {
         VBox layout = new VBox(10);
         
         //Create submit buttons
-        Button submit = new Button("Auswählen");
+        Button submit = new Button("Bestätigen");
 
         //Clicking will set answer and close window
         submit.setOnAction(e -> {

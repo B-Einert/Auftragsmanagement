@@ -82,6 +82,35 @@ public class Entry {
 							e.printStackTrace();
 						}
 		    		}
+		    		if(answer == 0 && answers[0].contains("Auftrag erhalten")){
+		    			ClientGUI.sender.sendString("miniDetail");
+		    	    	ClientGUI.sender.sendString(this.linkString);
+		    	    	while(true){
+		    	    		try {
+		    	    			if(AuftragsBox.getReady()){
+		    	    				AuftragsBox.setReady(false);
+		    	    				String[] edits = AuftragsBox.display();
+		    	    				if(edits[0].contentEquals(""))break;
+//		    	    				ClientGUI.sender.sendString("edit");
+//		    			    		ClientGUI.sender.sendString(this.linkString);
+//		    			    		ClientGUI.sender.sendString(answers[answer+3]);
+//		    			    		ClientGUI.sender.sendString(answers[answer]);
+		    			    		
+		    	    				ClientGUI.sender.sendString("editDetails");
+		    	    				ClientGUI.sender.sendString(this.linkString);
+		    	    				for(int i = 0; i<=4; i++){
+		    	    					ClientGUI.sender.sendString(edits[i]);
+		    	    				}
+		    	    				break;
+		    	    			}
+		    	    			Thread.sleep(10);
+		    	    		} catch (Exception e) {
+		    	    			System.out.println("interrupted");
+		    	    			e.printStackTrace();
+		    	    		}
+		    	    	}
+		    	    	break;
+		    		}
 		    		if(answer == 0 && answers[0].contains("Auftrag bestätigt ")){
 		    			String data = DateBox.display(event.getScreenX(), event.getScreenY(), true, "Los 1");
 		    			if (data == "") continue;

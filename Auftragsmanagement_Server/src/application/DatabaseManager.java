@@ -24,7 +24,7 @@ public class DatabaseManager {
 	private HashSet<String> customerList;
 	private HashSet<String> archivedList;
 	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
-	private DateFormat date = new DateFormat(); 
+	private DateFormat date = new DateFormat();
 	private int daysAfterAnfrage;
 	private int daysAfterContact;
 	private int daysAfterDate;
@@ -79,7 +79,7 @@ public class DatabaseManager {
 		for (File f : custs.listFiles()) {
 			if (f.isDirectory())
 				customerList.add(f.getName());
-				archivedList.add(f.getName());
+			archivedList.add(f.getName());
 		}
 
 		customers = new HashSet<Customer>();
@@ -124,12 +124,14 @@ public class DatabaseManager {
 							} catch (Exception e) {
 								System.out.println("couldnt read protocoll");
 								e.printStackTrace();
-								ServerGUI.tableEntries.add(new TableEntry("Protokoll von " + customer + "/" + project.getName() + " konnte nicht geladen werden."));
+								ServerGUI.tableEntries.add(new TableEntry("Protokoll von " + customer + "/"
+										+ project.getName() + " konnte nicht geladen werden."));
 							}
 						} catch (FileNotFoundException e) {
 							System.out.println("protokoll not found");
 							e.printStackTrace();
-							ExitBox.display("Protokoll von " + customer + "/" + project.getName() + " wurde nicht gefunden.");
+							ExitBox.display(
+									"Protokoll von " + customer + "/" + project.getName() + " wurde nicht gefunden.");
 						}
 					}
 				}
@@ -139,7 +141,7 @@ public class DatabaseManager {
 	}
 
 	public void checkOld(Entry e) {
-		try{
+		try {
 			System.out.println(e.getState());
 			switch (Integer.parseInt(e.getState())) {
 			case 1:
@@ -150,15 +152,14 @@ public class DatabaseManager {
 				}
 				break;
 			case 4:
-				try{
+				try {
 					System.out.println(e.getLastContact().substring(30));
 					LocalDate reference = date.toDate(e.getLastContact().substring(30));
 					System.out.println(reference);
 					if (LocalDate.now().isAfter(reference.plusDays(addWeekend(reference, daysAfterDate)))) {
 						e.setLastContact("old " + e.getLastContact());
 					}
-				}
-				catch(Exception ex){
+				} catch (Exception ex) {
 					ex.printStackTrace();
 					break;
 				}
@@ -171,20 +172,24 @@ public class DatabaseManager {
 				}
 				break;
 			}
-		}
-		catch (DateTimeParseException dtpe){
-			ServerGUI.tableEntries.add(new TableEntry(
-					"Letzter Kontakt vom Protokoll von " + e.getCustomer() + "_" + e.getItem() + " konnte nicht geladen werden."));
+		} catch (DateTimeParseException dtpe) {
+			ServerGUI.tableEntries.add(new TableEntry("Letzter Kontakt vom Protokoll von " + e.getCustomer() + "_"
+					+ e.getItem() + " konnte nicht geladen werden."));
 		}
 	}
-	
-	public String getState(String action){
-		String answer="";
-		if (action.contains("Anfrage erstellt"))answer="1";
-		else if(action.contains("Angebot erstellt"))answer="2";
-		else if(action.contains("Auftrag erhalten"))answer="3";
-		else if(action.contains("Projekt abgeschlossen")||action.contains("Archiviert"))answer="6";
-		else if(action.contains("Auftrag bestätigt")||action.contains("Los")) answer = "4";
+
+	public String getState(String action) {
+		String answer = "";
+		if (action.contains("Anfrage erstellt"))
+			answer = "1";
+		else if (action.contains("Angebot erstellt"))
+			answer = "2";
+		else if (action.contains("Auftrag erhalten"))
+			answer = "3";
+		else if (action.contains("Projekt abgeschlossen") || action.contains("Archiviert"))
+			answer = "6";
+		else if (action.contains("Auftrag bestätigt") || action.contains("Los"))
+			answer = "4";
 		System.out.println(action);
 		System.out.println(answer);
 		return answer;
@@ -229,8 +234,8 @@ public class DatabaseManager {
 				return false;
 			}
 		}
-		File project = new File(projectCustomer.getPath() + "/" + LocalDate.now().format(formatter)
-				+ "_" + entry.getItem());
+		File project = new File(
+				projectCustomer.getPath() + "/" + LocalDate.now().format(formatter) + "_" + entry.getItem());
 		if (project.mkdir()) {
 			copyDirectory(new File(projectModel), project);
 			entry.setLink(project.getPath());
@@ -261,7 +266,10 @@ public class DatabaseManager {
 				writer.println("//Bearbeiter");
 				writer.println(agent);
 				writer.println("");
-				writer.println("//Bestätigungsnummer");
+				writer.println("//Artikelnummer");
+				writer.println("");
+				writer.println("");
+				writer.println("//ABN");
 				writer.println("");
 				writer.println("");
 				writer.println("");
@@ -325,7 +333,7 @@ public class DatabaseManager {
 	public HashSet<String[]> getInitList() {
 		return initList;
 	}
-	
+
 	public HashSet<String> getArchivedList() {
 		return archivedList;
 	}
@@ -373,9 +381,12 @@ public class DatabaseManager {
 	public boolean editEntry(Entry entry, String state, String edit) {
 		entry.setState(state.substring(1));
 		String newContact = this.date.toString(LocalDate.now()) + " " + edit;
-		String weirdContact="";
-		//if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) weirdContact = LocalDate.now().toString() + entry.getLastContact().substring(10);
-		if(newContact.contains("Kontakt")) weirdContact = this.date.toString(LocalDate.now()) + entry.getLastContact().substring(10);
+		String weirdContact = "";
+		// if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt"))
+		// weirdContact = LocalDate.now().toString() +
+		// entry.getLastContact().substring(10);
+		if (newContact.contains("Kontakt"))
+			weirdContact = this.date.toString(LocalDate.now()) + entry.getLastContact().substring(10);
 		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
 		File tmp = new File(entry.getLink() + "/tmp.txt");
 		try {
@@ -385,17 +396,18 @@ public class DatabaseManager {
 			int i = 0;
 			while ((line = file.readLine()) != null) {
 				if (i == 4) {
-					if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) writer.println(weirdContact);
-					else writer.println(newContact);
-				} 
-				else if (i == 25){
-					if(edit.contains("Auftrag bestätigt")) {
+					if (entry.getLastContact().contains("Los") && newContact.contains("Kontakt"))
+						writer.println(weirdContact);
+					else
+						writer.println(newContact);
+				} else if (i == 28) {
+					if (edit.contains("Auftrag bestätigt")) {
 						System.out.println(edit);
 						writer.println(edit.substring(18));
-					}
-					else writer.println(line);
-				}
-				else writer.println(line);
+					} else
+						writer.println(line);
+				} else
+					writer.println(line);
 				i++;
 			}
 			writer.println(newContact);
@@ -409,9 +421,10 @@ public class DatabaseManager {
 			e.printStackTrace();
 			return false;
 		}
-		//if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt")) entry.setLastContact(weirdContact);
-		if(newContact.contains("Kontakt")) entry.setLastContact(weirdContact);
-		else entry.setLastContact(newContact);
+		if (newContact.contains("Kontakt"))
+			entry.setLastContact(weirdContact);
+		else
+			entry.setLastContact(newContact);
 		for (String[] s : initList) {
 			if (entry.getLink().contentEquals(s[0])) {
 				initList.remove(s);
@@ -419,15 +432,67 @@ public class DatabaseManager {
 				break;
 			}
 		}
-		if(edit.contains("Projekt abgeschlossen")){
+		if (edit.contains("Projekt abgeschlossen")) {
 			archive(entry.getLink());
 		}
 		return true;
 	}
 
-	public String[] getDetails(String link) {
-		File file = new File(link + "/Protokoll.txt");
+	public void editWholeProject(Entry entry, LinkedList<String> edits) {
+		if (!entry.getItem().contentEquals(edits.get(0))) {
+			File project = new File(new File(entry.getLink()).getParentFile().getPath() + "/"
+					+ LocalDate.now().format(formatter) + "_" + edits.get(0));
+			try {
+				Files.move(new File(entry.getLink()).toPath(), project.toPath(), StandardCopyOption.ATOMIC_MOVE);
+				for (String[] s : initList) {
+					if (entry.getLink().contentEquals(s[0])) {
+						initList.remove(s);
+						entry.setLink(project.getPath());
+						initList.add(entry.getFirstStatus());
+						break;
+					}
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
+		File tmp = new File(entry.getLink() + "/tmp.txt");
+		try {
+			BufferedReader file = new BufferedReader(new FileReader(txtfile));
+			String line;
+			PrintWriter writer = new PrintWriter(new FileWriter(tmp));
+			int i = 0;
+			while ((line = file.readLine()) != null) {
+				if (i == 10) {
+					writer.println(edits.get(0));
+				} else if (i == 13) {
+					writer.println(entry.getLink());
+				} else if (i == 16) {
+					writer.println(edits.get(1));
+				} else if (i == 19) {
+					writer.println(edits.get(2));
+				} else if (i == 22) {
+					writer.println(edits.get(3));
+				} else if (i == 25) {
+					writer.println(edits.get(4));
+				} else
+					writer.println(line);
+				i++;
+			}
+			file.close();
+			writer.close();
+			txtfile.delete();
+			tmp.renameTo(new File(entry.getLink() + "/Protokoll.txt"));
+			ServerGUI.tableEntries
+					.add(new TableEntry(entry.getCustomer() + "_" + entry.getItem() + " wurde bearbeitet"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
+	public String[] getAuftragsDetails(String link) {
+		File file = new File(link + "/Protokoll.txt");
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(file));
 			LinkedList<String> det = new LinkedList<String>();
@@ -438,6 +503,59 @@ public class DatabaseManager {
 				in.readLine();
 				in.readLine();
 				in.readLine();
+				in.readLine();
+				in.readLine();
+				det.add(in.readLine());
+				in.readLine();
+				in.readLine();
+				det.add(in.readLine());
+				in.readLine();
+				in.readLine();
+				in.readLine();
+				in.readLine();
+				in.readLine();
+				det.add(in.readLine());
+				in.readLine();
+				in.readLine();
+				det.add(in.readLine());
+				in.readLine();
+				in.readLine();
+				det.add(in.readLine());
+				in.readLine();
+				in.readLine();
+				det.add(in.readLine());
+				in.close();
+				String[] details = det.toArray(new String[0]);
+				return details;
+			} catch (Exception e) {
+				System.out.println("couldnt read protocoll");
+				e.printStackTrace();
+				return null;
+			}
+
+		} catch (FileNotFoundException e1) {
+			System.out.println("couldnt find protokoll");
+			e1.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public String[] getDetails(String link) {
+		File file = new File(link + "/Protokoll.txt");
+		try {
+			BufferedReader in = new BufferedReader(new FileReader(file));
+			LinkedList<String> det = new LinkedList<String>();
+			String line;
+			try {
+				in.readLine();
+				in.readLine();
+				in.readLine();
+				in.readLine();
+				in.readLine();
+				in.readLine();
+				in.readLine();
+				det.add(in.readLine());
 				in.readLine();
 				in.readLine();
 				det.add(in.readLine());
@@ -489,10 +607,9 @@ public class DatabaseManager {
 		if (editEntry(e, "#6", "Archiviert")) {
 			File customer = new File(db + "/abgeschlossene_Vorgaenge/" + e.getCustomer());
 			if (!customer.exists()) {
-				if (customer.mkdir()){
+				if (customer.mkdir()) {
 					archivedList.add(e.getCustomer());
-				}
-				else {
+				} else {
 					System.out.println("Failed to create customer directory in abgeschlossene Vorgänge!");
 					return false;
 				}

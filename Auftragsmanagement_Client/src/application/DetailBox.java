@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 
 public class DetailBox {
 	private static LinkedList<String> details;
-	private static boolean ready;
+	private static boolean ready = false;
 	
 	public static void display()
     {
@@ -41,8 +41,12 @@ public class DetailBox {
     	entries.add(new Label(details.get(5)));
     	
     	if(!details.get(6).contentEquals("")){
-     	   labels.add(new Label("Bearbeitungsnummer"));
-     	   entries.add(new Label(details.get(6)));
+      	   labels.add(new Label("Auftragsnummer"));
+      	   entries.add(new Label(details.get(6)));
+         }
+    	if(!details.get(7).contentEquals("")){
+     	   labels.add(new Label("ABN"));
+     	   entries.add(new Label(details.get(7)));
         }
     	                
         VBox left= new VBox();
@@ -59,7 +63,7 @@ public class DetailBox {
        up.getChildren().addAll(left, right);
         
         ListView<String> list = new ListView<String>();
-        for(int i=7; i<details.size(); i++){
+        for(int i=8; i<details.size(); i++){
         	if(details.get(i)!=null)list.getItems().add(details.get(i));
         	else break;
         }
