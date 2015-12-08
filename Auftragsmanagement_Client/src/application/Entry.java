@@ -39,6 +39,26 @@ public class Entry {
         this.state = state;
     }
     
+    public Entry(String link, String date, String customer, String item, String contact, String contactDate, int state){
+        this.date = date;
+        this.linkString = link;
+        this.link = new Button();
+        this.link.getStyleClass().add("folderbtn");
+        this.link.setMaxSize(10, 10);
+        this.link.setOnAction(e -> linkClicked());
+        this.customer = customer;
+        this.item= item;
+        this.contact=contact;
+        this.contactDate=contactDate;
+        this.pursue = new Button();
+        this.pursue.getStyleClass().add("pursuebtn");
+        this.pursue.setOnMouseClicked(e -> pursueClicked(e));
+        this.detail = new Button();
+        this.detail.getStyleClass().add("detailbtn");
+        this.detail.setOnAction(e -> detailClicked());
+        this.state = state;
+    }
+    
     public void checkOld(String contact){
     	if(contact.startsWith("old ")){
 
@@ -91,10 +111,10 @@ public class Entry {
 		    	    				AuftragsBox.setReady(false);
 		    	    				String[] edits = AuftragsBox.display();
 		    	    				if(edits[0].contentEquals(""))break;
-//		    	    				ClientGUI.sender.sendString("edit");
-//		    			    		ClientGUI.sender.sendString(this.linkString);
-//		    			    		ClientGUI.sender.sendString(answers[answer+3]);
-//		    			    		ClientGUI.sender.sendString(answers[answer]);
+		    	    				ClientGUI.sender.sendString("edit");
+		    			    		ClientGUI.sender.sendString(this.linkString);
+		    			    		ClientGUI.sender.sendString(answers[answer+3]);
+		    			    		ClientGUI.sender.sendString(answers[answer]);
 		    			    		
 		    	    				ClientGUI.sender.sendString("editDetails");
 		    	    				ClientGUI.sender.sendString(this.linkString);

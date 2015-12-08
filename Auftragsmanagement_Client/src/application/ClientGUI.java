@@ -7,8 +7,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.HashSet;
 
 import javafx.application.Application;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -19,6 +22,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -30,10 +36,14 @@ public class ClientGUI extends Application {
 	public static ClientReceiver client;
 	public static ClientSender sender;
     private Stage window;
+    private Scene scene;
+    private Scene scene2;
     private TableView<Entry> table;
+    private TreeTableView<ArchiveEntry> table2;
+    private TreeItem<ArchiveEntry> root = new TreeItem<ArchiveEntry>(new ArchiveEntry("root"));;
     public static ObservableList<Entry> entries = FXCollections.observableArrayList();
     public static ObservableList<String> customers = FXCollections.observableArrayList();
-    public static ObservableList<String> archived = FXCollections.observableArrayList();
+    public static HashSet<TreeItem<ArchiveEntry>> archived = new HashSet<TreeItem<ArchiveEntry>>();
     public static Socket SOCK;
     
     //TODO set db
@@ -185,16 +195,13 @@ public class ClientGUI extends Application {
         hBox.setPadding(new Insets(10,10,10,10));
         hBox.setSpacing(10);
         hBox.getChildren().addAll(newEntryButton, archiveButton);
-        
-        
-        table = new TableView<>();
+        table = new TableView<Entry>();
         table.setItems(getEntry());
         table.getColumns().addAll(dateColumn, linkColumn, customerColumn, itemColumn, 
         		contactDateColumn, contactColumn, pursueColumn, detailColumn);
         table.setEditable(true);
         table.getSortOrder().add(dateColumn);
         table.scrollTo(table.getItems().size() - 1);
-        
         table.getItems().addListener((ListChangeListener<Entry>) (c -> {
             c.next();
             final int size = table.getItems().size();
@@ -202,25 +209,79 @@ public class ClientGUI extends Application {
                 table.scrollTo(size - 1);
             }
         }));
-
         VBox vBox = new VBox();
         vBox.getChildren().addAll(table, hBox);
-
-        Scene scene = new Scene(vBox);
+        scene = new Scene(vBox);
+        
+        //Scene2
+        TreeTableColumn<ArchiveEntry, String> c1 = new TreeTableColumn<>("Kunde/Projekt");
+        c1.setMinWidth(200);
+        c1.setCellValueFactory(
+                (TreeTableColumn.CellDataFeatures<ArchiveEntry, String> param) -> 
+                new ReadOnlyStringWrapper(param.getValue().getValue().getName())
+            );
+        
+        TreeTableColumn<ArchiveEntry, String> c2 = new TreeTableColumn<>("Datum");
+        c2.setMinWidth(60);
+        c2.setCellValueFactory(
+                (TreeTableColumn.CellDataFeatures<ArchiveEntry, String> param) -> 
+                new ReadOnlyStringWrapper(param.getValue().getValue().getDate())
+            );
+        
+        TreeTableColumn<ArchiveEntry, String> c3 = new TreeTableColumn<>("Artikelnummer");
+        c3.setMinWidth(60);
+        c3.setCellValueFactory(
+                (TreeTableColumn.CellDataFeatures<ArchiveEntry, String> param) -> 
+                new ReadOnlyStringWrapper(param.getValue().getValue().getAnum())
+            );
+        
+        TreeTableColumn<ArchiveEntry, String> c4 = new TreeTableColumn<>("ABN");
+        c4.setMinWidth(60);
+        c4.setCellValueFactory(
+                (TreeTableColumn.CellDataFeatures<ArchiveEntry, String> param) -> 
+                new ReadOnlyStringWrapper(param.getValue().getValue().getAbn())
+            );
+        
+        TreeTableColumn<ArchiveEntry, Button> c5 = new TreeTableColumn<>("Aktionen");
+        c5.setMinWidth(60);
+        c5.setCellValueFactory(
+                (TreeTableColumn.CellDataFeatures<ArchiveEntry, Button> param) -> 
+                new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getPursue())
+            );
+        
+        
+        table2 = new TreeTableView<>(root);
+        //table2.setShowRoot(false);
+        table2.getColumns().addAll(c1, c2, c3, c4, c5);
+        table2.setEditable(true);
+        table2.setShowRoot(false);
+        
+        Button back = new Button("Zurück");
+        back.setOnAction(e -> back());
+        
+        VBox vBox2 = new VBox();
+        vBox2.getChildren().addAll(table2, back);
+        scene2 = new Scene(vBox2);
+        
         window.setScene(scene);
         window.getScene().getStylesheets().add(getClass().getResource("application.css").toExternalForm());
         window.show();
         
     }
 
-    public void archiveButtonClicked() {
-    	try {
-			Desktop dt = Desktop.getDesktop();
-			dt.open(new File(datenbank + "abgeschlossene_Vorgaenge"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    private void setArchiveTree() {
+		root.getChildren().setAll(archived);
+		System.out.println(root.getChildren());
 	}
+
+	public void archiveButtonClicked() {
+		setArchiveTree();
+    	this.window.setScene(this.scene2);
+	}
+    
+    public void back(){
+    	this.window.setScene(scene);
+    }
 
 	//Add button clicked
     public void newEntryButtonClicked(){

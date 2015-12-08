@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Scanner;
 
+import javafx.scene.control.TreeItem;
+
 public class ClientReceiver implements Runnable{
     
     private static Socket SOCK;
@@ -101,7 +103,7 @@ public class ClientReceiver implements Runnable{
     			received = objIn.readObject();
     		}
     		for(String customer : (HashSet<String>) received){
-    			ClientGUI.archived.add(customer);
+    			ClientGUI.archived.add(new TreeItem<ArchiveEntry>(new ArchiveEntry(customer)));
     		}
     	}
     	catch(Exception e)
@@ -155,6 +157,9 @@ public class ClientReceiver implements Runnable{
 //		            ClientGUI.alert("Das Serverprogramm wurde beendet.");
 //		            System.exit(0);
 		    	}
+		    	else if(message.contentEquals("alert")){
+		    		AlertBox3.display(INPUT.nextLine());
+		    	}
 		    	else if(message.contains("edit")){
 		    		message=INPUT.nextLine();
 		    		for(Entry e : ClientGUI.entries){
@@ -207,9 +212,18 @@ public class ClientReceiver implements Runnable{
 		    		for(Entry e : ClientGUI.entries){
 		    			if(message.contentEquals(e.getLinkString())){
 		    				ClientGUI.entries.remove(e);
+		    				boolean found=false;
+		    				for(TreeItem<ArchiveEntry> ti : ClientGUI.archived){
+				    			if(e.getCustomer().contentEquals(ti.getValue().getName())){
+				    				found=true;
+				    				break;
+				    			}
+				    		}
+				    		if(!found)ClientGUI.archived.add(new TreeItem<ArchiveEntry>(new ArchiveEntry(e.getCustomer())));
 		    				break;
 		    			}
 		    		}
+		    		
 		    	}
 		    	else if(message.contains("changeLink")){
 		    		String link=INPUT.nextLine();
@@ -217,6 +231,10 @@ public class ClientReceiver implements Runnable{
 		    		for(Entry e : ClientGUI.entries){
 		    			if(link.contentEquals(e.getLinkString())){
 		    				e.setLinkString(newLink);
+		    				e.setItem(new File(newLink).getName().substring(7));
+		    				Entry entry = new Entry(e.getLinkString(), e.getDate(), e.getCustomer(), e.getItem(), e.getContact(), e.getContactDate(), e.getState());
+		    				ClientGUI.entries.remove(e);
+		    				ClientGUI.entries.add(entry);
 		    				break;
 		    			}
 		    		}
@@ -240,6 +258,15 @@ public class ClientReceiver implements Runnable{
 		    			ExitBox.display("Datenübertragung fehlgeschlagen");
 		    		}
 		    		CreateBox.setReady(true);
+		    	}
+		    	else if (message.contains("archive")){
+		    		String message=INPUT.nextLine();
+		    		for(TreeItem<ArchiveEntry> e : ClientGUI.archived){
+		    			if(message.contentEquals(e.getValue().getName())){
+		    				return;
+		    			}
+		    		}
+		    		ClientGUI.archived.add(new TreeItem<ArchiveEntry>(new ArchiveEntry(message)));
 		    	}
 	    	}
 	    	catch(Exception e)

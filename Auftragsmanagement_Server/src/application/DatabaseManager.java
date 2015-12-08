@@ -1,6 +1,7 @@
 package application;
 
 import java.io.*;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.DayOfWeek;
@@ -438,8 +439,9 @@ public class DatabaseManager {
 		return true;
 	}
 
-	public void editWholeProject(Entry entry, LinkedList<String> edits) {
+	public String editWholeProject(Entry entry, LinkedList<String> edits) {
 		if (!entry.getItem().contentEquals(edits.get(0))) {
+			
 			File project = new File(new File(entry.getLink()).getParentFile().getPath() + "/"
 					+ LocalDate.now().format(formatter) + "_" + edits.get(0));
 			try {
@@ -447,6 +449,7 @@ public class DatabaseManager {
 				for (String[] s : initList) {
 					if (entry.getLink().contentEquals(s[0])) {
 						initList.remove(s);
+						entry.setItem(edits.get(0));
 						entry.setLink(project.getPath());
 						initList.add(entry.getFirstStatus());
 						break;
@@ -454,6 +457,7 @@ public class DatabaseManager {
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+				return "alert";
 			}
 		}
 		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
@@ -488,7 +492,9 @@ public class DatabaseManager {
 					.add(new TableEntry(entry.getCustomer() + "_" + entry.getItem() + " wurde bearbeitet"));
 		} catch (IOException e) {
 			e.printStackTrace();
+			return "alert";
 		}
+		return "";
 	}
 
 	public String[] getAuftragsDetails(String link) {
