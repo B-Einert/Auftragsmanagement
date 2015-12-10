@@ -22,3 +22,7 @@
 .folderbtn{
 	-fx-graphic:url(images/folderbtn.png);
 }
+
+.duplicatebtn{
+	-fx-graphic:url(images/duplicate.png);
+}

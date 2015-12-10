@@ -118,7 +118,7 @@ public class Entry {
 		    			    		
 		    	    				ClientGUI.sender.sendString("editDetails");
 		    	    				ClientGUI.sender.sendString(this.linkString);
-		    	    				for(int i = 0; i<=4; i++){
+		    	    				for(int i = 1; i<=5; i++){
 		    	    					ClientGUI.sender.sendString(edits[i]);
 		    	    				}
 		    	    				break;

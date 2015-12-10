@@ -146,7 +146,7 @@ public class ClientReceiver implements Runnable{
 	    	try
 	    	{	
 		    	message = INPUT.nextLine();
-		    	System.out.println(message);
+		    	System.out.println("received: " + message);
 		    	if(message.contains("new")){
 		    		receiveNewEntry();
 		    	}
@@ -154,8 +154,6 @@ public class ClientReceiver implements Runnable{
 		    		INPUT.close();
 		            SOCK.close();
 		            AlertBox.display("Das Serverprogramm wurde beendet");
-//		            ClientGUI.alert("Das Serverprogramm wurde beendet.");
-//		            System.exit(0);
 		    	}
 		    	else if(message.contentEquals("alert")){
 		    		AlertBox3.display(INPUT.nextLine());
@@ -170,6 +168,25 @@ public class ClientReceiver implements Runnable{
 		    				Entry entry = new Entry(e.getLinkString(), e.getDate(), e.getCustomer(), e.getItem(), e.getContact(), e.getState());
 		    				ClientGUI.entries.remove(e);
 		    				ClientGUI.entries.add(entry);
+		    				break;
+		    			}
+		    		}
+		    	}
+		    	else if(message.contains("archivedProjects")){
+		    		System.out.println("in");
+		    		String customer=INPUT.nextLine();
+		    		LinkedList<TreeItem<ArchiveEntry>> projects= new LinkedList<TreeItem<ArchiveEntry>>();
+		    		while(true){
+		    			String test=INPUT.nextLine();
+		    			if(test.contentEquals("!?#end"))break;
+		    			else{
+		    				projects.add(new TreeItem<ArchiveEntry>(new ArchiveEntry(test, INPUT.nextLine(), INPUT.nextLine(), INPUT.nextLine(), INPUT.nextLine())));
+		    				
+		    			}
+		    		}
+		    		for(TreeItem<ArchiveEntry> t : ClientGUI.archived){
+		    			if(t.getValue().getName().contentEquals(customer)){
+		    				t.getChildren().setAll(projects);
 		    				break;
 		    			}
 		    		}
@@ -209,6 +226,7 @@ public class ClientReceiver implements Runnable{
 		    	}
 		    	else if(message.contains("delete")){
 		    		message=INPUT.nextLine();
+		    		System.out.println(message);
 		    		for(Entry e : ClientGUI.entries){
 		    			if(message.contentEquals(e.getLinkString())){
 		    				ClientGUI.entries.remove(e);

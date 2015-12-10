@@ -1,7 +1,6 @@
 package application;
 
 import java.io.*;
-import java.nio.file.FileSystemException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.time.DayOfWeek;
@@ -12,8 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
-
-import javafx.util.converter.LocalDateStringConverter;
 
 public class DatabaseManager {
 
@@ -225,7 +222,7 @@ public class DatabaseManager {
 
 	}
 
-	public boolean createNewProject(Entry entry, String contact, String phone, String agent) throws IOException {
+	public boolean createNewProject(Entry entry, String contact, String phone, String agent, String artnum, String copyDir) throws IOException {
 		File projectCustomer = new File(db + "/laufende_Vorgaenge/" + entry.getCustomer());
 		if (!projectCustomer.exists()) {
 			if (projectCustomer.mkdir())
@@ -238,7 +235,11 @@ public class DatabaseManager {
 		File project = new File(
 				projectCustomer.getPath() + "/" + LocalDate.now().format(formatter) + "_" + entry.getItem());
 		if (project.mkdir()) {
-			copyDirectory(new File(projectModel), project);
+			if(copyDir.contentEquals(""))copyDirectory(new File(projectModel), project);
+			else {
+				copyDirectory(new File(copyDir), project);
+				new File(project + "/Protokoll.txt").delete();
+			}
 			entry.setLink(project.getPath());
 			try {
 				File txtfile = new File(project + "/Protokoll.txt");
@@ -268,7 +269,7 @@ public class DatabaseManager {
 				writer.println(agent);
 				writer.println("");
 				writer.println("//Artikelnummer");
-				writer.println("");
+				writer.println(artnum);
 				writer.println("");
 				writer.println("//ABN");
 				writer.println("");
@@ -341,11 +342,9 @@ public class DatabaseManager {
 
 	public String[] manageEntry(String[] entry) {
 		Entry e = new Entry(this.date.toString(LocalDate.now()), entry[0], entry[1]);
-		System.out.println(e.getLastContact());
 		try {
-			if (createNewProject(e, entry[2], entry[3], entry[4])) {
+			if (createNewProject(e, entry[2], entry[3], entry[4], "", "")) {
 				addToCustomer(e);
-
 				initList.add(e.getFirstStatus());
 				return e.getFirstStatus();
 			} else
@@ -356,6 +355,24 @@ public class DatabaseManager {
 		String[] newEntry = { "-1" };
 		return newEntry;
 	}
+	
+	public Entry createDouble(String link, String customer, String item, String contact, String agent, String tel,
+			String artnum) {
+		Entry e = new Entry(this.date.toString(LocalDate.now()), "", customer, item, this.date.toString(LocalDate.now()) + " Dupliziert", "3");
+		try {
+			if (createNewProject(e, contact, tel, agent, artnum, link)) {
+				addToCustomer(e);
+				initList.add(e.getFirstStatus());
+				return e;
+			} else
+				System.out.println("creation failed");
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return null;
+	}
+	
+	
 
 	public void addToCustomer(Entry entry) {
 		for (Customer c : customers) {
@@ -383,9 +400,6 @@ public class DatabaseManager {
 		entry.setState(state.substring(1));
 		String newContact = this.date.toString(LocalDate.now()) + " " + edit;
 		String weirdContact = "";
-		// if(entry.getLastContact().contains("Los")&&newContact.contains("Kontakt"))
-		// weirdContact = LocalDate.now().toString() +
-		// entry.getLastContact().substring(10);
 		if (newContact.contains("Kontakt"))
 			weirdContact = this.date.toString(LocalDate.now()) + entry.getLastContact().substring(10);
 		File txtfile = new File(entry.getLink() + "/Protokoll.txt");
@@ -401,7 +415,11 @@ public class DatabaseManager {
 						writer.println(weirdContact);
 					else
 						writer.println(newContact);
-				} else if (i == 28) {
+				} 
+				else if (i==13&&edit.contentEquals("Archiviert")){
+					writer.println(db + "/abgeschlossene_Vorgaenge/" + entry.getCustomer() + "/" + new File(entry.getLink()).getName());
+				}
+				else if (i == 28) {
 					if (edit.contains("Auftrag bestätigt")) {
 						System.out.println(edit);
 						writer.println(edit.substring(18));
@@ -502,7 +520,6 @@ public class DatabaseManager {
 		try {
 			BufferedReader in = new BufferedReader(new FileReader(file));
 			LinkedList<String> det = new LinkedList<String>();
-			String line;
 			try {
 				in.readLine();
 				in.readLine();
@@ -713,5 +730,68 @@ public class DatabaseManager {
 			}
 		}
 		return answer;
+	}
+
+	public String[] getArchivedProjects(String customer) {
+		File custFile=new File(this.db + "/abgeschlossene_Vorgaenge/" + customer);
+		if(!custFile.exists()){
+			System.out.println("fail");
+			return null;
+		}
+		else{
+			LinkedList<String> det= new LinkedList<String>();
+			for(File f: custFile.listFiles()){
+				File protokoll = new File(f.getAbsolutePath() + "/Protokoll.txt");
+				if(protokoll.exists()){
+					try {
+						BufferedReader in = new BufferedReader(new FileReader(protokoll));
+						try {
+							in.readLine();
+							det.add(in.readLine());
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							det.add(in.readLine());
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							in.readLine();
+							det.add(in.readLine());
+							in.readLine();
+							in.readLine();
+							det.add(in.readLine());
+							det.add(f.getAbsolutePath());
+							in.close();
+						} catch (Exception e) {
+							System.out.println("couldnt read protocoll");
+							e.printStackTrace();
+							return null;
+						}
+
+					} catch (FileNotFoundException e1) {
+						System.out.println("couldnt find protokoll");
+						e1.printStackTrace();
+						return null;
+					}
+				}
+			}
+			String[] details = det.toArray(new String[0]);
+			return details;
+		}
 	}
 }

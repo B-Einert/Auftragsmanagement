@@ -37,6 +37,7 @@ public class ClientSender {
     
     public void sendString(String x)
     {
+    	System.out.println(x);
         OUT.println(x);
 		OUT.flush();
     }

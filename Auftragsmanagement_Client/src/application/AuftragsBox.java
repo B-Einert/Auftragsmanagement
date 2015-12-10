@@ -106,7 +106,7 @@ public class AuftragsBox {
 
 			for (int i = 1; i <= 5; i++) {
 
-				if (((TextField) fields.get(i)).getText().isEmpty()) {
+				if (((TextField) fields.get(i)).getText().isEmpty() && i != 4) {
 					(labelx.get(i)).setVisible(true);
 					missing = true;
 				} else
@@ -114,7 +114,7 @@ public class AuftragsBox {
 			}
 
 			if (missing == false) {
-				String[] entries = { ((TextField) fields.get(1)).getText(), ((TextField) fields.get(2)).getText(),
+				String[] entries = { ((Label) fields.get(0)).getText(), ((TextField) fields.get(1)).getText(), ((TextField) fields.get(2)).getText(),
 						((TextField) fields.get(3)).getText(), ((TextField) fields.get(4)).getText(),
 						((TextField) fields.get(5)).getText() };
 				newEntry = entries;

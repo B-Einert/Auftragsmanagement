@@ -41,7 +41,7 @@ public class DetailBox {
     	entries.add(new Label(details.get(5)));
     	
     	if(!details.get(6).contentEquals("")){
-      	   labels.add(new Label("Auftragsnummer"));
+      	   labels.add(new Label("Artikelnummer"));
       	   entries.add(new Label(details.get(6)));
          }
     	if(!details.get(7).contentEquals("")){

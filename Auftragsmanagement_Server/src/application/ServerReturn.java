@@ -85,7 +85,17 @@ public class ServerReturn implements Runnable {
 							sendString(link);
 							sendString(e.getLink());
 						}
-
+					} 
+					else if (message.contentEquals("archivedProjects")) {
+						String customer=INPUT.nextLine();
+						String[] projects = Server.dbManager.getArchivedProjects(customer);
+						if(!(projects == null)){
+							OUT.println("archivedProjects");
+							OUT.flush();
+							OUT.println(customer);
+							OUT.flush();
+							sendStrings(projects, this);
+						}
 					} else if (message.contains("edit")) {
 						Entry e = Server.dbManager.findEntry(INPUT.nextLine());
 						String state = (INPUT.nextLine());
@@ -95,10 +105,10 @@ public class ServerReturn implements Runnable {
 							Server.dbManager.editEntry(e, state, INPUT.nextLine());
 
 						} else if (edit.contains("Projekt abgeschlossen")) {
+							String link=e.getLink();
 							Server.dbManager.editEntry(e, state, edit);
 							sendString("delete");
-							sendString(e.getLink());
-							return;
+							sendString(link);
 						} else if (edit.contains("Los")) {
 							Server.dbManager.editEntry(e, state, edit);
 							Server.dbManager.editEntry(e, state, INPUT.nextLine());
@@ -120,11 +130,17 @@ public class ServerReturn implements Runnable {
 						OUT.println("detail");
 						OUT.flush();
 						sendStrings(details);
-
 						System.out.println("sent details");
-
 					}
-
+					else if (message.contains("duplicate")) {
+						Entry e = Server.dbManager.createDouble(INPUT.nextLine(), INPUT.nextLine(), INPUT.nextLine(), INPUT.nextLine(), INPUT.nextLine(), INPUT.nextLine(), INPUT.nextLine());
+						if(e!=null){
+							Server.dbManager.editEntry(e, "#3", "Auftrag erhalten");
+							System.out.println(e.getState());
+							sendString("new");
+							sendStrings(e.getFirstStatus());
+						}
+					}
 					else if (message.contains("archive")) {
 						String link = INPUT.nextLine();
 						if (Server.dbManager.archive(link)) {
@@ -209,6 +225,34 @@ public class ServerReturn implements Runnable {
 	}
 
 	public void sendStrings(String[] message) {
+		try {
+			for (int i = 1; i <= Server.ConnectionArray.size(); i++) {
+				Socket TEMP_SOCK = (Socket) Server.ConnectionArray.get(i - 1);
+				try {
+					System.out.println("send " + message + " to " + TEMP_SOCK.getInetAddress());
+					PrintWriter TEMP_OUT = new PrintWriter(TEMP_SOCK.getOutputStream());
+					for (String s : message) {
+						TEMP_OUT.println(s);
+						TEMP_OUT.flush();
+					}
+					TEMP_OUT.println("!?#end");
+					TEMP_OUT.flush();
+				} catch (SocketException e) {
+					e.printStackTrace();
+					ServerGUI.tableEntries
+							.add(new TableEntry("Das Programm von " + TEMP_SOCK.getInetAddress() + " ist abgestürzt."));
+					disconnect(TEMP_SOCK);
+					i--;
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+
+		}
+	}
+
+	private void sendStrings(String[] message, ServerReturn serverReturn) {
 		try {
 			for (String s : message) {
 				OUT.println(s);

@@ -16,6 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,20 +24,23 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class ClientGUI extends Application {
 
 	public static ClientReceiver client;
 	public static ClientSender sender;
-    private Stage window;
-    private Scene scene;
+    private static Stage window;
+    private static Scene scene;
     private Scene scene2;
     private TableView<Entry> table;
     private TreeTableView<ArchiveEntry> table2;
@@ -227,6 +231,15 @@ public class ClientGUI extends Application {
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, String> param) -> 
                 new ReadOnlyStringWrapper(param.getValue().getValue().getDate())
             );
+        c2.setComparator(new Comparator<String>(){
+        	@Override
+			public int compare(String s1, String s2) {
+        		if(s1.contentEquals("")||s2.contentEquals(""))return 0;
+				LocalDate l1 = LocalDate.parse(s1.substring(6) + "-" + s1.substring(3, 5) + "-" + s1.substring(0, 2));
+				LocalDate l2 = LocalDate.parse(s2.substring(6) + "-" + s2.substring(3, 5) + "-" + s2.substring(0, 2));
+				return l1.compareTo(l2);
+			}
+        });
         
         TreeTableColumn<ArchiveEntry, String> c3 = new TreeTableColumn<>("Artikelnummer");
         c3.setMinWidth(60);
@@ -242,19 +255,53 @@ public class ClientGUI extends Application {
                 new ReadOnlyStringWrapper(param.getValue().getValue().getAbn())
             );
         
-        TreeTableColumn<ArchiveEntry, Button> c5 = new TreeTableColumn<>("Aktionen");
+        TreeTableColumn<ArchiveEntry, Button> c5 = new TreeTableColumn<>("Duplizieren");
         c5.setMinWidth(60);
         c5.setCellValueFactory(
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, Button> param) -> 
-                new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getPursue())
+                new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getDuplicate())
             );
+//        c5.setCellFactory(col -> {
+//            TreeTableCell<ArchiveEntry, Button> cell = new TreeTableCell<ArchiveEntry, Button>() {
+//                @Override
+//                public void updateItem(Button item, boolean empty) {
+//                    super.updateItem(item, empty);
+//                    setItem(item);
+//                }
+//            };
+//
+//            cell.setAlignment(Pos.CENTER);
+//
+//            return cell ;
+//        });
+
+        
+        TreeTableColumn<ArchiveEntry, Button> c6 = new TreeTableColumn<>("Detail");
+        c6.setSortable(false);
+        c6.setMinWidth(60);
+        c6.setCellValueFactory(
+                (TreeTableColumn.CellDataFeatures<ArchiveEntry, Button> param) -> 
+                new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getDetails())
+            );
+        c6.getStyleClass().add("center");
+        
+      //link column
+        TreeTableColumn<ArchiveEntry, Button> c7 = new TreeTableColumn<>("Link");
+        c7.setSortable(false);
+        c7.setMinWidth(50);
+        c7.setCellValueFactory(
+                (TreeTableColumn.CellDataFeatures<ArchiveEntry, Button> param) -> 
+                new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getLinkBtn())
+            );
+        c7.getStyleClass().add("center");
         
         
         table2 = new TreeTableView<>(root);
         //table2.setShowRoot(false);
-        table2.getColumns().addAll(c1, c2, c3, c4, c5);
-        table2.setEditable(true);
+        table2.getColumns().addAll(c1, c2, c3, c4, c7, c5, c6);
         table2.setShowRoot(false);
+        table2.getSortOrder().addAll(c1, c2);
+        
         
         Button back = new Button("Zurück");
         back.setOnAction(e -> back());
@@ -271,16 +318,21 @@ public class ClientGUI extends Application {
 
     private void setArchiveTree() {
 		root.getChildren().setAll(archived);
-		System.out.println(root.getChildren());
+		for(TreeItem<ArchiveEntry> item : root.getChildren()){
+			item.getChildren().remove(0, item.getChildren().size());
+			item.getChildren().add(new TreeItem<ArchiveEntry>(new ArchiveEntry("")));
+			item.setExpanded(false);
+			new TreeItemOpener(item);
+		}
 	}
 
 	public void archiveButtonClicked() {
 		setArchiveTree();
-    	this.window.setScene(this.scene2);
+    	window.setScene(this.scene2);
 	}
     
-    public void back(){
-    	this.window.setScene(scene);
+    public static void back(){
+    	window.setScene(scene);
     }
 
 	//Add button clicked
