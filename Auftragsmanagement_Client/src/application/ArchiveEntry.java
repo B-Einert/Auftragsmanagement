@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class ArchiveEntry{
 	
@@ -30,15 +32,15 @@ public class ArchiveEntry{
 		this.abn=abn;
 		this.link=link;
 		this.details = new Button();
-        this.details.getStyleClass().add("detailbtn");
+        details.getStyleClass().add("detailbtn");
         this.details.setOnAction(e -> detailClicked());
         this.duplicate = new Button();
-        this.duplicate.getStyleClass().add("duplicatebtn");
+        duplicate.getStyleClass().add("duplicatebtn");
         this.duplicate.setOnAction(e -> duplicateClicked());
         this.linkBtn = new Button();
-        this.linkBtn.getStyleClass().add("folderbtn");
         this.linkBtn.setMaxSize(10, 10);
         this.linkBtn.setOnAction(e -> linkBtnClicked());
+        linkBtn.getStyleClass().add("folderbtn");
 	}
 	
 	 public void linkBtnClicked(){

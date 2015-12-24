@@ -49,6 +49,10 @@ public class ClientGUI extends Application {
     public static ObservableList<String> customers = FXCollections.observableArrayList();
     public static HashSet<TreeItem<ArchiveEntry>> archived = new HashSet<TreeItem<ArchiveEntry>>();
     public static Socket SOCK;
+    private static Image dupl;
+    private static Image folder;
+    private static Image pursue;
+    private static Image detail;
     
     //TODO set db
     public static String datenbank = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
@@ -95,6 +99,11 @@ public class ClientGUI extends Application {
     			a.printStackTrace();
         	}
         });
+        
+        dupl = new Image(getClass().getResourceAsStream("images/duplicate.png"));
+        folder = new Image(getClass().getResourceAsStream("images/folderbtn.png"));
+        pursue = new Image(getClass().getResourceAsStream("images/pursuebtn.png"));
+        detail = new Image(getClass().getResourceAsStream("images/detailbtn.png"));
 
         //date column
         TableColumn<Entry, String> dateColumn = new TableColumn<>("Anfrage");
@@ -261,21 +270,7 @@ public class ClientGUI extends Application {
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, Button> param) -> 
                 new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getDuplicate())
             );
-//        c5.setCellFactory(col -> {
-//            TreeTableCell<ArchiveEntry, Button> cell = new TreeTableCell<ArchiveEntry, Button>() {
-//                @Override
-//                public void updateItem(Button item, boolean empty) {
-//                    super.updateItem(item, empty);
-//                    setItem(item);
-//                }
-//            };
-//
-//            cell.setAlignment(Pos.CENTER);
-//
-//            return cell ;
-//        });
-
-        
+       
         TreeTableColumn<ArchiveEntry, Button> c6 = new TreeTableColumn<>("Detail");
         c6.setSortable(false);
         c6.setMinWidth(60);
@@ -283,7 +278,6 @@ public class ClientGUI extends Application {
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, Button> param) -> 
                 new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getDetails())
             );
-        c6.getStyleClass().add("center");
         
       //link column
         TreeTableColumn<ArchiveEntry, Button> c7 = new TreeTableColumn<>("Link");
@@ -293,11 +287,9 @@ public class ClientGUI extends Application {
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, Button> param) -> 
                 new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getLinkBtn())
             );
-        c7.getStyleClass().add("center");
         
         
         table2 = new TreeTableView<>(root);
-        //table2.setShowRoot(false);
         table2.getColumns().addAll(c1, c2, c3, c4, c7, c5, c6);
         table2.setShowRoot(false);
         table2.getSortOrder().addAll(c1, c2);
@@ -312,6 +304,7 @@ public class ClientGUI extends Application {
         
         window.setScene(scene);
         window.getScene().getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+        scene2.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
         window.show();
         
     }
@@ -360,5 +353,21 @@ public class ClientGUI extends Application {
 
 	public static void alert(String alert) {
         AlertBox.display(alert);
+	}
+	
+	public static Image getGraphic(String name){
+		switch (name){
+			case "duplicate":
+				return dupl;
+			case "detail":
+				return detail;
+			case "folder":
+				return folder;
+			case "pursue":
+				return pursue;
+			default: 
+				return null;
+		}
+				
 	}
 }

@@ -356,7 +356,7 @@ public class DatabaseManager {
 		return newEntry;
 	}
 	
-	public Entry createDouble(String link, String customer, String item, String contact, String agent, String tel,
+	public Entry createDouble(String link, String customer, String item, String contact, String tel, String agent,
 			String artnum) {
 		Entry e = new Entry(this.date.toString(LocalDate.now()), "", customer, item, this.date.toString(LocalDate.now()) + " Dupliziert", "3");
 		try {
