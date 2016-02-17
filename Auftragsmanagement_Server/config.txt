@@ -1,11 +1,11 @@
 //Datenbank Verzeichniss
-C:/Users/Pyornez/Documents/Korropol/auftragsmanagement/Datenbank
+D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank
 
 //Musterkunde Verzeichniss
-C:/Users/Pyornez/Documents/Korropol/auftragsmanagement/Datenbank/Musterkunde
+D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Musterkunde
 
 //Musterprojekt verzeichniss
-C:/Users/Pyornez/Documents/Korropol/auftragsmanagement/Datenbank/Musterprojekt
+D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Musterprojekt
 
 //Tage nach Anfrage nach welchen sich die Anzeige rot färbt
 5

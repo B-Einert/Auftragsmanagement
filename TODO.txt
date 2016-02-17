@@ -7,6 +7,8 @@ bemerkungen writable
 server als consoleapp
 kill client if server down
 
+tabellenaktualisierung(markierung am ende)
+
 
 parallele arbeit
 autokorrektur vervollständigung

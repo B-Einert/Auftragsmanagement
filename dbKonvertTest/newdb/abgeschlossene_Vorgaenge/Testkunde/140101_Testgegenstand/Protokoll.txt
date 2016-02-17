@@ -11,7 +11,7 @@ hallo
 gegstand
 
 //Link
-C:/Users/Pyornez/Documents/Korropol/auftragsmanagement\dbKonvertTest\olddb\Testkunde\140101_Testgegenstand
+D:\BJOERN\Documents\Korropol\Auftragsmanagement\dbKonvertTest\olddb\Testkunde\140101_Testgegenstand
 
 //Ansprechpartner
 hrEinert

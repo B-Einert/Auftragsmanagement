@@ -173,7 +173,6 @@ public class ClientReceiver implements Runnable{
 		    		}
 		    	}
 		    	else if(message.contains("archivedProjects")){
-		    		System.out.println("in");
 		    		String customer=INPUT.nextLine();
 		    		LinkedList<TreeItem<ArchiveEntry>> projects= new LinkedList<TreeItem<ArchiveEntry>>();
 		    		while(true){
