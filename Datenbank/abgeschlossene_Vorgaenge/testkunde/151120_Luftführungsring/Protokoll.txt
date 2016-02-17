@@ -1,0 +1,35 @@
+//erster Kontakt
+2015-11-20
+
+//letzter Kontakt
+2015-11-20 Archiviert
+
+//Kunde
+testkunde
+
+//Gegenstand
+Luftführungsring
+
+//Link
+C:\Users\Pyornez\Documents\Korropol\auftragsmanagement\Datenbank\laufende_Vorgaenge\testkunde\151120_Luftführungsring
+
+//Ansprechpartner
+testpartner
+
+//Telefon
+testnummer
+
+//Bearbeiter
+Zichner
+
+//Bestätigungsnummer
+25663662
+
+
+2015-11-20 Anfrage
+2015-11-20 Angebot
+2015-11-20 Auftrag
+2015-11-20 Bestätigung 25663662
+2015-11-20 Los 1 bis 2015-12-16 versenden!
+2015-11-20 Versand abgeschlossen, Projekt beendet
+2015-11-20 Archiviert

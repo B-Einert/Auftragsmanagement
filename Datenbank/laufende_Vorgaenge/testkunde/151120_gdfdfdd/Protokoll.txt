@@ -1,0 +1,33 @@
+//erster Kontakt
+2015-11-20
+
+//letzter Kontakt
+2015-11-20 Los 1 bis 2015-12-04 versenden!
+
+//Kunde
+testkunde
+
+//Gegenstand
+gdfdfdd
+
+//Link
+C:\Users\Pyornez\Documents\Korropol\auftragsmanagement\Datenbank\laufende_Vorgaenge\testkunde\151120_gdfdfdd
+
+//Ansprechpartner
+testpartner
+
+//Telefon
+testnummer
+
+//Bearbeiter
+dsdsdsd
+
+//Bestätigungsnummer
+34433455
+
+
+2015-11-20 Anfrage
+2015-11-20 Angebot
+2015-11-20 Auftrag
+2015-11-20 Bestätigung 34433455
+2015-11-20 Los 1 bis 2015-12-04 versenden!

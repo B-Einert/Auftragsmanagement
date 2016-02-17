@@ -1,0 +1,32 @@
+//erster Kontakt
+2015-11-19
+
+//letzter Kontakt
+letzterKontakt
+
+//Kunde
+hallo
+
+//Gegenstand
+gegstand
+
+//Link
+C:/Users/Pyornez/Documents/Korropol/auftragsmanagement\dbKonvertTest\olddb\Testkunde\140101_Testgegenstand
+
+//Ansprechpartner
+hrEinert
+
+//Telefon
+03.01.38
+
+//Bearbeiter
+einert
+
+//Bestätigungsnummer
+123456
+
+
+2015-11-19 Anfrage
+2014-12-12 Angebot
+2012-10-10 Auftrag
+2012-10-10 Bestätigung
