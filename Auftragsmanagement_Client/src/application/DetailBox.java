@@ -18,8 +18,8 @@ public class DetailBox {
     {
     	Stage window = new Stage();
     	window.setTitle("Details " + details.get(0) + "_" + details.get(1));
-        window.setWidth(400); 
-        window.setHeight(300);
+//        window.setWidth(400); 
+//        window.setHeight(300);
         
     	LinkedList<Label> labels= new LinkedList<Label>();
     	LinkedList<Label> entries= new LinkedList<Label>();    	
@@ -50,11 +50,11 @@ public class DetailBox {
         }
     	                
         VBox left= new VBox();
-        left.setMinWidth(140);
-        left.setPadding(new Insets(10, 10, 10, 10));
+        left.setMinWidth(150);
+        left.setPadding(new Insets(0, 10, 10, 10));
         left.setSpacing(5);
         VBox right=new VBox();
-        right.setPadding(new Insets(10, 10, 10, 10));
+        right.setPadding(new Insets(0, 10, 10, 10));
         right.setSpacing(5);
         HBox up = new HBox();
         
@@ -63,6 +63,7 @@ public class DetailBox {
        up.getChildren().addAll(left, right);
         
         ListView<String> list = new ListView<String>();
+        list.setPrefHeight(24*5);
         for(int i=8; i<details.size(); i++){
         	if(details.get(i)!=null)list.getItems().add(details.get(i));
         	else break;
@@ -76,6 +77,8 @@ public class DetailBox {
         
         VBox vbox=new VBox();
         vbox.getChildren().addAll(up, list);
+        vbox.setPadding(new Insets(25));
+        vbox.setPrefWidth(500);
 
         Scene scene = new Scene(vbox);
         window.setScene(scene);

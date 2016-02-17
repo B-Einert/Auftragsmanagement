@@ -106,7 +106,7 @@ public class CreateBox {
         	}
         });
         
-        grid.setPadding(new Insets(10, 10, 10, 10));
+        grid.setPadding(new Insets(25));
         grid.setVgap(8);
         grid.setHgap(10);
         
@@ -130,7 +130,7 @@ public class CreateBox {
         	}
         });
 
-        Scene scene = new Scene(grid, 350, 260);
+        Scene scene = new Scene(grid);
         window.setScene(scene);
         window.showAndWait();
         return newEntry;

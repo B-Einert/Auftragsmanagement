@@ -29,8 +29,6 @@ public class DateBox {
 		window.setTitle("Versanddatum");
 		window.setX(x + 10);
 		window.setY(y - 10);
-		window.setMinWidth(250);
-		window.setMinHeight(225);
 		window.setOnCloseRequest(e -> {
 			// Fenster vom schließen hindern
 			try {
@@ -40,9 +38,19 @@ public class DateBox {
 				a.printStackTrace();
 			}
 		});
+		
+		VBox layout = new VBox(10);
+		
+		HBox hbox1 = new HBox();
+		HBox hbox2 = new HBox();
+		hbox1.setSpacing(10);
+		hbox2.setSpacing(10);
 
-		Label label1 = new Label("ABN eingeben!");
+		Label label1 = new Label("ABN");
+		label1.setMinWidth(100);
 		TextField tf = new TextField();
+		tf.setPrefWidth(150);
+		hbox1.getChildren().addAll(label1, tf);
 		tf.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(final ObservableValue<? extends String> ov, final String oldValue,
@@ -60,13 +68,19 @@ public class DateBox {
 				}
 			}
 		});
+		
+		
 		Label label3 = new Label("ABN fehlerhaft");
 		label3.setTextFill(Color.RED);
 
-		Label label2 = new Label("Versanddatum für " + los + "  auswählen!");
+		Label label2 = new Label("Versanddatum");
+		label2.setMinWidth(100);
 
 		DatePicker datePicker = new DatePicker();
 		datePicker.setValue(LocalDate.now().plusDays(14));
+		datePicker.setPrefWidth(150);
+		
+		hbox2.getChildren().addAll(label2, datePicker);
 
 		Callback<DatePicker, DateCell> dayCellFactory = dp -> new DateCell() {
 			@Override
@@ -82,7 +96,7 @@ public class DateBox {
 		};
 
 		datePicker.setDayCellFactory(dayCellFactory);
-		VBox layout = new VBox(10);
+		
 
 		// Create submit buttons
 		Button submit = new Button("Bestätigen");
@@ -94,8 +108,9 @@ public class DateBox {
 					answer = "Versanddatum " + los + " " + date.format(datePicker.getValue()) + " " + tf.getText();
 					window.close();
 				} else {
-					if (!layout.getChildren().contains(label3))
+					if (!layout.getChildren().contains(label3)){
 						layout.getChildren().add(2, label3);
+					}
 				}
 			} else {
 				answer = "Versanddatum " + los + " " + date.format(datePicker.getValue());
@@ -104,10 +119,10 @@ public class DateBox {
 		});
 
 		if (boo) {
-			layout.getChildren().addAll(label1, tf);
+			layout.getChildren().add(hbox1);
 		}
-		layout.getChildren().addAll(label2, datePicker, submit);
-		layout.setAlignment(Pos.CENTER);
+		layout.getChildren().addAll(hbox2, submit);
+		layout.setPadding(new Insets(25));
 		Scene scene = new Scene(layout);
 		window.setScene(scene);
 		window.showAndWait();

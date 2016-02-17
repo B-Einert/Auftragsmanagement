@@ -19,8 +19,6 @@ public class ChoiceBox {
         window.setTitle("Weiterf¸hren");
         window.setX(x + 10);
         window.setY(y - 10);
-        window.setMinWidth(250);
-        window.setHeight(120);
         window.setOnCloseRequest(e -> {
         	//Fenster vom schlieﬂen hindern
         	try
@@ -69,6 +67,7 @@ public class ChoiceBox {
         layout.getChildren().add(buttonB);
         layout.getChildren().add(buttonC);
         layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(25));
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
