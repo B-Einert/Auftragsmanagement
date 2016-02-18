@@ -34,7 +34,7 @@ public class DetailBox {
         
     	entries.add(new Label(details.get(0))); 
     	entries.add(new Label(details.get(1)));
-    	Label link=new Label(details.get(2));
+    	Label link=new Label(ClientGUI.datenbank + details.get(2));
     	entries.add(link);
     	entries.add(new Label(details.get(3)));
     	entries.add(new Label(details.get(4)));

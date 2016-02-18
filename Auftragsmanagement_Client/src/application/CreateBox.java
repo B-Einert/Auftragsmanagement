@@ -139,19 +139,19 @@ public class CreateBox {
     private static void submit(){
     	{
         	boolean missing = false;
-        	if(customerBox.getValue()==null||customerBox.getValue().isEmpty()){
+        	if(customerBox.getValue()==null||customerBox.getValue().isEmpty()||customerBox.getValue().startsWith(" ")||customerBox.getValue().endsWith(" ")){
         		(labelx.get(0)).setVisible(true);
     			missing=true;
         	}
         	else (labelx.get(0)).setVisible(false);
         	
-        	if(((TextField)fields.get(1)).getText().isEmpty()){
+        	if(((TextField)fields.get(1)).getText().isEmpty()||((TextField)fields.get(1)).getText().startsWith(" ")||((TextField)fields.get(1)).getText().endsWith(" ")){
         		(labelx.get(1)).setVisible(true);
     			missing=true;
         	}
         	else (labelx.get(1)).setVisible(false);
         	
-        	if(partnerBox.getValue()==null||partnerBox.getValue().isEmpty()){
+        	if(partnerBox.getValue()==null||partnerBox.getValue().isEmpty()||partnerBox.getValue().startsWith(" ")||partnerBox.getValue().endsWith(" ")){
         		(labelx.get(2)).setVisible(true);
     			missing=true;
         	}

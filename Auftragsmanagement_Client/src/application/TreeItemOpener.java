@@ -27,46 +27,5 @@ public class TreeItemOpener {
 
 			}
 		});
-
-		// column.setCellFactory(
-		// new Callback<TreeTableColumn<ArchiveEntry, String>,
-		// TreeTableCell<ArchiveEntry, String>>() {
-		// @Override
-		// public TreeTableCell<ArchiveEntry, String>
-		// call(TreeTableColumn<ArchiveEntry, String> p) {
-		// TreeTableCell<ArchiveEntry, String> cell = new
-		// TreeTableCell<ArchiveEntry, String>(){
-		// @Override
-		// public void updateItem(String item, boolean empty) {
-		// super.updateItem(item, empty);
-		// setText(empty ? null : getString());
-		// setGraphic(null);
-		// }
-		// private String getString() {
-		// return getItem() == null ? "" : getItem().toString();
-		// }
-		// };
-		// cell.addEventFilter(MouseEvent.MOUSE_CLICKED, new
-		// EventHandler<MouseEvent>() {
-		// @Override
-		// public void handle(MouseEvent event) {
-		// TreeTableCell<ArchiveEntry, String> c = (TreeTableCell<ArchiveEntry,
-		// String>) event.getSource();
-		// System.out.println(c.getTreeTableRow());
-		// System.out.println(c.getTreeTableRow().getTreeItem());
-		// System.out.println(c.getTreeTableRow().getTreeItem().getValue());
-		// System.out.println(c.getTreeTableRow().getTreeItem().getValue().getName());
-		//// if (cell.getTreeTableRow().getItem().isRoot()) {
-		//// ClientGUI.sender.sendString("archiveProjects");
-		//// ClientGUI.sender.sendString(
-		//// ((TreeTableCell<ArchiveEntry, String>)
-		// event.getSource()).getText());
-		//// }
-		// }
-		// });
-		// return cell;
-		// }
-		// });
-
 	}
 }

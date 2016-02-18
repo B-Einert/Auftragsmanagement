@@ -1,7 +1,5 @@
 package application;
 
-import org.apache.commons.lang3.StringUtils;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -88,7 +86,7 @@ public class AutoCompleteComboBoxListener implements EventHandler<KeyEvent> {
                 list.add(border, data.get(i));
                 border ++;
             }
-        	else if(StringUtils.getLevenshteinDistance(data.get(i), comboBox.getEditor().getText())<3){
+        	else if(LevenshteinDistance.computeLevenshteinDistance(data.get(i), comboBox.getEditor().getText())<3){
         		list.add(data.get(i));
         	}
         }

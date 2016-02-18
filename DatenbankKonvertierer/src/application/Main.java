@@ -29,10 +29,15 @@ import javafx.scene.control.ListView;
 
 public class Main extends Application {
 
-	public static File newdb = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb");
-	public static File olddb = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/olddb");
+	//public static File newdb = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb");
+	//public static File olddb = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/olddb");
+	//public static File excel = new File(
+	//		"D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/Auftragsmanagement.xls");
+	public static File newdb = new File("C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb");
+	public static File olddb = new File("D:/C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/olddb");
 	public static File excel = new File(
-			"D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/Auftragsmanagement.xls");
+			"C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/Auftragsmanagement.xls");
+	
 	private Stage window;
 	private ListView<String> list;
 	public static ObservableList<String> listEntries = FXCollections.observableArrayList();
@@ -100,7 +105,7 @@ public class Main extends Application {
 					File link = new File(sheet.getCell(1, i).getContents());
 					System.out.println(link.getName());
 					if (!link.exists()) {
-						listEntries.add((i + 1) + "_" + sheet.getCell(2, i).getContents() + "_"
+						if(link.getName()!=""||link.getName()!=null)listEntries.add((i + 1) + "_" + sheet.getCell(2, i).getContents() + "_"
 								+ sheet.getCell(3, i).getContents() + " fehlt in Datenbank");
 					} else {
 						File parent = link.getParentFile();
@@ -178,7 +183,7 @@ public class Main extends Application {
 								writer.println(convertDate(((DateCell)sheet.getCell(0, i)).getDate()));
 								writer.println("");
 								writer.println("//letzter Kontakt");
-								writer.println("letzterKontakt");
+								writer.println(convertDate(((DateCell)sheet.getCell(0, i)).getDate()) + " Anfrage");
 								writer.println("");
 								writer.println("//Kunde");
 								writer.println(sheet.getCell(2, i).getContents());
@@ -203,13 +208,6 @@ public class Main extends Application {
 								writer.println("");
 								writer.println("");
 								writer.println(convertDate(((DateCell)sheet.getCell(0, i)).getDate()) + " Anfrage");
-								if(!sheet.getCell(7, i).getContents().isEmpty())writer.println(convertDate(((DateCell)sheet.getCell(7, i)).getDate()) + " Angebot");
-								if(!sheet.getCell(9, i).getContents().isEmpty())writer.println(convertDate(((DateCell)sheet.getCell(9, i)).getDate()) + " Auftrag");
-								if(!sheet.getCell(10, i).getContents().isEmpty()&&!sheet.getCell(9, i).getContents().isEmpty())writer.println(convertDate(((DateCell)sheet.getCell(9, i)).getDate()) + " Bestätigung");
-								if(!sheet.getCell(11, i).getContents().isEmpty())writer.println(convertDate(((DateCell)sheet.getCell(11, i)).getDate()) + " Los 1 bis " + convertDate(((DateCell)sheet.getCell(11, i)).getDate()) + " versenden!");
-								if(!sheet.getCell(13, i).getContents().isEmpty()&&!sheet.getCell(14, i).getContents().isEmpty())writer.println(convertDate(((DateCell)sheet.getCell(14, i)).getDate()) + " Versand abgeschlossen, Projekt beendet");
-								if(!sheet.getCell(14, i).getContents().isEmpty())writer.println(convertDate(((DateCell)sheet.getCell(14, i)).getDate()) + " Archiviert");
-								writer.close();
 							} catch (Exception e1) {
 								System.out.println("Failed to write protocol");
 								e1.printStackTrace();

@@ -3,7 +3,6 @@ package application;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 
@@ -72,7 +71,7 @@ public class Entry {
     }
     
     public void linkClicked(){
-    	File dir = new File(linkString);
+    	File dir = new File(ClientGUI.datenbank + linkString);
     	if(Desktop.isDesktopSupported()){
     		try {
 				Desktop.getDesktop().open(dir);
@@ -97,7 +96,7 @@ public class Entry {
 		    		if(answer == 1){
 		    			try {
 		    				Desktop dt = Desktop.getDesktop();
-							dt.open(new File(this.getLinkString() + "/01_Anfrage/Gesprächsnotizen.ods"));
+							dt.open(new File(ClientGUI.datenbank + this.getLinkString() + "/01_Anfrage/Gesprächsnotizen.ods"));
 						} catch (IOException e) {
 							e.printStackTrace();
 						}

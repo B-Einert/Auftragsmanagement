@@ -1,10 +1,6 @@
 package application;
 
 import java.util.LinkedList;
-import java.util.Map;
-
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;

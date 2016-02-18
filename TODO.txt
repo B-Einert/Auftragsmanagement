@@ -1,17 +1,5 @@
-//Stati hinzufügen
-//detailanzeige
-//beendete aufträge grau markieren
-archivierung der aufträge
 //zu files weiterleiten
 bemerkungen writable
-server als consoleapp
-kill client if server down
 
 tabellenaktualisierung(markierung am ende)
-
-
-parallele arbeit
-autokorrektur vervollständigung
-
-
-StreamCorruptedException
+archiv, buchstabe drücken->scrollen zu dem entsprechenden Kundennamen

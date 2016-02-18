@@ -1,11 +1,11 @@
 //Datenbank Verzeichniss
-D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank
+X:/Auftragsmanagement(neu)
 
 //Musterkunde Verzeichniss
-D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Musterkunde
+X:/Auftragsmanagement(neu)/Musterkunde
 
 //Musterprojekt verzeichniss
-D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/Musterprojekt
+X:/Auftragsmanagement(neu)/Musterprojekt
 
 //Tage nach Anfrage nach welchen sich die Anzeige rot färbt
 5

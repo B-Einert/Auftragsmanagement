@@ -1,7 +1,5 @@
 package application;
 
-import java.awt.Desktop;
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -16,7 +14,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -24,16 +21,13 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableCell;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class ClientGUI extends Application {
 
@@ -55,8 +49,10 @@ public class ClientGUI extends Application {
     private static Image detail;
     
     //TODO set db
-    public static String datenbank = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
-
+    //public static String datenbank = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
+    //public static String datenbank = "C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/Datenbank";
+    public static String datenbank = "X:/Auftragsmanagement(neu)";
+    
     public static void main(String[] args) {	
         launch(args);
     }
@@ -65,7 +61,8 @@ public class ClientGUI extends Application {
     public void start(Stage primaryStage) throws Exception {
     	final int PORT = 444;
         //final String HOST = "192.168.178.49";
-    	final String HOST = "192.168.178.35";
+    	//final String HOST = "192.168.178.35";
+    	final String HOST = "localhost";
         try {
 			SOCK = new Socket(HOST, PORT);
 		} catch (UnknownHostException e) {
@@ -235,7 +232,7 @@ public class ClientGUI extends Application {
             );
         
         TreeTableColumn<ArchiveEntry, String> c2 = new TreeTableColumn<>("Datum");
-        c2.setMinWidth(60);
+        c2.setMinWidth(80);
         c2.setCellValueFactory(
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, String> param) -> 
                 new ReadOnlyStringWrapper(param.getValue().getValue().getDate())
@@ -251,42 +248,45 @@ public class ClientGUI extends Application {
         });
         
         TreeTableColumn<ArchiveEntry, String> c3 = new TreeTableColumn<>("Artikelnummer");
-        c3.setMinWidth(60);
+        c3.setMinWidth(80);
         c3.setCellValueFactory(
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, String> param) -> 
                 new ReadOnlyStringWrapper(param.getValue().getValue().getAnum())
             );
         
         TreeTableColumn<ArchiveEntry, String> c4 = new TreeTableColumn<>("ABN");
-        c4.setMinWidth(60);
+        c4.setMinWidth(80);
         c4.setCellValueFactory(
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, String> param) -> 
                 new ReadOnlyStringWrapper(param.getValue().getValue().getAbn())
             );
         
         TreeTableColumn<ArchiveEntry, Button> c5 = new TreeTableColumn<>("Duplizieren");
-        c5.setMinWidth(60);
+        c5.setMinWidth(80);
         c5.setCellValueFactory(
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, Button> param) -> 
                 new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getDuplicate())
             );
+        c5.getStyleClass().add("center");
        
         TreeTableColumn<ArchiveEntry, Button> c6 = new TreeTableColumn<>("Detail");
         c6.setSortable(false);
-        c6.setMinWidth(60);
+        c6.setMinWidth(80);
         c6.setCellValueFactory(
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, Button> param) -> 
                 new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getDetails())
             );
+        c6.getStyleClass().add("center");
         
       //link column
         TreeTableColumn<ArchiveEntry, Button> c7 = new TreeTableColumn<>("Link");
         c7.setSortable(false);
-        c7.setMinWidth(50);
+        c7.setMinWidth(80);
         c7.setCellValueFactory(
                 (TreeTableColumn.CellDataFeatures<ArchiveEntry, Button> param) -> 
                 new ReadOnlyObjectWrapper<Button>(param.getValue().getValue().getLinkBtn())
             );
+        c7.getStyleClass().add("center");
         
         
         table2 = new TreeTableView<>(root);
@@ -337,8 +337,6 @@ public class ClientGUI extends Application {
     			sender.sendString("new");
     			sender.sendEntry(newEntry);
     		}
-    		
-    		//new CreateBox();
     	}
     }   
 

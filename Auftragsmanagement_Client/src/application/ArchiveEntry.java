@@ -44,7 +44,7 @@ public class ArchiveEntry{
 	}
 	
 	 public void linkBtnClicked(){
-	    	File dir = new File(link);
+	    	File dir = new File(ClientGUI.datenbank + link);
 	    	if(Desktop.isDesktopSupported()){
 	    		try {
 					Desktop.getDesktop().open(dir);
