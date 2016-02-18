@@ -1,5 +1,5 @@
 //Datenbank Verzeichniss
-X:/Auftragsmanagement(neu)
+C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb
 
 //Musterkunde Verzeichniss
 X:/Auftragsmanagement(neu)/Musterkunde

@@ -3,3 +3,4 @@ bemerkungen writable
 
 tabellenaktualisierung(markierung am ende)
 archiv, buchstabe drücken->scrollen zu dem entsprechenden Kundennamen
+duplizieren layout

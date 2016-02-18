@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,21 +31,30 @@ import javafx.scene.control.ListView;
 
 public class Main extends Application {
 
-	//public static File newdb = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb");
-	//public static File olddb = new File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/olddb");
-	//public static File excel = new File(
-	//		"D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/Auftragsmanagement.xls");
-	public static File newdb = new File("C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb");
-	public static File olddb = new File("D:/C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/olddb");
+	// public static File newdb = new
+	// File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb");
+	// public static File olddb = new
+	// File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/olddb");
+	// public static File excel = new File(
+	// "D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/Auftragsmanagement.xls");
+	// public static File newdb = new
+	// File("C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb");
+	// public static File olddb = new
+	// File("C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/olddb");
+	// public static File excel = new File(
+	// "C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/Auftragsmanagement.xls");
+
+	public static File newdb = new File("X:/Auftragsmanagement(neu)");
+	public static File olddb = new File("X:/Auftragsmanagement");
 	public static File excel = new File(
-			"C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/Auftragsmanagement.xls");
-	
+			"C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/000_Auftragsmanagement.xls");
+
 	private Stage window;
 	private ListView<String> list;
 	public static ObservableList<String> listEntries = FXCollections.observableArrayList();
 	private static LinkedList<String> misslist = new LinkedList<String>();
 	private static ArrayList<String> customers = new ArrayList<String>();
-	private static DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+	private static DateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
 
 	public static void main(String[] args) throws IOException {
 		// create base Files
@@ -54,7 +65,9 @@ public class Main extends Application {
 		File kv = new File(newdb + "/Kundenverzeichnis");
 		System.out.println(kv.mkdir());
 
+		AlertBox.display("Bitte nicht abschalten! Datenbank wird koppiert!!!!!! Bitte auf nächste Meldung warten");
 		searchExcel();
+		AlertBox.display("Fertig mit koppieren. Andere Meldungen nicht beachten!!!");
 		launch(args);
 	}
 
@@ -101,12 +114,13 @@ public class Main extends Application {
 				Sheet sheet = w.getSheet(0);
 
 				// iterate through excell table
-				for (int i = 2; i < sheet.getRows(); i++) {
+				for (int i = 2; i < 10; i++) {
 					File link = new File(sheet.getCell(1, i).getContents());
-					System.out.println(link.getName());
+					System.out.println("now: " + i + " - " + link.getName());
 					if (!link.exists()) {
-						if(link.getName()!=""||link.getName()!=null)listEntries.add((i + 1) + "_" + sheet.getCell(2, i).getContents() + "_"
-								+ sheet.getCell(3, i).getContents() + " fehlt in Datenbank");
+						if (link.getName() != "" || link.getName() != null)
+							listEntries.add((i + 1) + "_" + sheet.getCell(2, i).getContents() + "_"
+									+ sheet.getCell(3, i).getContents() + " fehlt in Datenbank");
 					} else {
 						File parent = link.getParentFile();
 
@@ -129,61 +143,69 @@ public class Main extends Application {
 							}
 						}
 
-						// check old/new Project
-						File project;
-						if (sheet.getCell(14, i).getContents().isEmpty()) {
-							// create old
-							File customer = new File(newdb + "/abgeschlossene_Vorgaenge/" + parent.getName());
-							if (!customer.exists())
-								customer.mkdir();
-							project = new File(customer.getAbsolutePath() + "/" + link.getName());
-						} else {
-							//create new
-							File customer = new File(newdb + "/laufende_Vorgaenge/" + parent.getName());
-							if (!customer.exists())
-								customer.mkdir();
-							project = new File(customer.getAbsolutePath() + "/" + link.getName());
-						}
-						if (project.mkdir()) {
+						File customer = new File(newdb + "/abgeschlossene_Vorgaenge/" + parent.getName());
+						if (!customer.exists())
+							customer.mkdir();
+						File project = new File(customer.getAbsolutePath() + "/" + link.getName());
+						if (!project.exists() && project.mkdir()) {
 							for (File f : link.listFiles()) {
 								// copy project
 								File temp = new File(project.getPath() + "/" + f.getName());
-								copy(f, temp);
+								copyDirectory(f, temp);
+								//Files.copy(f.toPath(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
 							}
-							
-							//write protokoll
+
+							// write protokoll
 							try {
 								System.out.println("protokoll");
-								DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-								System.out.println(dateformat.format(((DateCell) sheet.getCell(0, i)).getDate()));
-								System.out.println(sheet.getCell(1, i-10).getContents());
-								System.out.println(sheet.getCell(2, i-10).getContents());
-								System.out.println(sheet.getCell(3, i-10).getContents());
-								System.out.println(sheet.getCell(4, i-10).getContents());
-								System.out.println(sheet.getCell(5, i-10).getContents());
-								System.out.println(sheet.getCell(6, i-10).getContents());
-								System.out.println(sheet.getCell(7, i-10).getContents());
-								System.out.println(sheet.getCell(8, i-10).getContents());
-								System.out.println(sheet.getCell(9, i-10).getContents());
-								System.out.println(sheet.getCell(10, i-10).getContents());
-								System.out.println(sheet.getCell(11, i-10).getContents());
-								System.out.println(sheet.getCell(12, i-10).getContents());
-								System.out.println(sheet.getCell(13, i-10).getContents());
-								System.out.println(sheet.getCell(14, i-10).getContents());
-								System.out.println(sheet.getCell(15, i-10).getContents());
-								System.out.println(sheet.getCell(16, i-10).getContents());
-								System.out.println(sheet.getCell(17, i-10).getContents());
-								System.out.println(sheet.getCell(18, i-10).getContents());
-								System.out.println(sheet.getCell(19, i-10).getContents());
-								
-								
+								// System.out.println(dateformat.format(((DateCell)
+								// sheet.getCell(0, i)).getDate()));
+								// System.out.println(sheet.getCell(1,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(2,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(3,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(4,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(5,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(6,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(7,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(8,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(9,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(10,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(11,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(12,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(13,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(14,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(15,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(16,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(17,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(18,
+								// i-10).getContents());
+								// System.out.println(sheet.getCell(19,
+								// i-10).getContents());
+
 								File txtfile = new File(project + "/Protokoll.txt");
 								PrintWriter writer = new PrintWriter(new FileWriter(txtfile));
 								writer.println("//erster Kontakt");
-								writer.println(convertDate(((DateCell)sheet.getCell(0, i)).getDate()));
+								writer.println(convertDate(((DateCell) sheet.getCell(0, i)).getDate()));
 								writer.println("");
 								writer.println("//letzter Kontakt");
-								writer.println(convertDate(((DateCell)sheet.getCell(0, i)).getDate()) + " Anfrage");
+								writer.println(convertDate(((DateCell) sheet.getCell(0, i)).getDate()) + " Anfrage erstellt");
 								writer.println("");
 								writer.println("//Kunde");
 								writer.println(sheet.getCell(2, i).getContents());
@@ -192,7 +214,7 @@ public class Main extends Application {
 								writer.println(sheet.getCell(3, i).getContents());
 								writer.println("");
 								writer.println("//Link");
-								writer.println(sheet.getCell(1, i).getContents());
+								writer.println("/abgeschlossene_Vorgaenge/"+customer.getName()+"/"+project.getName());
 								writer.println("");
 								writer.println("//Ansprechpartner");
 								writer.println(sheet.getCell(15, i).getContents());
@@ -203,11 +225,15 @@ public class Main extends Application {
 								writer.println("//Bearbeiter");
 								writer.println(sheet.getCell(17, i).getContents());
 								writer.println("");
-								writer.println("//Bestätigungsnummer");
+								writer.println("//Artikelnummer");
 								writer.println(sheet.getCell(10, i).getContents());
 								writer.println("");
+								writer.println("//AB");
 								writer.println("");
-								writer.println(convertDate(((DateCell)sheet.getCell(0, i)).getDate()) + " Anfrage");
+								writer.println("");
+								writer.println("");
+								writer.println(convertDate(((DateCell) sheet.getCell(0, i)).getDate()) + " Anfrage erstellt");
+								writer.close();
 							} catch (Exception e1) {
 								System.out.println("Failed to write protocol");
 								e1.printStackTrace();
@@ -224,10 +250,10 @@ public class Main extends Application {
 		}
 
 	}
-	
-	public static String convertDate(Date date){
+
+	public static String convertDate(Date date) {
 		return dateformat.format(date);
-		
+
 	}
 
 	public static void copy(File sourceLocation, File targetLocation) throws IOException {
@@ -242,9 +268,10 @@ public class Main extends Application {
 		if (!target.exists()) {
 			target.mkdir();
 		}
-
-		for (String f : source.list()) {
-			copy(new File(source, f), new File(target, f));
+		if (source.list() != null) {
+			for (String f : source.list()) {
+				copy(new File(source, f), new File(target, f));
+			}
 		}
 	}
 
@@ -256,6 +283,15 @@ public class Main extends Application {
 				out.write(buf, 0, length);
 			}
 		}
+	}
+
+	public boolean isProject(String name) {
+		try {
+			Integer.parseInt(name.substring(0, 5));
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
 	}
 
 }

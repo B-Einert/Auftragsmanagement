@@ -75,10 +75,12 @@ public class DatabaseManager {
 		archivedList = new HashSet<String>();
 		File custs = new File(db + "/abgeschlossene_Vorgaenge");
 		System.out.println(custs.exists());
-		for (File f : custs.listFiles()) {
-			if (f.isDirectory())
-				customerList.add(f.getName());
-			archivedList.add(f.getName());
+		if (custs.listFiles() != null) {
+			for (File f : custs.listFiles()) {
+				if (f.isDirectory())
+					customerList.add(f.getName());
+				archivedList.add(f.getName());
+			}
 		}
 
 		customers = new HashSet<Customer>();
@@ -90,6 +92,7 @@ public class DatabaseManager {
 		String item = null;
 		String lastContact = null;
 		String state = null;
+		if(files.listFiles()!=null){
 		for (File f : files.listFiles()) {
 			if (f.isDirectory()) {
 				customerList.add(f.getName());
@@ -137,6 +140,7 @@ public class DatabaseManager {
 					}
 				}
 			}
+		}
 		}
 		ServerGUI.tableEntries.add(new TableEntry("Daten geladen"));
 	}
@@ -268,7 +272,7 @@ public class DatabaseManager {
 				writer.println("//Ansprechpartner");
 				writer.println(contact);
 				writer.println("");
-				writer.println("//Telefon");
+				writer.println("//Kontakt");
 				writer.println(phone);
 				writer.println("");
 				writer.println("//Bearbeiter");
@@ -277,7 +281,7 @@ public class DatabaseManager {
 				writer.println("//Artikelnummer");
 				writer.println(artnum);
 				writer.println("");
-				writer.println("//ABN");
+				writer.println("//AB");
 				writer.println("");
 				writer.println("");
 				writer.println("");
