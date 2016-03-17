@@ -114,7 +114,7 @@ public class Main extends Application {
 				Sheet sheet = w.getSheet(0);
 
 				// iterate through excell table
-				for (int i = 2; i < 10; i++) {
+				for (int i = 2; i < sheet.getRows(); i++) {
 					File link = new File(sheet.getCell(1, i).getContents());
 					System.out.println("now: " + i + " - " + link.getName());
 					if (!link.exists()) {
