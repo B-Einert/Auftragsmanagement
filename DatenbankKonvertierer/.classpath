@@ -4,5 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/lib/jexcelapi/jxl.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/lib/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/lib/commons-io-2.4.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

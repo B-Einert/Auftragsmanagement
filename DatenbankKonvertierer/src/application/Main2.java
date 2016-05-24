@@ -1,9 +1,11 @@
 package application;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,14 +13,17 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 
 import javax.swing.JFrame;
 import javax.swing.ProgressMonitorInputStream;
+
+import org.apache.commons.io.FileUtils;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -33,7 +38,7 @@ import jxl.read.biff.BiffException;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 
-public class Main extends Application {
+public class Main2 extends Application {
 
 	// public static File newdb = new
 	// File("D:/BJOERN/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb");
@@ -48,10 +53,12 @@ public class Main extends Application {
 	// public static File excel = new File(
 	// "C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/Auftragsmanagement.xls");
 
-	public static File newdb = new File("X:/Auftragsmanagement(neu)");
+	public static File newdb = new File("C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/Datenbank");
+	//public static File newdb = new File("X:/Auftragsmanagement(neu)");
 	public static File olddb = new File("X:/Auftragsmanagement");
-	public static File excel = new File(
-			"X:/Auftragsmanagement(neu)/000_Auftragsmanagement.xls");
+	//public static File olddb = new File("X:/Auftragsmanagement");
+	//public static File excel = new File(
+	//		"C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/000_Auftragsmanagement.xls");
 
 	private Stage window;
 	private ListView<String> list;
@@ -59,7 +66,8 @@ public class Main extends Application {
 	public static ObservableList<String> listEntries = FXCollections.observableArrayList();
 	private static LinkedList<String> misslist = new LinkedList<String>();
 	private static ArrayList<String> customers = new ArrayList<String>();
-	private static DateFormat dateformat = new SimpleDateFormat("dd.MM.yyyy");
+	private static DateFormat dateformat = new DateFormat();
+	private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
 
 	public static void main(String[] args) throws IOException {
 		// create base Files
@@ -75,8 +83,8 @@ public class Main extends Application {
 		frame.setSize(20, 20);
 		frame.toBack();
 
-		AlertBox.display("Bitte nicht abschalten! Datenbank wird koppiert!!!!!! Bitte auf nächste Meldung warten");
-		searchExcel();
+		AlertBox.display("Bitte nicht abschalten! Datenbank wird kopiert!!!!!! Bitte auf nächste Meldung warten");
+		gogogo();
 		AlertBox.display("Fertig mit koppieren. Andere Meldungen nicht beachten!!!");
 		launch(args);
 	}
@@ -115,117 +123,135 @@ public class Main extends Application {
 		window.show();
 	}
 
-	public static void searchExcel() {
-		Workbook w;
-		try {
-			try {
-				System.out.println(excel.exists());
-				w = Workbook.getWorkbook(excel);
-				Sheet sheet = w.getSheet(0);
-
-				// iterate through excell table
-				for (int i = 2; i < sheet.getRows(); i++) {
-					File link = new File(sheet.getCell(1, i).getContents());
-					System.out.println("now: " + i + " - " + link.getName());
-					if (!link.exists()) {
-						if (link.getName() != "" || link.getName() != null)
-							listEntries.add((i + 1) + "_" + sheet.getCell(2, i).getContents() + "_"
-									+ sheet.getCell(3, i).getContents() + " fehlt in Datenbank");
-					} else {
-						
-						File parent = link.getParentFile();
-						//parent = new File(delSpaces(parent.getAbsolutePath()));
-
-						// Create customer file
-						if (!customers.contains(parent.getName())) {
-							File customer = new File(newdb + "/Kundenverzeichnis/" + parent.getName());
-							if (!customer.exists()) {
-								if (customer.mkdir()) {
-									for (File f : parent.listFiles()) {
-										try {
-											Integer.parseInt(f.getName().substring(0, 5));
-										} catch (Exception e) {
-											File temp = new File(customer.getPath() + "/" + f.getName());
-											copyDirectory(f, temp);
-										}
+	public static void gogogo()  {
+		
+		for(File entry: olddb.listFiles()){
+			System.out.println("Kunde: " + entry);
+			if(entry.isDirectory()){
+				File customer = new File(newdb + "/Kundenverzeichnis/" + entry.getName());
+				if ((!customer.exists())&&customer.isDirectory()&&(!customer.getName().startsWith("1"))) {
+					if (customer.mkdir()) {
+						for (File f : entry.listFiles()) {
+							try {
+								Integer.parseInt(f.getName().substring(0, 5));
+							} catch (Exception e) {
+								File temp = new File(customer.getPath() + "/" + f.getName());
+								try {
+									if(temp.isDirectory())
+										copyDirectory(f, temp);
+									System.out.println("Kundenverzeichnis kopiert");
+								} catch (IOException e1) {
 									}
-								} else {
-									System.out.println("Failed to create customer directory in Kundenverzeichnis!");
-								}
 							}
 						}
+					} else {
+						System.out.println("Failed to create customer directory in Kundenverzeichnis!");
+					}
 
-						File customer = new File(newdb + "/abgeschlossene_Vorgaenge/" + parent.getName());
-						if (!customer.exists())
-							customer.mkdir();
+				}
+				else System.out.println("Verzeichnis bereits vorhanden");
+				customer = new File(newdb + "/abgeschlossene_Vorgaenge/" + customer.getName());
+				if (!customer.exists())
+					customer.mkdir();
+				for(File link : entry.listFiles()){
+					try {
+						Integer.parseInt(link.getName().substring(0, 5));
+						System.out.println("Projekt: " + link.getName());
 						File project = new File(customer.getAbsolutePath() + "/" + link.getName());
-						if (!project.exists() && project.length()<1024 && project.mkdir()) {
-							for (File f : link.listFiles()) {
-								// copy project
-								File temp = new File(project.getPath() + "/" + f.getName());
-								
-								copyDirectory(f, temp);
-								//Files.copy(f.toPath(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+						if(project.exists()){
+							File protocol = new File(project + "/Protokoll.txt");
+							if(protocol.exists()){
+								try {
+									BufferedReader file = new BufferedReader(new FileReader(protocol));
+									if(file.readLine().contains("erster")){
+										file.close();
+										System.out.println("Projektverzeichniss bereits vorhanden");
+										continue;
+									}
+								}catch (IOException e) {
+									deleteFile(project);
+								}
 							}
-
+							System.out.println("Projektverzeichniss wird ersetzt");
+							deleteFile(project);
+							if(!project.mkdir()){
+								listEntries.add("couldnt create project" + project.getPath());
+								
+							}
+						}
+						for (File f : link.listFiles()) {
+							// copy project
+							File temp = new File(project.getPath() + "/" + f.getName());
+						
+							copyDirectory(f, temp);
+							//Files.copy(f.toPath(), temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
+							
 							// write protokoll
 							try {
 								System.out.println("protokoll");
+								String date=convertDate(dateformat.toDate(project.getName().substring(0, 5)));
 								File txtfile = new File(project + "/Protokoll.txt");
 								PrintWriter writer = new PrintWriter(new FileWriter(txtfile));
 								writer.println("//erster Kontakt");
-								writer.println(convertDate(((DateCell) sheet.getCell(0, i)).getDate()));
+								writer.println(date);
 								writer.println("");
 								writer.println("//letzter Kontakt");
-								writer.println(convertDate(((DateCell) sheet.getCell(0, i)).getDate()) + " Anfrage erstellt");
+								writer.println(date + " Anfrage erstellt");
 								writer.println("");
 								writer.println("//Kunde");
-								writer.println(sheet.getCell(2, i).getContents());
+								writer.println(project.getParentFile().getName());
 								writer.println("");
 								writer.println("//Gegenstand");
-								writer.println(sheet.getCell(3, i).getContents());
+								writer.println(project.getName().substring(11));
 								writer.println("");
 								writer.println("//Link");
 								writer.println("/abgeschlossene_Vorgaenge/"+customer.getName()+"/"+project.getName());
 								writer.println("");
 								writer.println("//Ansprechpartner");
-								writer.println(sheet.getCell(15, i).getContents());
+								writer.println("");
 								writer.println("");
 								writer.println("//Telefon");
-								writer.println(sheet.getCell(16, i).getContents());
+								writer.println("");
 								writer.println("");
 								writer.println("//Bearbeiter");
-								writer.println(sheet.getCell(17, i).getContents());
+								writer.println("");
 								writer.println("");
 								writer.println("//Artikelnummer");
-								writer.println(sheet.getCell(10, i).getContents());
+								writer.println("");
 								writer.println("");
 								writer.println("//AB");
 								writer.println("");
 								writer.println("");
 								writer.println("");
-								writer.println(convertDate(((DateCell) sheet.getCell(0, i)).getDate()) + " Anfrage erstellt");
+								writer.println(date + " Anfrage erstellt");
 								writer.close();
 							} catch (Exception e1) {
-								System.out.println("Failed to write protocol");
-								File txtfile = new File(project + "/Protokoll.txt");
-								if(txtfile.exists())txtfile.delete();
-								e1.printStackTrace();
-							}
+							System.out.println("Failed to write protocol");
+							File txtfile = new File(project + "/Protokoll.txt");
+							if(txtfile.exists())txtfile.delete();
+							e1.printStackTrace();
+							System.out.println("Projektverzeichniss erstellt");
 						}
 					}
+				} catch (Exception e) 
+					{
+						continue;
+					}
 				}
-			} catch (BiffException e) {
-				e.printStackTrace();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-
 	}
 
-	public static String convertDate(Date date) {
-		return dateformat.format(date);
+	private static void deleteFile(File project) {
+		if(!project.delete());
+		for(File f:project.listFiles()){
+			deleteFile(f);
+		}
+		
+	}
+
+	public static String convertDate(LocalDate localDate) {
+		return dateformat.toString(localDate);
 
 	}
 
@@ -295,5 +321,4 @@ public class Main extends Application {
 		}
 		return rightPath;
 	}
-
 }

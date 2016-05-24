@@ -12,7 +12,7 @@ public class DateFormat {
 	}
 	
 	public LocalDate toDate(String string){
-		return LocalDate.parse(string.substring(6) + "-" + string.substring(3, 5) + "-" + string.substring(0, 2));
+		return LocalDate.parse("20" + string.substring(0,2) + "-" + string.substring(2, 4) + "-" + string.substring(4));
 	}
 
 }

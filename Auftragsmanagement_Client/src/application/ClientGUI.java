@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -36,7 +37,7 @@ public class ClientGUI extends Application {
     private static Stage window;
     private static Scene scene;
     private Scene scene2;
-    private TableView<Entry> table;
+    public static TableView<Entry> table;
     private TreeTableView<ArchiveEntry> table2;
     private TreeItem<ArchiveEntry> root = new TreeItem<ArchiveEntry>(new ArchiveEntry("root"));;
     public static ObservableList<Entry> entries = FXCollections.observableArrayList();
@@ -50,7 +51,7 @@ public class ClientGUI extends Application {
     
     //TODO set db
     //public static String datenbank = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
-    //public static String datenbank = "C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/Datenbank";
+    //public static String datenbank = "C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb";
     public static String datenbank = "X:/Auftragsmanagement(neu)";
     
     public static void main(String[] args) {	
@@ -80,7 +81,7 @@ public class ClientGUI extends Application {
     	client = new ClientReceiver();
     	
         window = primaryStage;
-        window.setWidth(947);
+        window.setWidth(945);
         window.setTitle("Auftragsmanagement");
         window.getIcons().add(new Image("application/images/LSK.jpg"));
         window.setOnCloseRequest(e -> {

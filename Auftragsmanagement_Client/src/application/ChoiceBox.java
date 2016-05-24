@@ -17,6 +17,7 @@ public class ChoiceBox {
         window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Weiterführen");
+        window.setWidth(300);
         window.setX(x + 10);
         window.setY(y - 10);
         window.setOnCloseRequest(e -> {

@@ -120,6 +120,39 @@ public class DatabaseManager {
 									in.readLine();
 									link = in.readLine();
 									state = getState(lastContact);
+									if(state==""){
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										in.readLine();
+										String weirdContact="";
+										String line;
+										while (true) {
+											if ((line = in.readLine()) == null)
+												break;
+											if(line.contains("Kontakt aufgenommen")){
+												weirdContact=line.substring(0, 10)+weirdContact.substring(10);
+											}
+											else{
+												weirdContact=line;
+											}
+										}
+										lastContact=weirdContact;
+										state=getState(lastContact);
+									}
 									Entry e = new Entry(date, link, customer, item, lastContact, state);
 									cust.addEntry(e);
 									in.close();
@@ -145,7 +178,7 @@ public class DatabaseManager {
 		ServerGUI.tableEntries.add(new TableEntry("Daten geladen"));
 	}
 
-	public void checkOld(Entry e) {
+	public boolean checkOld(Entry e) {
 		try {
 			System.out.println(e.getState());
 			switch (Integer.parseInt(e.getState())) {
@@ -154,8 +187,9 @@ public class DatabaseManager {
 				System.out.println(ref1);
 				if (LocalDate.now().isAfter(ref1.plusDays(addWeekend(LocalDate.now(), this.daysAfterAnfrage)))) {
 					e.setLastContact("old " + e.getLastContact());
+					return true;
 				}
-				break;
+				return false;
 			case 4:
 				try {
 					System.out.println(e.getLastContact().substring(30));
@@ -163,24 +197,28 @@ public class DatabaseManager {
 					System.out.println(reference);
 					if (LocalDate.now().isAfter(reference.plusDays(addWeekend(reference, daysAfterDate)))) {
 						e.setLastContact("old " + e.getLastContact());
+						return true;
 					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					break;
 				}
-				break;
+				return false;
 			default:
 				LocalDate ref = date.toDate(e.getLastContact().substring(0, 10));
 				System.out.println(ref);
 				if (LocalDate.now().isAfter(ref.plusDays(addWeekend(LocalDate.now(), daysAfterContact)))) {
 					e.setLastContact("old " + e.getLastContact());
+					return true;
 				}
-				break;
+				return false;
 			}
 		} catch (DateTimeParseException dtpe) {
 			ServerGUI.tableEntries.add(new TableEntry("Letzter Kontakt vom Protokoll von " + e.getCustomer() + "_"
 					+ e.getItem() + " konnte nicht geladen werden."));
+			return false;
 		}
+		return false;
 	}
 
 	public String getState(String action) {
@@ -195,6 +233,9 @@ public class DatabaseManager {
 			answer = "6";
 		else if (action.contains("Auftrag bestätigt") || action.contains("Los"))
 			answer = "4";
+		if (answer==""){
+			
+		}
 		System.out.println(action);
 		System.out.println(answer);
 		return answer;
@@ -245,9 +286,9 @@ public class DatabaseManager {
 		File project = new File(db + newLink);
 		if (project.mkdir()) {
 			if (copyDir.contentEquals(""))
-				copyDirectory(new File(projectModel), project);
+				copy(new File(projectModel), project);
 			else {
-				copyDirectory(new File(db + copyDir), project);
+				copy(new File(db + copyDir), project);
 				new File(project + "/Protokoll.txt").delete();
 			}
 			entry.setLink(newLink);
@@ -302,7 +343,7 @@ public class DatabaseManager {
 			if (customer.mkdir()) {
 				for (File f : new File(customerModel).listFiles()) {
 					File temp = new File(customer.getPath() + "/" + f.getName());
-					copyDirectory(f, temp);
+					copy(f, temp);
 				}
 				ServerGUI.tableEntries.add(new TableEntry(customer.getAbsolutePath() + " und Untrordner angelegt"));
 			} else {
@@ -409,8 +450,10 @@ public class DatabaseManager {
 		entry.setState(state.substring(1));
 		String newContact = this.date.toString(LocalDate.now()) + " " + edit;
 		String weirdContact = "";
-		if (newContact.contains("Kontakt"))
-			weirdContact = this.date.toString(LocalDate.now()) + entry.getLastContact().substring(10);
+		if (newContact.contains("Kontakt")){
+			if(entry.getLastContact().contains("old")) weirdContact = this.date.toString(LocalDate.now()) + entry.getLastContact().substring(14);
+			else weirdContact = this.date.toString(LocalDate.now()) + entry.getLastContact().substring(10);
+		}
 		File txtfile = new File(db + entry.getLink() + "/Protokoll.txt");
 		File tmp = new File(db + entry.getLink() + "/tmp.txt");
 		try {
@@ -420,7 +463,7 @@ public class DatabaseManager {
 			int i = 0;
 			while ((line = file.readLine()) != null) {
 				if (i == 4) {
-					if (entry.getLastContact().contains("Los") && newContact.contains("Kontakt"))
+					if (newContact.contains("Kontakt"))
 						writer.println(weirdContact);
 					else
 						writer.println(newContact);
@@ -800,6 +843,25 @@ public class DatabaseManager {
 			}
 			String[] details = det.toArray(new String[0]);
 			return details;
+		}
+	}
+
+	public void midnight() {
+		for(Customer c: customers){
+			for(Entry e: c.getEntries()){
+				if(!e.getLastContact().startsWith("old")){
+					//if(checkOld(e)){
+					e.setItem("wipwap!");
+						for (String[] s : initList) {
+							if (e.getLink().contentEquals(s[0])) {
+								initList.remove(s);
+								initList.add(e.getFirstStatus());
+								break;
+							}
+						}
+					//}
+				}
+			}
 		}
 	}
 }

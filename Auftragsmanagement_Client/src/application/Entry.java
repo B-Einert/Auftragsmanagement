@@ -21,6 +21,7 @@ public class Entry {
 
     public Entry(String link, String date, String customer, String item, String contact, int state){
         this.date = date;
+        System.out.println(date);
         this.linkString = link;
         this.link = new Button();
         this.link.getStyleClass().add("folderbtn");
@@ -96,7 +97,8 @@ public class Entry {
 		    		if(answer == 1){
 		    			try {
 		    				Desktop dt = Desktop.getDesktop();
-							dt.open(new File(ClientGUI.datenbank + this.getLinkString() + "/01_Anfrage/Gesprächsnotizen.ods"));
+		    				File  notes=new File(ClientGUI.datenbank + this.getLinkString() + "/01_Anfrage/Gesprächsnotizen.ods");
+							if(notes.exists()) dt.open(notes);
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
