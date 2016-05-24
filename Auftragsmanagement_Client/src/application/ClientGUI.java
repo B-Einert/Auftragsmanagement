@@ -14,6 +14,7 @@ import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -26,6 +27,7 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -127,11 +129,67 @@ public class ClientGUI extends Application {
         TableColumn<Entry, String> customerColumn = new TableColumn<>("Kunde");
         customerColumn.setMinWidth(200);
         customerColumn.setCellValueFactory(new PropertyValueFactory<>("customer"));
+        customerColumn.setCellFactory(column -> {
+        	TableCell cell = new TableCell<Entry, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : getString());
+                    setGraphic(null);
+                }
+
+                private String getString() {
+                    return getItem() == null ? "" : getItem().toString();
+                }
+            };
+
+            cell.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (event.getClickCount() > 1) {
+                    	Entry e = (Entry) cell.getTableRow().getItem();
+                    	e.custClicked();
+                        System.out.println("double clicked!");
+                        TableCell c = (TableCell) event.getSource();
+                        System.out.println("Cell text: " + c.getText());
+                    }
+                }
+            });
+            return cell;
+        });
         
      	//item column
         TableColumn<Entry, String> itemColumn = new TableColumn<>("Gegenstand");
         itemColumn.setMinWidth(200);
         itemColumn.setCellValueFactory(new PropertyValueFactory<>("item"));
+        itemColumn.setCellFactory(column -> {
+        	TableCell cell = new TableCell<Entry, String>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : getString());
+                    setGraphic(null);
+                }
+
+                private String getString() {
+                    return getItem() == null ? "" : getItem().toString();
+                }
+            };
+
+            cell.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (event.getClickCount() > 1) {
+                    	Entry e = (Entry) cell.getTableRow().getItem();
+                    	e.linkClicked();
+                        System.out.println("double clicked!");
+                        TableCell c = (TableCell) event.getSource();
+                        System.out.println("Cell text: " + c.getText());
+                    }
+                }
+            });
+            return cell;
+        });
         
         //contact date column
         TableColumn<Entry, String> contactDateColumn = new TableColumn<>("Kontaktdatum");

@@ -83,6 +83,18 @@ public class Entry {
     	}
     }
     
+    public void custClicked(){
+    	File dir = new File(ClientGUI.datenbank + "/Kundenverzeichnis/" + this.customer);
+    	if(Desktop.isDesktopSupported()&&dir.exists()){
+    		try {
+				Desktop.getDesktop().open(dir);
+			} catch (IOException e) {
+				System.out.println("could not open directory");
+				e.printStackTrace();
+			}
+    	}
+    }
+    
     public void pursueClicked(MouseEvent event) {
     	while(true){
 	    	String[] answers = getNextSteps();

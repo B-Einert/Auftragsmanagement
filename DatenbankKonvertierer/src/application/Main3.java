@@ -259,10 +259,10 @@ public class Main3 extends Application {
 
 	private static void copyFile(File source, File target) throws Exception {
 		if (target.exists()) {
-			if (source.length() > target.length()) {
+			if (source.length() > target.length()||target.isDirectory()) {
 				target.delete();
 			} else {
-				System.out.println(target.getPath() + "file already exists");
+				//System.out.println(target.getPath() + "file already exists");
 				return;
 			}
 		}
