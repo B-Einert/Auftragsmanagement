@@ -21,12 +21,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -358,8 +360,30 @@ public class ClientGUI extends Application {
         back.setOnAction(e -> back());
         
         VBox vBox2 = new VBox();
-        vBox2.getChildren().addAll(table2, back);
+        HBox hbox2 = new HBox();
+        //hbox2.setPrefWidth(vBox2.getWidth());
+        //hbox2.setPadding(new Insets(10,10,10,10));
+        //hbox2.setSpacing(10);
+        hbox2.getChildren().add(back);
+        vBox2.getChildren().addAll(table2, hbox2);
         scene2 = new Scene(vBox2);
+        
+        scene2.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+            	table2.sort();
+            	String key=event.getCharacter();
+            	for(int i=0; i<ClientGUI.entries.size(); i++){
+            		if(c1.getCellData(i).startsWith(key)){
+            			 table2.requestFocus();
+            		     table2.getSelectionModel().select(0);
+            		     table2.getFocusModel().focus(0);
+            		     System.out.println("im doin it bruh!");
+            		     return;
+            		}
+            	}
+            }
+        });
         
         window.setScene(scene);
         window.getScene().getStylesheets().add(getClass().getResource("application.css").toExternalForm());
@@ -376,11 +400,13 @@ public class ClientGUI extends Application {
 			item.setExpanded(false);
 			new TreeItemOpener(item);
 		}
+		
 	}
 
 	public void archiveButtonClicked() {
 		setArchiveTree();
     	window.setScene(this.scene2);
+    	this.table2.sort();
 	}
     
     public static void back(){
