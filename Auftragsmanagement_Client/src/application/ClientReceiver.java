@@ -89,6 +89,11 @@ public class ClientReceiver implements Runnable {
 			for (String customer : (HashSet<String>) received) {
 				ClientGUI.archived.add(new TreeItem<ArchiveEntry>(new ArchiveEntry(customer)));
 			}
+			received=null;
+			while (received == null) {
+				received = objIn.readObject();
+			}
+			ClientGUI.datenbank=(String)received;
 		} catch (Exception e) {
 			System.out.println(e);
 			e.printStackTrace();

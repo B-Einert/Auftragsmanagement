@@ -54,9 +54,10 @@ public class ClientGUI extends Application {
     private static Image detail;
     
     //TODO set db
-    //public static String datenbank = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank/";
+    public static String datenbank;
+    //public static String datenbank = "D:/BJOERN/Documents/Korropol/Auftragsmanagement/Datenbank";
     //public static String datenbank = "C:/Users/Pyornez/Documents/Korropol/Auftragsmanagement/dbKonvertTest/newdb";
-    public static String datenbank = "X:/Auftragsmanagement(neu)";
+    //public static String datenbank = "X:/Auftragsmanagement(neu)";
     
     public static void main(String[] args) {	
         launch(args);

@@ -180,6 +180,8 @@ public class ServerReturn implements Runnable {
 			objOut.flush();
 			objOut.writeObject(Server.dbManager.getArchivedList());
 			objOut.flush();
+			objOut.writeObject(Server.dbManager.db);
+			objOut.flush();
 		} catch (Exception e) {
 			System.out.print(e);
 			System.out.println(e.getLocalizedMessage());

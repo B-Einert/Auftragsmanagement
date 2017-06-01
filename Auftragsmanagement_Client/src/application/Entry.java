@@ -73,10 +73,15 @@ public class Entry {
     
     public void linkClicked(){
     	File dir = new File(ClientGUI.datenbank + linkString);
+    	System.out.println(dir);
     	if(Desktop.isDesktopSupported()){
     		try {
 				Desktop.getDesktop().open(dir);
-			} catch (IOException e) {
+			} 
+    		catch (IllegalArgumentException iae){
+    			AlertBox.display("Verzeichnis nicht gefunden");
+    		}
+    		catch (IOException e) {
 				System.out.println("could not open directory");
 				e.printStackTrace();
 			}
@@ -227,7 +232,6 @@ public class Entry {
     				DetailBox.display();
     				break;
     			}
-    			//System.out.println("not ready yet!");
     			Thread.sleep(10);
     		} catch (Exception e) {
     			System.out.println("interrupted");
